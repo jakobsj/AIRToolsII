@@ -1,4 +1,4 @@
-function [X,info,restart] = sartPCH(A,b,K,x0,options)
+function [X,info,restart] = sart(A,b,K,x0,options)
 %SART Simultaneous Algebraic Reconstruction Technique (SART) method
 %
 %   [X,info,restart] = sart(A,b,K)
@@ -81,7 +81,7 @@ function [X,info,restart] = sartPCH(A,b,K,x0,options)
 %
 % See also: landweber, cimmino, cav, drop.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jørgensen,
+% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jï¿½rgensen,
 % November 8, 2015, DTU Compute.
 
 % Reference: A. H. Andersen and A. C. Kak, Simultaneous algebraic

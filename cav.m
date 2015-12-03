@@ -1,4 +1,4 @@
-function [X,info,restart] = cavPCH(A,b,K,x0,options)
+function [X,info,restart] = cav(A,b,K,x0,options)
 %CAV Component Averaging (CAV) method
 %
 %   [X,info,restart] = cav(A,b,K)
@@ -81,7 +81,7 @@ function [X,info,restart] = cavPCH(A,b,K,x0,options)
 %
 % See also: landweber, cimmino, drop, sart.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jørgensen,
+% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jï¿½rgensen,
 % November 8, 2015, DTU Compute.
 
 % Reference: Y. Censor, D. Gordan, and R. Gordan, Component averaging: An 

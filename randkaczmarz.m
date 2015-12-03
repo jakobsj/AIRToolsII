@@ -1,4 +1,4 @@
-function [X,info] = randkaczmarzPCH(A,b,K,x0,options)
+function [X,info] = randkaczmarz(A,b,K,x0,options)
 %RANDKACZMARZ Randomized Kaczmarz method
 %
 %   [X,info] = randkaczmarz(A,b,K)

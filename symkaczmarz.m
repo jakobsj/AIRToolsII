@@ -1,4 +1,4 @@
-function [X,info] = symkaczmarzPCH(A,b,K,x0,options)
+function [X,info] = symkaczmarz(A,b,K,x0,options)
 %SYMKACZMARZ Symmetric Kaczmarz method
 %
 %   [X,info] = symkaczmarz(A,b,K)
@@ -69,7 +69,7 @@ function [X,info] = symkaczmarzPCH(A,b,K,x0,options)
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Nov. 8, 2015, DTU Compute.
 
-% Reference: Å. Björck and T. Elfving, Accelerated projection methods for 
+% Reference: ï¿½. Bjï¿½rck and T. Elfving, Accelerated projection methods for 
 % computiong pseudoinverse solutions of systems of linear equations, BIT 
 % 19 (1979), pp. 145-163.
 

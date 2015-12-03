@@ -1,4 +1,4 @@
-function [X,info,restart] = dropPCH(A,b,K,x0,options)
+function [X,info,restart] = drop(A,b,K,x0,options)
 %DROP Diagonally Relaxed Orthogonal Projections (DROP) method
 %
 %   [X,info,restart] = drop(A,b,K)
@@ -82,7 +82,7 @@ function [X,info,restart] = dropPCH(A,b,K,x0,options)
 %
 % See also: landweber, cimmino, cav, sart.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jørgensen,
+% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jï¿½rgensen,
 % November 8, 2015, DTU Compute.
 
 % Reference: Y. Censor, T. Elfving, G. T. Herman, and T. Nikazad, On

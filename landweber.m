@@ -1,4 +1,4 @@
-function [X,info,restart] = landweberPCH(A,b,K,x0,options)
+function [X,info,restart] = landweber(A,b,K,x0,options)
 %LANDWEBER The classical Landweber method
 %
 %   [X,info,restart] = landweber(A,b,K)
@@ -75,7 +75,7 @@ function [X,info,restart] = landweberPCH(A,b,K,x0,options)
 %
 % See also: cimmino, cav, drop, sart.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jørgensen,
+% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jï¿½rgensen,
 % November 8, 2015, DTU Compute.
 
 % Reference: L. Landweber, An iteration formula for Fredholm integral

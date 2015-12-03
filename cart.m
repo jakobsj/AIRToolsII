@@ -1,4 +1,4 @@
-function [X,info] = cartPCH(A,b,K,x0,options)
+function [X,info] = cart(A,b,K,x0,options)
 %CART Columnwise version of Kaczmarz's method
 %
 %   [X,info] = cart(A,b,K)
@@ -48,7 +48,7 @@ function [X,info] = cartPCH(A,b,K,x0,options)
 %
 % See also: kaczmarz, randkaczmarz, symkaczmarz
 
-% Jacob Frøsig, Nicolai Riis, Per Chr. Hansen, Nov. 7, 2015, DTU Compute.
+% Jacob Frï¿½sig, Nicolai Riis, Per Chr. Hansen, Nov. 7, 2015, DTU Compute.
 
 if isa(A,'function_handle'), error('A cannot be a function handle'), end
 [m,n] = size(A);

@@ -1,4 +1,4 @@
-function [X,info] = kaczmarzPCH(A,b,K,x0,options)
+function [X,info] = kaczmarz(A,b,K,x0,options)
 %KACZMARZ Kaczmarz's method (often referred to as ART)
 %
 %   [X,info] = kaczmarz(A,b,K)

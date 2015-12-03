@@ -1,4 +1,4 @@
-function [X,info,restart] = cimminoPCH(A,b,K,x0,options)
+function [X,info,restart] = cimmino(A,b,K,x0,options)
 %CIMMINO Cimmino's method
 %
 %   [X,info,restart] = cimmino(A,b,K)
@@ -80,7 +80,7 @@ function [X,info,restart] = cimminoPCH(A,b,K,x0,options)
 %
 % See also: landweber, cav, drop, sart.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jørgensen,
+% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jï¿½rgensen,
 % November 8, 2015, DTU Compute.
 
 % Reference: C. D. Meyer, Matrix Analysis and Applied Linear Algebra, SIAM,
