@@ -33,7 +33,7 @@ function w = OPparalleltomo(u,transp_flag,N,theta,p,d)
 % See also: OPfanbeamtomo
 
 % Jakob Sauer Joergensen, Maria Saxild-Hansen and Per Christian Hansen,
-% November 7, 2015, DTU Compute.
+% December 2, 2015, DTU Compute.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized 
 % Tomographic Imaging, SIAM, Philadelphia, 2001.
@@ -78,12 +78,16 @@ y0 = zeros(p,1);
 x = (-N/2:N/2)';
 y = x;
 
+% If u is a Cartesian unit vector then we only want to compute a single
+% row of A; otherwise we want to multiply with A or A'.
+Determine if we wan to compute a row of A (when u is a Cartesianunit
 if strcmpi(transp_flag,'transp') && nnz(u) == 1 && sum(u) == 1
-    % Compute a single row of A, stored as a column vector.
+    % Want to compute a single row of A, stored as a column vector.
     ell = find(u==1);
     J = mod(ell,p);  if J==0, J = p; end
     I = (ell-J)/p + 1;
 else
+    % Want to multiply with A or A'.
     I = 1:nA;
     J = 1:p;
 end

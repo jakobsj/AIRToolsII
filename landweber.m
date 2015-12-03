@@ -268,8 +268,8 @@ else
                             isfield(options.restart,'s1')
                         sigma1tilde = options.restart.s1;
                     else
-                        % Calculate the first singular value.
-                        atma = @(x) Afun( M.*Afun(x,'notransp') , 'transp' );
+                        % sigma1tilde = normest_mf(Afun);
+                        atma = @(x) Afun( Afun(x,'notransp') , 'transp' );
                         optionsEIGS.disp = 0;
                         sigma1tilde = sqrt( eigs(atma,n,1,'lm',optionsEIGS) );
                         restart.s1 = sigma1tilde;
