@@ -1,5 +1,15 @@
 function [Afun,m,n,Knew,kmax,X,x0] = check_inputs(A,b,K,x0,options)
 
+% Add check of options input, including stopping criteria ones, such as
+% taudelta
+
+% Probably change landweber etc inputs to collected all in varargin. This
+% allows a variable number of inputs (eg with or without options) to be
+% passed on to check_inputs and then just return back to landweber Afun etc
+% so that not also A is available. Then also rename check_inputs to
+% parse_inputs, since inputs are not really just checked put changed into
+% the ones to be used.
+
 
 % Check that at least 3 inputs are given.
 if nargin < 3
