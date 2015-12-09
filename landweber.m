@@ -165,69 +165,13 @@ else
         boxcon = false;
     end
     
-    % Stopping rules.
-    if isfield(options,'stoprule') && isfield(options.stoprule,'type')
-        stoprule = options.stoprule.type;
-        % Check that the stoprule is a string.
-        if ischar(stoprule)
-            if strncmpi(stoprule,'DP',2)
-                % DP stopping rule.
-                if isfield(options.stoprule,'taudelta')
-                    taudelta = options.stoprule.taudelta;
-                else
-                    error(['The factor taudelta must be specified when '...
-                        'using DP'])
-                end
-                k = 0;
-                
-                % Check that the first iteration should be performed.
-                rk = rxk;
-                nrk = norm(rk);
-                
-                if nrk <= taudelta
-                    info = [2 k NaN];
-                    X = x0;
-                    return
-                end % end the DP-rule.
-                
-            elseif strncmpi(stoprule,'ME',2)
-                % ME stopping rule.
-                if isfield(options.stoprule,'taudelta')
-                    taudelta = options.stoprule.taudelta;
-                else
-                    error(['The factor taudelta must be specified when '...
-                        'using ME'])
-                end
-                k = 0;
-                rk = rxk;
-                K = K + 1;
-                                
-            elseif strncmpi(stoprule,'NC',2)
-                % NCP stopping rule.
-                dk = inf;
-                q = floor(m/2);
-                c_white = (1:q)'./q;
-                k = 0;
-                K = [K max(K)+1];
-                                
-            elseif strncmpi(stoprule,'NO',2)
-                % No stopping rule.
-                k = 0;
-                
-            else
-                error('The chosen stopping rule is not valid.')
-            end % end different stopping rules.
-            
-        else
-            error('The stoprule type must be a string')
-        end % end stoprule is string.
-        
-    else
-        % No stopping rule specified.
-        stoprule = 'NO';
-        k = 0;
-        
-    end % end stoprule type specified.
+    % Initialize for stopping rules.
+    [k,K,rk,dk] = init_stoprules(stoprule,K);
+    
+    % Do initial check of stopping criteria - probably lambda should be set
+    % before this, perhaps just to nan.
+    [stop, info, rk, dk] = check_stoprules(...
+    stoprule, rxk, lambda, taudelta, k, kmax, rk, dk)
     
     % Determine the relaxation parameter lambda.
     if isfield(options,'lambda')
@@ -414,64 +358,9 @@ while ~stop
     % New residual.
     rxk = b - Afun(xk,'notransp');
     
-    % Stopping rules:
-    if strncmpi(stoprule,'DP',2)
-        % DP stopping rule.
-        nrk = norm(rxk);
-        
-        if nrk <= taudelta || k >= kmax
-            stop = 1;
-            if k ~= kmax
-                info = [2 k lambda];
-            else
-                info = [0 k lambda];
-            end
-        end
-    elseif strncmpi(stoprule,'ME',2)
-        % ME stopping rule.
-        nrk = norm(rk);
-        dME = rk'*(rk+rxk)/2;
-        
-        if dME/nrk <= taudelta || k >= kmax
-            stop = 1;
-            
-            if k ~= kmax
-                info = [3 k-1 lambda];
-            else
-                info = [0 k-1 lambda];
-            end
-        else
-            rk = rxk;
-        end % end the ME-rule.
-        
-    elseif strncmpi(stoprule,'NC',2)
-        % NCP stopping rule.
-        rkh = fft(rxk);
-        pk = abs(rkh(1:q+1)).^2;
-        c = zeros(q,1);
-        for index = 1:q
-            c(index) = sum(pk(2:index+1))/sum(pk(2:end));
-        end
-        
-        if dk < norm(c-c_white) || k >= kmax
-            stop = 1;
-            
-            if k ~= kmax
-                info = [1 k-1 lambda];
-            else
-                info = [0 k-1 lambda];
-            end
-        else
-            dk = norm(c-c_white);
-        end % end NCP-rule.
-        
-    elseif strncmpi(stoprule,'NO',2)
-        % No stopping rule.
-        if k >= kmax
-            stop = 1;
-            info = [0 k lambda];
-        end
-    end % end stoprule type.
+    % Check stopping rules:
+    [stop,info,rk,dk] = check_stoprules(...
+        stoprule, rxk, lambda, taudelta, k, kmax, rk, dk);
         
     % If the current iteration is requested saved.
     if k == Knew(l+1) || stop
