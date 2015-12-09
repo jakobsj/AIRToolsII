@@ -1,4 +1,4 @@
-function [Afun,m,n,Knew,kmax,X,x0] = check_inputs(A,b,K,x0,options)
+function [Afun,m,n,Knew,kmax,x0] = check_inputs(A,b,K,x0,options)
 
 % Add check of options input, including stopping criteria ones, such as
 % taudelta
@@ -37,7 +37,6 @@ if isempty(K)
 end
 Knew = sort(K);
 kmax = Knew(end);
-X = zeros(n,length(K));
 
 % Default value for x0.
 if nargin < 4 || isempty(x0)
