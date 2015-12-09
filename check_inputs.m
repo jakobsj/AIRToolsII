@@ -1,4 +1,4 @@
-function [Afun,m,n,Knew,kmax,x0] = check_inputs(A,b,K,x0,options)
+function [Afun,b,m,n,Knew,kmax,x0] = check_inputs(A,b,K,x0,options)
 
 % Add check of options input, including stopping criteria ones, such as
 % taudelta
@@ -13,7 +13,7 @@ function [Afun,m,n,Knew,kmax,x0] = check_inputs(A,b,K,x0,options)
 
 % Check that at least 3 inputs are given.
 if nargin < 3
-    error('Too few input arguments')
+    error('Too few input arguments.')
 end
 
 % If A is not a function (i.e., A is a matrix or an object), convert A

@@ -1,4 +1,4 @@
-function [X,info,restart] = landweber(A,b,K,x0,options)
+function [X,info,restart] = landweber(varargin)
 %LANDWEBER The classical Landweber method
 %
 %   [X,info,restart] = landweber(A,b,K)
@@ -82,8 +82,8 @@ function [X,info,restart] = landweber(A,b,K,x0,options)
 % equations of the first kind, American Journal of Mathematics, 73 (1951),
 % pp. 615-624.
 
-% Check inputs.
-[Afun,m,n,Knew,kmax,x0] = check_inputs(A,b,K,x0,options);
+% Parse inputs.
+[Afun,b,m,n,Knew,kmax,x0] = check_inputs(varargin{:});
 
 X = zeros(n,length(Knew));
 
