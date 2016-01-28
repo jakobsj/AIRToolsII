@@ -6,6 +6,9 @@ function [stop, info, rk, dk] = check_stoprules(...
 % Only ME uses rk: For all other stoprules, rk=nan is given as input and
 % returned untouched as output.
 
+stop = 0;
+info = nan;
+
 switch upper(stoprule)
     case 'DP'
         % DP stopping rule.

@@ -1,4 +1,5 @@
-function [Afun,b,m,n,Knew,kmax,x0] = check_inputs(A,b,K,x0,options)
+function [Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta,lambdainput,s1] = ...
+    check_inputs(A,b,K,x0,options)
 
 % Add check of options input, including stopping criteria ones, such as
 % taudelta
@@ -46,4 +47,47 @@ end
 % Check the size of x0
 if size(x0,1) ~= n || size(x0,2) ~= 1
     error('The size of x0 does not match the problem.')
+end
+
+
+%% After here, fix options etc.
+if nargin < 5
+    options = struct;
+end
+
+% Nonnegativity. Default false.
+if isfield(options,'nonneg')
+    nonneg = options.nonneg;
+else
+    nonneg = false;
+end
+
+% Box constraints [0,L].
+if isfield(options,'ubound')
+    nonneg = true;
+    boxcon = true;
+    L = options.ubound;
+else
+    boxcon = false;
+    L = nan;
+end
+
+% Default stoprules
+stoprule = 'NONE';
+taudelta = nan;
+if isfield(options,'stoprule') && isfield(options.stoprule,'type')
+    stoprule = options.stoprule.type;
+end
+if isfield(options,'stoprule') && isfield(options.stoprule,'taudelta')
+    taudelta = options.stoprule.taudelta;
+end
+
+lambdainput = nan;
+if isfield(options,'lambda')
+    lambdainput = options.lambda;
+end
+
+s1 = nan;
+if isfield(options,'restart') && isfield(options.restart,'s1')
+    s1 = options.restart.s1;
 end

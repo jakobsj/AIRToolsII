@@ -75,7 +75,7 @@ function [X,info,restart] = landweber(varargin)
 %
 % See also: cimmino, cav, drop, sart.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer J�rgensen,
+% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Joergensen,
 % November 8, 2015, DTU Compute.
 
 % Reference: L. Landweber, An iteration formula for Fredholm integral
@@ -83,217 +83,32 @@ function [X,info,restart] = landweber(varargin)
 % pp. 615-624.
 
 % Parse inputs.
-[Afun,b,m,n,Knew,kmax,x0] = check_inputs(varargin{:});
+[Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta,lambdainput,s1] = ...
+    check_inputs(varargin{:});
 
 X = zeros(n,length(Knew));
 
+% TODO Should there be both Knew and K, or reduce to just Knew?
+
 rxk = b - Afun(x0,'notransp');
 
-if nargin < 5
-    
-    % Calculate the largest singular value.
-    atma = @(x) Afun( Afun(x,'notransp') , 'transp' );
-    optionsEIGS.disp = 0;
-    sigma1tilde = sqrt( eigs(atma,n,1,'lm',optionsEIGS) );
-    
-    % If restart is required as output.
-    if nargout == 3
-        restart.s1 = sigma1tilde;
-    end
-    
-    % Default value of lambda.
-    lambda = 1.9/sigma1tilde^2;
-    casel = 1;
-    
-    % Default stopping rule.
-    stoprule = 'NO';
-    k = 0;
-    
-    % Default is no nonnegativity or box constraint.
-    nonneg = false;
-    boxcon = false;
+% Initialize for stopping rules.
+[k,K,rk,dk] = init_stoprules(stoprule,K);
 
-else
-% Check the contents of options if present.
+% Do initial check of stopping criteria - probably lambda should be set
+% before this, perhaps just to nan.
+[stop, info, rk, dk] = check_stoprules(...
+    stoprule, rxk, lambdainput, taudelta, k, kmax, rk, dk);
 
-    % Nonnegativity.
-    if isfield(options,'nonneg')
-        nonneg = options.nonneg;
-    else
-        nonneg = false;
-    end
-    
-    % Box constraints [0,L].
-    if isfield(options,'ubound')
-        nonneg = true;
-        boxcon = true;
-        L = options.ubound;
-    else
-        boxcon = false;
-    end
-    
-    % Initialize for stopping rules.
-    [k,K,rk,dk] = init_stoprules(stoprule,K);
-    
-    % Do initial check of stopping criteria - probably lambda should be set
-    % before this, perhaps just to nan.
-    [stop, info, rk, dk] = check_stoprules(...
-    stoprule, rxk, lambda, taudelta, k, kmax, rk, dk)
-    
-    % Determine the relaxation parameter lambda.
-    if isfield(options,'lambda')
-        lambda = options.lambda;
-        
-        % If lambda is a scalar.
-        if ~ischar(lambda)
-            % Checks if the largest singular value is known in options.
-            if isfield(options,'restart') && isfield(options.restart,'s1')
-                sigma1tilde = options.restart.s1;
-            else
-                % Calculates the largest singular value.
-                % sigma1tilde = normest_mf(Afun);
-                atma = @(x) Afun( Afun(x,'notransp') , 'transp' );
-                optionsEIGS.disp = 0;
-                sigma1tilde = sqrt( eigs(atma,n,1,'lm',optionsEIGS) );
-            end
-            
-            % If restart is required as output.
-            if nargout == 3
-                restart.s1 = sigma1tilde;
-            end
-            
-            % Checks if the given constant lambde value is unstable.
-            if lambda <= 0 || lambda >= 2/sigma1tilde^2
-                warning('MATLAB:UnstableRelaxParam',['The lambda value '...
-                    'is outside the interval (0,%f)'],2/sigma1tilde^2)
-            end
-            casel = 1;
-        else
-            % Calculate the lambda value according to the chosen method.
-            if strncmpi(lambda,'line',4)
-                % Method: Line search
-                casel = 2;
-                
-                if nargout == 3
-                    if isfield(options,'restart') && ...
-                            isfield(options.restart,'s1')
-                        sigma1tilde = options.restart.s1;
-                    else
-                        % sigma1tilde = normest_mf(Afun);
-                        atma = @(x) Afun( Afun(x,'notransp') , 'transp' );
-                        optionsEIGS.disp = 0;
-                        sigma1tilde = sqrt( eigs(atma,n,1,'lm',optionsEIGS) );
-                        restart.s1 = sigma1tilde;
-                    end
-                    restart.s1 = sigma1tilde;
-                end
-                
-            elseif strncmpi(lambda,'psi1',4)
-                % Method: ENH psi1.
-                casel = 3;
-                ite = 0;
-                
-                % Checks if the largest singular value is known.
-                if isfield(options,'restart') && ...
-                        isfield(options.restart,'s1')
-                    sigma1tilde = options.restart.s1;
-                else
-                    % Calculates the largest singular value.
-                    % sigma1tilde = normest_mf(Afun);
-                    atma = @(x) Afun( Afun(x,'notransp') , 'transp' );
-                    optionsEIGS.disp = 0;
-                    sigma1tilde = sqrt( eigs(atma,n,1,'lm',optionsEIGS) );
-                end
-                
-                % If restart is required as output.
-                if nargout == 3
-                    restart.s1 = sigma1tilde;
-                end
-                
-                % Precalculate the roots.
-                z = calczeta(2:max(K)-1);
-                
-                % Define the values for lambda according to the psi1
-                % strategy modified or not.
-                if strncmpi(lambda,'psi1mod',7)
-                    nu = 2;
-                    lambdak = [sqrt(2); sqrt(2); nu*2*(1-z)]/sigma1tilde^2;
-                else
-                    
-                    lambdak = [sqrt(2); sqrt(2); 2*(1-z)]/sigma1tilde^2;
-                end
-                
-            elseif strncmpi(lambda,'psi2',4)
-                % Method: ENH psi2.
-                casel = 3;
-                ite = 0;
-                
-                % Checks if the largest singular value is known.
-                if isfield(options,'restart') && ...
-                        isfield(options.restart,'s1')
-                    sigma1tilde = options.restart.s1;
-                else
-                    % Calculates the largest singular value.
-                    % sigma1tilde = normest_mf(Afun);
-                    atma = @(x) Afun( Afun(x,'notransp') , 'transp' );
-                    optionsEIGS.disp = 0;
-                    sigma1tilde = sqrt( eigs(atma,n,1,'lm',optionsEIGS) );
-                end
-                
-                % If restart is required as output.
-                if nargout == 3
-                    restart.s1 = sigma1tilde;
-                end
-                
-                % Precalculate the roots.
-                kk = 2:max(K)-1;
-                z = calczeta(kk);
-                
-                % Define the values for lambda according to the psi2
-                % strategy modified or not.
-                if strncmpi(lambda,'psi2Mod',7)
-                    nu = 1.5;
-                    lambdak = [sqrt(2); sqrt(2);
-                        nu*2*(1-z)./((1-z.^(kk')).^2)]/sigma1tilde^2;
-                else
-                    lambdak = [sqrt(2); sqrt(2);
-                        2*(1-z)./((1-z.^(kk')).^2)]/sigma1tilde^2;
-                end
-                
-            else
-                error(['The chosen relaxation strategy is not valid '...
-                    'for this method.'])
-            end % end check of the class of lambda.
-            
-        end % end check of lambda strategies.
-    else
-        % Check if the largest singular value is given.
-        if isfield(options,'restart') && isfield(options.restart,'s1')
-            sigma1tilde = options.restart.s1;
-        else
-            % Calculates the largest singular value.
-            % sigma1tilde = normest_mf(Afun);
-            atma = @(x) Afun( Afun(x,'notransp') , 'transp' );
-            optionsEIGS.disp = 0;
-            sigma1tilde = sqrt( eigs(atma,n,1,'lm',optionsEIGS) );
-        end
-        
-        % If restart is required as output.
-        if nargout == 3
-            restart.s1 = sigma1tilde;
-        end
-        
-        % Define a default constant lambda value.
-        lambda = 1.9/sigma1tilde^2;
-        casel = 1;
-        
-    end % end if lambda is a field in options.
-    
-end % end if nargin includes options.
+% TODO If is aborting here, is output X set? Perhaps make sure x0 is always
+% written to the first column of X.
+
+% Calculate lambda and restart
+atma = @(x) Afun( Afun(x,'notransp') , 'transp' );
+[lambda, casel, restart] = calclambda(lambdainput, s1, K, atma, n);
 
 % Initialize the values.
 xk = x0;
-stop = 0;
 l = 0;
 klast = 0;
 
@@ -306,16 +121,18 @@ while ~stop
     % Compute the current iteration.
     if casel == 1
         % Landweber using constant value of lambda.
-        xk = xk + lambda*(Afun(rxk,'transp'));
+        lambdacur = lambda;
+        xk = xk + lambdacur*(Afun(rxk,'transp'));
     elseif casel == 2
         % Landweber using line search.
         ATrk = Afun(rxk,'transp');
-        lambdak = norm(rxk)^2/norm(ATrk)^2;
-        xk = xk + lambdak*ATrk;
+        lambda = norm(rxk)^2/norm(ATrk)^2;
+        lambdacur = lambda;
+        xk = xk + lambda*ATrk;
     elseif casel == 3
         % Landweber using psi1 or psi2.
-        ite = ite + 1;
-        xk = xk + lambdak(ite)*(Afun(rxk,'transp'));
+        lambdacur = lambda(k);
+        xk = xk + lambdacur*(Afun(rxk,'transp'));
     end % end the different cases of lambda strategies.
     
     % Nonnegativity and box constraints.
@@ -327,7 +144,7 @@ while ~stop
     
     % Check stopping rules:
     [stop,info,rk,dk] = check_stoprules(...
-        stoprule, rxk, lambda, taudelta, k, kmax, rk, dk);
+        stoprule, rxk, lambdacur, taudelta, k, kmax, rk, dk);
         
     % If the current iteration is requested saved.
     if k == Knew(l+1) || stop
