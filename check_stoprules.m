@@ -27,14 +27,25 @@ switch upper(stoprule)
         nrk = norm(rk);
         dME = rk'*(rk+rxk)/2;
         
-        if dME/nrk <= taudelta || k >= kmax
+        %         if dME/nrk <= taudelta || k >= kmax
+        %             stop = 1;
+        %             if k ~= kmax
+        %                 info = [3 k-1 lambda];
+        %             else
+        %                 info = [0 k-1 lambda];
+        %             end
+        % PCH replaced the above lines with the linew below.
+        if dME/nrk <= taudelta
             stop = 1;
-            
-            if k ~= kmax
-                info = [3 k-1 lambda];
-            else
-                info = [0 k-1 lambda];
+            info = [3 k-1 lambda];
+            % PCH added the warning below.
+            if k==1
+                warning(['Initial vector satisfies stopping rule. '...
+                         'Returning initial vector in X.'])
             end
+        elseif k >= kmax
+            stop = 1;
+            info = [0 k lambda];
         else
             rk = rxk;
         end % end the ME-rule.

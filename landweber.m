@@ -93,7 +93,7 @@ X = zeros(n,length(Knew));
 rxk = b - Afun(x0,'notransp');
 
 % Initialize for stopping rules.
-[k,K,rk,dk] = init_stoprules(stoprule,K);
+[k,K,rk,dk] = init_stoprules(stoprule,rxk,K);
 
 % Do initial check of stopping criteria - probably lambda should be set
 % before this, perhaps just to nan.
@@ -150,8 +150,9 @@ while ~stop
     if k == Knew(l+1) || stop
         l = l + 1;
         % Save the current iteration.
-        if strncmpi(stoprule,'ME',2)
-            X(:,l) = xkm1;
+        % PCH rewrote the lines below.
+        if strncmpi(stoprule,'ME',2) && stop && info(1)==3
+                X(:,l) = xkm1;
         elseif strncmpi(stoprule,'NC',2)
             if ~(stop && klast == k-1)
                 X(:,l) = xkm1;

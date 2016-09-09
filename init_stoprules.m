@@ -1,4 +1,4 @@
-function [k,K,rk,dk] = init_stoprules(stoprule,K)
+function [k,K,rk,dk] = init_stoprules(stoprule,rxk,K)
 
 % At this time, we know stoprule has been set. If no stoprule was given by
 % user, now set to 'none'. If taudelta was missing, error has been thrown,
@@ -49,8 +49,9 @@ switch upper(stoprule)
         
     case 'ME'
         % ME stopping rule.
-        rk = rxk;
-        K = K + 1;
+        %rk = rxk;
+        rk = nan(size(rxk));
+        %K = K + 1;
         
     case 'NC'
         % NCP stopping rule.
