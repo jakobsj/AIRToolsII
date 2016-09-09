@@ -66,8 +66,9 @@ switch upper(stoprule)
         else
             R = reshape(rxk,dims);   % reshape(rxk,p,lt);
             RKH = fft2(R); % rkh = fft(r);
-            %PK = abs(RKH(1:(p+1)/2,1:lt/2)); % pk = abs(rkh(1:q+1)).^2;
-            PK = abs(RKH(1:(dims(1)+1)/2,1:dims(2)/2)); % pk = abs(rkh(1:q+1)).^2;
+            q1 = floor(dims(1)/2);
+            q2 = floor(dims(2)/2);
+            PK = abs(RKH(1:q1+1,1:q2+1)); % pk = abs(rkh(1:q+1)).^2;
             P = zeros(size(PK));
             for i=1:size(P,1)
                 for j=1:size(P,2)
