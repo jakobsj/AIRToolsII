@@ -1,5 +1,5 @@
 function [Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta, ...
-    lambdainput,s1,dims] = check_inputs(A,b,K,x0,options)
+    lambdainput,s1,res_dims,ncp_smooth] = check_inputs(A,b,K,x0,options)
 
 % Add check of options input, including stopping criteria ones, such as
 % taudelta
@@ -92,9 +92,18 @@ if isfield(options,'restart') && isfield(options.restart,'s1')
     s1 = options.restart.s1;
 end
 
-dims = n;
-if isfield(options,'stoprule') && isfield(options.stoprule,'dims')
-    dims = options.stoprule.dims;
+res_dims = n;
+if isfield(options,'stoprule') && isfield(options.stoprule,'res_dims')
+    res_dims = options.stoprule.res_dims;
+    if ~strcmp(stoprule,'NCP')
+        warning(['options.stoprule.dims given but only used by NCP ',...
+            'stoprule, not the currently specified.']);
+    end
+end
+
+ncp_smooth = 4;
+if isfield(options,'stoprule') && isfield(options.stoprule,'ncp_smooth')
+    ncp_smooth = options.stoprule.ncp_smooth;
     if ~strcmp(stoprule,'NCP')
         warning(['options.stoprule.dims given but only used by NCP ',...
             'stoprule, not the currently specified.']);

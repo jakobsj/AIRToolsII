@@ -84,7 +84,7 @@ function [X,info,restart] = landweber(varargin)
 
 % Parse inputs.
 [Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta,...
-    lambdainput,s1,dims] = check_inputs(varargin{:});
+    lambdainput,s1,res_dims,ncp_smooth] = check_inputs(varargin{:});
 
 X = zeros(n,length(Knew));
 
@@ -93,12 +93,12 @@ X = zeros(n,length(Knew));
 rxk = b - Afun(x0,'notransp');
 
 % Initialize for stopping rules.
-[k,K,rk,dk] = init_stoprules(stoprule,rxk,K);
+[k,K,rk,dk] = init_stoprules(stoprule,rxk,K,ncp_smooth);
 
 % Do initial check of stopping criteria - probably lambda should be set
 % before this, perhaps just to nan.
 [stop, info, rk, dk] = check_stoprules(...
-    stoprule, rxk, lambdainput, taudelta, k, kmax, rk, dk, dims);
+    stoprule, rxk, lambdainput, taudelta, k, kmax, rk, dk, res_dims);
 
 % TODO If is aborting here, is output X set? Perhaps make sure x0 is always
 % written to the first column of X.
@@ -144,7 +144,7 @@ while ~stop
     
     % Check stopping rules:
     [stop,info,rk,dk] = check_stoprules(...
-        stoprule, rxk, lambdacur, taudelta, k, kmax, rk, dk, dims);
+        stoprule, rxk, lambdacur, taudelta, k, kmax, rk, dk, res_dims);
         
     % If the current iteration is requested saved.
     if k == Knew(l+1) || stop

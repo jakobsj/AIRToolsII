@@ -1,5 +1,5 @@
 function [stop, info, rk, dk] = check_stoprules(...
-    stoprule, rxk, lambda, taudelta, k, kmax, rk, dk, dims)
+    stoprule, rxk, lambda, taudelta, k, kmax, rk, dk, res_dims)
 
 % Only NCP uses dk: For all other stoprules, dk=nan is given as input and
 % returned untouched as output.
@@ -52,7 +52,7 @@ switch upper(stoprule)
         
     case 'NCP'
         % NCP stopping rule.
-        if length(dims) == 1
+        if length(res_dims) == 1
             m = length(rxk);
             q = floor(m/2);
             c_white = (1:q)'./q;
@@ -64,10 +64,10 @@ switch upper(stoprule)
             end
             
         else
-            R = reshape(rxk,dims);   % reshape(rxk,p,lt);
+            R = reshape(rxk,res_dims);   % reshape(rxk,p,lt);
             RKH = fft2(R); % rkh = fft(r);
-            q1 = floor(dims(1)/2);
-            q2 = floor(dims(2)/2);
+            q1 = floor(res_dims(1)/2);
+            q2 = floor(res_dims(2)/2);
             PK = abs(RKH(1:q1+1,1:q2+1)); % pk = abs(rkh(1:q+1)).^2;
             P = zeros(size(PK));
             for i=1:size(P,1)
@@ -85,7 +85,7 @@ switch upper(stoprule)
             c_white = (1:q)'./q;
         end
         
-        if dk < norm(c-c_white) || k >= kmax
+        if  mean(dk) < norm(c-c_white) || k >= kmax
             stop = 1;
             if k ~= kmax
                 info = [1 k-1 lambda];
@@ -93,7 +93,7 @@ switch upper(stoprule)
                 info = [0 k-1 lambda];
             end
         else
-            dk = norm(c-c_white);
+            dk = [dk(2:end); norm(c-c_white)];
         end % end NCP-rule.
         
         
