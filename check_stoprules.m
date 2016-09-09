@@ -1,5 +1,5 @@
 function [stop, info, rk, dk] = check_stoprules(...
-    stoprule, rxk, lambda, taudelta, k, kmax, rk, dk)
+    stoprule, rxk, lambda, taudelta, k, kmax, rk, dk, dims)
 
 % Only NCP uses dk: For all other stoprules, dk=nan is given as input and
 % returned untouched as output.
@@ -52,26 +52,49 @@ switch upper(stoprule)
         
     case 'NCP'
         % NCP stopping rule.
-        m = length(rxk);
-        q = floor(m/2);
-        c_white = (1:q)'./q;
-        rkh = fft(rxk);
-        pk = abs(rkh(1:q+1)).^2;
-        c = zeros(q,1);
-        for index = 1:q
-            c(index) = sum(pk(2:index+1))/sum(pk(2:end));
+        if length(dims) == 1
+            m = length(rxk);
+            q = floor(m/2);
+            c_white = (1:q)'./q;
+            rkh = fft(rxk);
+            pk = abs(rkh(1:q+1)).^2;
+            c = zeros(q,1);
+            for index = 1:q
+                c(index) = sum(pk(2:index+1))/sum(pk(2:end));
+            end
+            
+        else
+            R = reshape(rxk,dims);   % reshape(rxk,p,lt);
+            RKH = fft2(R); % rkh = fft(r);
+            %PK = abs(RKH(1:(p+1)/2,1:lt/2)); % pk = abs(rkh(1:q+1)).^2;
+            PK = abs(RKH(1:(dims(1)+1)/2,1:dims(2)/2)); % pk = abs(rkh(1:q+1)).^2;
+            P = zeros(size(PK));
+            for i=1:size(P,1)
+                for j=1:size(P,2)
+                    P(i,j) = (i-1)^2+(j-1)^2;
+                end
+            end
+            [~,I] = sort(P(:));
+            pk = PK(I);
+            q = length(pk)-1;
+            c = zeros(q,1);
+            for index = 1:q
+                c(index) = sum(pk(2:index+1))/sum(pk(2:end));
+            end
+            c_white = (1:q)'./q;
         end
         
         if dk < norm(c-c_white) || k >= kmax
-            stop = 1;            
+            stop = 1;
             if k ~= kmax
                 info = [1 k-1 lambda];
             else
                 info = [0 k-1 lambda];
-            end            
+            end
         else
             dk = norm(c-c_white);
         end % end NCP-rule.
+        
         
     case 'NONE'
         % No stopping rule.

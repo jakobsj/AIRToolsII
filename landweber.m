@@ -83,8 +83,8 @@ function [X,info,restart] = landweber(varargin)
 % pp. 615-624.
 
 % Parse inputs.
-[Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta,lambdainput,s1] = ...
-    check_inputs(varargin{:});
+[Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta,...
+    lambdainput,s1,dims] = check_inputs(varargin{:});
 
 X = zeros(n,length(Knew));
 
@@ -98,7 +98,7 @@ rxk = b - Afun(x0,'notransp');
 % Do initial check of stopping criteria - probably lambda should be set
 % before this, perhaps just to nan.
 [stop, info, rk, dk] = check_stoprules(...
-    stoprule, rxk, lambdainput, taudelta, k, kmax, rk, dk);
+    stoprule, rxk, lambdainput, taudelta, k, kmax, rk, dk, dims);
 
 % TODO If is aborting here, is output X set? Perhaps make sure x0 is always
 % written to the first column of X.
@@ -144,7 +144,7 @@ while ~stop
     
     % Check stopping rules:
     [stop,info,rk,dk] = check_stoprules(...
-        stoprule, rxk, lambdacur, taudelta, k, kmax, rk, dk);
+        stoprule, rxk, lambdacur, taudelta, k, kmax, rk, dk, dims);
         
     % If the current iteration is requested saved.
     if k == Knew(l+1) || stop

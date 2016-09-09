@@ -53,7 +53,7 @@ switch upper(stoprule)
         rk = nan(size(rxk));
         %K = K + 1;
         
-    case 'NC'
+    case 'NCP'
         % NCP stopping rule.
         dk = inf;
         K = [K max(K)+1];
