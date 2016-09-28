@@ -5,11 +5,11 @@ function [X,info,restart] = sirt(sirt_method, varargin)
 
 % Parse inputs.
 [Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta,...
-    lambdainput,s1,M,w,res_dims,ncp_smooth] = check_inputs(varargin{:});
+    lambdainput,s1,M,w,s,res_dims,ncp_smooth] = check_inputs(varargin{:});
 
 % Extract the Mfun and sfun characterizing each SIRT-type method
 if ischar(sirt_method)
-    [Mfun,sfun] = get_Mfun_sfun(sirt_method,varargin{1},m,M,w);
+    [Mfun,sfun] = get_Mfun_sfun(sirt_method,varargin{1},m,M,w,s);
 else
     % Possible to pass in custom SIRT method given by 2-element cell array
     % holding function handles to Mfun and sfun.

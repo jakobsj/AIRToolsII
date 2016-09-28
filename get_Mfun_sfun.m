@@ -1,4 +1,4 @@
-function [Mfun,sfun] = get_Mfun_sfun(sirt_method, A, m, M, w)
+function [Mfun,sfun] = get_Mfun_sfun(sirt_method, A, m, M, w, s)
 
 switch sirt_method
     
@@ -30,7 +30,7 @@ switch sirt_method
                 end
             end
             
-
+            
             % If the method is weigthed.
             if isnan(w)
                 M = 1/m*(1./normAi);
@@ -77,7 +77,63 @@ switch sirt_method
             M(I) = 0;
         end
         Mfun = @(XX) M.*XX;
-                
+        
+    case 'drop'
+        % Define the M matrix.
+        if isnan(M)
+            
+            % Calculate the norm of each row in A. This calculation can require
+            % a lot of memory. The commented lines can be used instead; they
+            % are slower, but use less memory!
+            if ~isa(A,'function_handle')
+                normAi = full(abs(sum(A.*A,2)));
+                %           normAi = zeros(m,1);
+                %           for i = 1:m
+                %               ai = full(A(i,:));
+                %               normAi(i) = norm(ai)^2;
+                %           end
+            else
+                normAi = zeros(m,1);
+                for i = 1:m
+                    e = zeros(m,1);
+                    e(i) = 1;
+                    v = Afun(e,'transp');
+                    normAi(i) = norm(v)^2;
+                end
+            end
+            
+            % If the method is weigthed.
+            if isnan(w)
+                M = 1./normAi;
+            else
+                M = w./normAi;
+            end
+            I = (M == Inf);
+            M(I) = 0;
+        end
+        Mfun = @(XX) M.*XX;
+        % Define the S matrix.
+        if isnan(s)
+            
+            % Define the s vector and the M matrix.
+            if ~isa(A,'function_handle')
+                s = 1./sum(A~=0,1)';
+            else
+                s = zeros(n,1);
+                for i=1:n
+                    e = zeros(n,1); e(i) = 1;
+                    Aj = Afun(e,'notransp');
+                    s(i) = 1./sum(Aj~=0);
+                end
+            end
+            I = (s == Inf);
+            s(I) = 0;
+        end
+        sfun = @(XX) s.*XX;
+
+
+        
+        
         
     otherwise
         error('SIRT method not defined.')
