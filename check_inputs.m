@@ -1,5 +1,5 @@
 function [Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta, ...
-    lambdainput,s1,res_dims,ncp_smooth] = check_inputs(A,b,K,x0,options)
+    lambdainput,s1,M,w,res_dims,ncp_smooth] = check_inputs(A,b,K,x0,options)
 
 % Add check of options input, including stopping criteria ones, such as
 % taudelta
@@ -90,6 +90,18 @@ end
 s1 = nan;
 if isfield(options,'restart') && isfield(options.restart,'s1')
     s1 = options.restart.s1;
+end
+
+% If M is given as input
+M = nan;
+if isfield(options,'restart') && isfield(options.restart,'M')
+    M = options.restart.M;
+end
+
+% If weights are given as input
+w = nan;
+if isfield(options,'w')
+    w = options.w;
 end
 
 res_dims = n;

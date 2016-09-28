@@ -469,7 +469,7 @@ while ~stop
     elseif casel == 3
         % CAV using psi1 or psi2.
         ite = ite + 1;
-        xk = xk + lambdak(ite)*Afun(M.*rxk,'tarnsp');  %(A'*(M.*rxk));
+        xk = xk + lambdak(ite)*Afun(M.*rxk,'transp');  %(A'*(M.*rxk));
     end % end the different cases of lambda strategies.
     
     % Nonnegativity and box constraints.
