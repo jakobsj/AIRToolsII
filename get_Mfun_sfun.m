@@ -130,10 +130,32 @@ switch sirt_method
             s(I) = 0;
         end
         sfun = @(XX) s.*XX;
-
-
         
-        
+    case 'sart'
+        % Set diagonal of W = M if not given as input.
+        if isnan(M)
+            if ~isa(A,'function_handle')
+                Aip = full(sum(abs(A),2));
+            else
+                Aip = abs(Afun(ones(n,1),'notransp'));
+            end
+            M = 1./Aip;
+            I = (M == Inf);
+            M(I) = 0;
+        end
+        Mfun = @(XX) M.*XX;
+        % Set s-vector representing V = T if not given as input.
+        if isnan(s)
+            if ~isa(A,'function_handle')
+                Apj = full(sum(abs(A),1))';
+            else
+                Apj = abs(Afun(ones(m,1),'transp'));
+            end
+            s = 1./Apj;
+            I = (s == Inf);
+            s(I) = 0;
+        end
+        sfun = @(XX) s.*XX;
         
     otherwise
         error('SIRT method not defined.')
