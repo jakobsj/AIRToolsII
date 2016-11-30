@@ -1,5 +1,10 @@
-function [Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta, ...
+function [Afun,b,m,n,K,kmax,x0,nonneg,boxcon,L,stoprule,taudelta, ...
     lambdainput,s1,M,w,s,res_dims,ncp_smooth] = check_inputs(A,b,K,x0,options)
+
+% PCH: removed "Knew" from output.
+
+% PCH: we ought to check if the user inputs options.stoprule.taudelta
+%      is case of DP and ME.
 
 % Add check of options input, including stopping criteria ones, such as
 % taudelta
@@ -36,8 +41,13 @@ end
 if isempty(K)
     error('Max no. of iterations must ALWAYS be specified.')
 end
-Knew = sort(K);
-kmax = Knew(end);
+% PCH: added this check that the elements of the user's K appear in
+%      strictly increasing order:
+if ~all(diff(K)>0)
+    error('Elements of K must be strictly increasing.')
+end
+% Knew = sort(K);  PCH: removed this line.
+kmax = K(end);   % PCH: changed "Knew" to "K".
 
 % Default value for x0.
 if nargin < 4 || isempty(x0)
@@ -110,12 +120,19 @@ if isfield(options,'restart') && isfield(options.restart,'T')
     s = options.restart.T;
 end
 
-res_dims = n;
+% PCH: I think we must force the user to specify res_dims, otherwise we
+% risk that the user forgets to specify it!  (Speking from own experience.)
+if strcmp(stoprule,'NCP') && ~isfield(options.stoprule,'res_dims')
+    error('options.stoprule.dims must be specified for NCP stopping rule.')
+end
+% res_dims = n;  PCH: removed this line (and it should be "= m").
+res_dims = []; % PCH: added this line because "res_dims" must be returned.
 if isfield(options,'stoprule') && isfield(options.stoprule,'res_dims')
     res_dims = options.stoprule.res_dims;
     if ~strcmp(stoprule,'NCP')
-        warning(['options.stoprule.dims given but only used by NCP ',...
-            'stoprule, not the currently specified.']);
+        % PCH: modified the string below a little bit.
+        warning(['options.stoprule.res_dims given but only used by NCP ',...
+            'stopping rule, not the one currently specified.']);
     end
 end
 
@@ -123,7 +140,8 @@ ncp_smooth = 4;
 if isfield(options,'stoprule') && isfield(options.stoprule,'ncp_smooth')
     ncp_smooth = options.stoprule.ncp_smooth;
     if ~strcmp(stoprule,'NCP')
-        warning(['options.stoprule.dims given but only used by NCP ',...
-            'stoprule, not the currently specified.']);
+        % PCH: modified the string below a little bit.
+        warning(['options.stoprule.ncp_Smooth given but only used by NCP ',...
+            'stopping rule, not the one currently specified.']);
     end
 end
