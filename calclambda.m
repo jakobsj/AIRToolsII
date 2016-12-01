@@ -1,4 +1,4 @@
-function [lambda, casel, restart] = calclambda(lambdainput, s1, kmax, atma, n)
+function [lambda, casel, sigma1tilde] = calclambda(lambdainput, s1, kmax, atma, n)
 
 % Check if the largest singular value is given.
 if isnan(s1)
@@ -77,6 +77,3 @@ else
     end % end check of the class of lambda.
     
 end % end check of lambda strategies.
-
-% Save sigma1tilde in restart-struct
-restart.s1 = sigma1tilde;

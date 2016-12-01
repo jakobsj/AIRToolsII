@@ -103,7 +103,7 @@ switch upper(stoprule)
         
     case 'NONE'
         % No stopping rule.
-        if k >= kmax 
+        if k >= kmax
             stop = 1;
             info.stoprule = 0;
             info.finaliter = k;

@@ -29,9 +29,12 @@ rk = b - Afun(x0,'notransp');
     stoprule, rk, lambdainput, taudelta, k, kmax, rkm1, dk, res_dims);
 
 % Calculate lambda and restart.
-% TODO - NOT NECESSARY FOR SART.
+% TODO - NOT NECESSARY FOR SART. Could set s1=1 if SART, but have to handle
+% case where user has given s1 as input for SART or say in comments that
+% any s1 input is ignored for SART.
+% Should third output from restart overwrite s1?
 atma = @(x) sfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
-[lambda, casel, restart] = calclambda(lambdainput, s1, kmax, atma, n);
+[lambda, casel, sigma1tilde] = calclambda(lambdainput, s1, kmax, atma, n);
 
 % TODO - how to store M and T/s in third output struct.
 restart.M = M;
@@ -86,3 +89,12 @@ end
 % Return only the saved iterations: Only to "l-1" because "l" now points to
 % next candidate.
 X = X(:,1:l-1);
+
+
+% Save to info:
+
+% Largest singular value determined
+info.s1 = sigma1tilde;
+
+% List of iterates saved: all in K smaller than the final, and the final.
+info.itersaved = [K(K<info.finaliter), info.finaliter];
