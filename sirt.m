@@ -31,7 +31,7 @@ rk = b - Afun(x0,'notransp');
 % Calculate lambda and restart.
 % TODO - NOT NECESSARY FOR SART.
 atma = @(x) sfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
-[lambda, casel, restart] = calclambda(lambdainput, s1, K, atma, n);
+[lambda, casel, restart] = calclambda(lambdainput, s1, kmax, atma, n);
 
 % TODO - how to store M and T/s in third output struct.
 restart.M = M;

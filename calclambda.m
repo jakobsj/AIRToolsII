@@ -39,7 +39,7 @@ else
         ite = 0;
         
         % Precalculate the roots.
-        z = calczeta(2:max(kmax)-1);
+        z = calczeta(2:kmax-1);
         
         % Define the values for lambda according to the psi1
         % strategy modified or not.
@@ -57,7 +57,7 @@ else
         ite = 0;
         
         % Precalculate the roots.
-        kk = 2:max(kmax)-1;
+        kk = 2:kmax-1;
         z = calczeta(kk);
         
         % Define the values for lambda according to the psi2
