@@ -102,23 +102,24 @@ while ~stop
         
     % If the current iteration is requested saved.
     if k == K(l) || stop   % PCH: changed "Knew(l+1)" to "K(l)".
+        X(:,l) = xk;
         % l = l + 1;          % PCH: moved this line down.
         % Save the current iteration.
         % PCH rewrote the lines below.
-        if strncmpi(stoprule,'ME',2) && stop && info(1)==3
-                X(:,l) = xk;   % PCH: "l" ok; changed "xkm1" to "xk".
-        elseif strncmpi(stoprule,'NC',2)
-            if ~(stop && klast == k-1)
-                X(:,l) = xk;   % PCH: "l" ok; changed "xkm1" to "xk".
-            else
-                % Since the iteration was not saved.
-                % PCH: it is a big mystery why this is here!
-                l = l - 1;
-            end
-        else
-            X(:,l) = xk;   % PCH: ok
-        end
-        klast = k;
+%         if strncmpi(stoprule,'ME',2) && stop && info(1)==3
+%                 X(:,l) = xk;   % PCH: "l" ok; changed "xkm1" to "xk".
+%         elseif strncmpi(stoprule,'NC',2)
+%             if ~(stop && klast == k-1)
+%                 X(:,l) = xk;   % PCH: "l" ok; changed "xkm1" to "xk".
+%             else
+%                 % Since the iteration was not saved.
+%                 % PCH: it is a big mystery why this is here!
+%                 l = l - 1;
+%             end
+%         else
+%             X(:,l) = xk;   % PCH: ok
+%         end
+%         klast = k;
         l = l + 1;   % PCH: moved line from above to here.
         
     end
