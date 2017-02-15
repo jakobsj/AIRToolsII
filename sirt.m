@@ -58,24 +58,22 @@ while ~stop
     k = k + 1;
 
     % Compute the current iteration depending on lambda strategy.
+    Mrk = Mfun(rk);
+    ATMrk = Afun(Mrk,'transp');  %A'*Mrk;  
     if casel == 1
         % SIRT using constant value of lambda.
-        lambdacur = lambda;
-        xk = xk + lambdacur*(Tfun(Afun(Mfun(rk),'transp')));
-        
+        lambdacur = lambda;        
     elseif casel == 2
-        % SIRT using line search.
-        Mrk = Mfun(rk);
-        ATMrk = Afun(Mrk,'transp');  %A'*Mrk;        
+        % SIRT using line search.    
         ATMrkS = sum(Tfun(ATMrk.^2));
         lambdacur = (rk'*Mrk)/ATMrkS;
-        xk = xk + lambdacur*(Tfun(ATMrk));
-        
     elseif casel == 3
         % SIRT using psi1 or psi2.
         lambdacur = lambda(k);
-        xk = xk + lambdacur*(Tfun(Afun(Mfun(rk),'transp')));
     end % end the different cases of lambda strategies.
+    
+    % The update step with current lambda
+    xk = xk + lambdacur*(Tfun(ATMrk));
     
     % Enforce any lower and upper bounds (scalars or xk-sized vectors)
     if ~isnan(lbound)
