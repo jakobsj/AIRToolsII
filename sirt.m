@@ -1,4 +1,6 @@
-function [X,info,restart] = sirt(sirt_method, varargin)
+function [X,info,ext_info] = sirt(sirt_method, varargin)
+
+% options.s1 now instead of options.restart.s1: largest singval
 
 % Set default SIRT method to be sart.
 if isempty(sirt_method)
@@ -7,14 +9,14 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    lambdainput,s1,M,w,s,res_dims,ncp_smooth] = check_inputs(varargin{:});
+    lambdainput,s1,w,res_dims,ncp_smooth] = check_inputs(varargin{:});
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
-    [Mfun,Tfun] = get_Mfun_Tfun(sirt_method,varargin{1},m,n,M,w,s);
+    [Mfun,Tfun] = get_Mfun_Tfun(sirt_method,varargin{1},m,n,w);
 else
     % Possible to pass in custom SIRT method given by 2-element cell array
-    % holding function handles to Mfun and sfun.
+    % holding function handles to Mfun and sfun instead of string input.
     Mfun = sirt_method{1};
     Tfun = sirt_method{2};
 end
@@ -33,7 +35,7 @@ rk = b - Afun(x0,'notransp');
 [stop, info, rkm1, dk] = check_stoprules(...
     stoprule, rk, lambdainput, taudelta, k, kmax, rkm1, dk, res_dims);
 
-% Calculate lambda and restart. Special case for SART largest singval is 1.
+% Calculate lambda. Special case for SART largest singval is 1.
 atma = @(x) Tfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
 if strcmpi(sirt_method,'sart')
     s1 = 1;
@@ -41,7 +43,10 @@ end
 [lambda, casel, sigma1tilde] = calclambda(lambdainput, s1, kmax, atma, n);
 
 % TODO - how to store M and T/s in third output struct.
-restart.M = M;
+if nargout > 2
+    ext_info.M = Mfun(ones(m,1));
+    ext_info.T = Tfun(ones(n,1));
+end
 
 % Initialize the values.
 xk = x0; 

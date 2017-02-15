@@ -1,5 +1,5 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    lambdainput,s1,M,w,s,res_dims,ncp_smooth] = check_inputs(A,b,K,x0,options)
+    lambdainput,s1,w,res_dims,ncp_smooth] = check_inputs(A,b,K,x0,options)
 
 % PCH: removed "Knew" from output.
 
@@ -103,15 +103,21 @@ if isfield(options,'lambda')
 end
 
 s1 = nan;
-if isfield(options,'restart') && isfield(options.restart,'s1')
-    s1 = options.restart.s1;
+if isfield(options,'s1')
+     s1 = options.s1;
 end
 
-% If M is given as input
-M = nan;
-if isfield(options,'restart') && isfield(options.restart,'M')
-    M = options.restart.M;
-end
+% % If M is given as input
+% M = nan;
+% if isfield(options,'restart') && isfield(options.restart,'M')
+%     M = options.restart.M;
+% end
+% 
+% % If T is given as input
+% s = nan;
+% if isfield(options,'restart') && isfield(options.restart,'T')
+%     s = options.restart.T;
+% end
 
 % If weights are given as input
 w = nan;
@@ -119,11 +125,6 @@ if isfield(options,'w')
     w = options.w;
 end
 
-% If T is given as input
-s = nan;
-if isfield(options,'restart') && isfield(options.restart,'T')
-    s = options.restart.T;
-end
 
 % PCH: I think we must force the user to specify res_dims, otherwise we
 % risk that the user forgets to specify it!  (Speking from own experience.)
