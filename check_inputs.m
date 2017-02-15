@@ -1,4 +1,4 @@
-function [Afun,b,m,n,K,kmax,x0,nonneg,boxcon,L,stoprule,taudelta, ...
+function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
     lambdainput,s1,M,w,s,res_dims,ncp_smooth] = check_inputs(A,b,K,x0,options)
 
 % PCH: removed "Knew" from output.
@@ -65,21 +65,26 @@ if nargin < 5
     options = struct;
 end
 
-% Nonnegativity. Default false.
-if isfield(options,'nonneg')
-    nonneg = options.nonneg;
+% Lower bound(s). Default NaN. Can be specified as either scalar or vector
+% of same length as x. If vector, check length/orientation.
+if isfield(options,'lbound')
+    lbound = options.lbound(:);
+    if length(lbound) ~= n && length(lbound) ~= 1
+        error('lbound (lower bound) must either be scalar or same length as vector of unknowns x.')
+    end
 else
-    nonneg = false;
+    lbound = nan;
 end
 
-% Box constraints [0,L].
+% Upper bound(s). Default NaN. Can be specified as either scalar or vector
+% of same length as x. If vector, check length/orientation.
 if isfield(options,'ubound')
-    nonneg = true;
-    boxcon = true;
-    L = options.ubound;
+    ubound = options.ubound(:);
+    if length(ubound) ~= n && length(ubound) ~= 1
+        error('ubound (upper bound) must either be scalar or same length as vector of unknowns x.')
+    end
 else
-    boxcon = false;
-    L = nan;
+    ubound = nan;
 end
 
 % Default stoprules

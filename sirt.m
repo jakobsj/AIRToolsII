@@ -6,7 +6,7 @@ if isempty(sirt_method)
 end
 
 % Parse inputs.
-[Afun,b,m,n,K,kmax,x0,nonneg,boxcon,L,stoprule,taudelta, ...
+[Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
     lambdainput,s1,M,w,s,res_dims,ncp_smooth] = check_inputs(varargin{:});
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
@@ -72,9 +72,13 @@ while ~stop
         xk = xk + lambdacur*(Tfun(Afun(Mfun(rk),'transp')));
     end % end the different cases of lambda strategies.
     
-    % Nonnegativity and box constraints.
-    if nonneg, xk = max(xk,0); end
-    if boxcon, xk = min(xk,L); end
+    % Enforce any lower and upper bounds (scalars or xk-sized vectors)
+    if ~isnan(lbound)
+        xk = max(xk,lbound);
+    end
+    if ~isnan(ubound)
+        xk = min(xk,ubound);
+    end
     
     % New residual.
     rk = b - Afun(xk,'notransp');
