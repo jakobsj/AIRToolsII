@@ -157,6 +157,9 @@ switch sirt_method
         end
         sfun = @(XX) s.*XX;
         
+        % Note on purpose weights not implemented for SART, as would modify
+        % special property causing largest singular value to equal 1.
+        
     otherwise
         error('SIRT method not defined.')
 end
