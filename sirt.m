@@ -33,12 +33,11 @@ rk = b - Afun(x0,'notransp');
 [stop, info, rkm1, dk] = check_stoprules(...
     stoprule, rk, lambdainput, taudelta, k, kmax, rkm1, dk, res_dims);
 
-% Calculate lambda and restart.
-% TODO - NOT NECESSARY FOR SART. Could set s1=1 if SART, but have to handle
-% case where user has given s1 as input for SART or say in comments that
-% any s1 input is ignored for SART.
-% Should third output from restart overwrite s1?
+% Calculate lambda and restart. Special case for SART largest singval is 1.
 atma = @(x) sfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
+if strcmpi(sirt_method,'sart')
+    s1 = 1;
+end
 [lambda, casel, sigma1tilde] = calclambda(lambdainput, s1, kmax, atma, n);
 
 % TODO - how to store M and T/s in third output struct.
