@@ -1,5 +1,10 @@
 function [X,info,restart] = sirt(sirt_method, varargin)
 
+% Set default SIRT method to be sart.
+if isempty(sirt_method)
+    sirt_method = 'sart';
+end
+
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,nonneg,boxcon,L,stoprule,taudelta, ...
     lambdainput,s1,M,w,s,res_dims,ncp_smooth] = check_inputs(varargin{:});
