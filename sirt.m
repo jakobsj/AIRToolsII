@@ -11,12 +11,12 @@ end
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
-    [Mfun,sfun] = get_Mfun_sfun(sirt_method,varargin{1},m,n,M,w,s);
+    [Mfun,Tfun] = get_Mfun_Tfun(sirt_method,varargin{1},m,n,M,w,s);
 else
     % Possible to pass in custom SIRT method given by 2-element cell array
     % holding function handles to Mfun and sfun.
     Mfun = sirt_method{1};
-    sfun = sirt_method{2};
+    Tfun = sirt_method{2};
 end
 
 % Initialize array to hold requested iterates.
@@ -34,7 +34,7 @@ rk = b - Afun(x0,'notransp');
     stoprule, rk, lambdainput, taudelta, k, kmax, rkm1, dk, res_dims);
 
 % Calculate lambda and restart. Special case for SART largest singval is 1.
-atma = @(x) sfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
+atma = @(x) Tfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
 if strcmpi(sirt_method,'sart')
     s1 = 1;
 end
@@ -56,20 +56,20 @@ while ~stop
     if casel == 1
         % SIRT using constant value of lambda.
         lambdacur = lambda;
-        xk = xk + lambdacur*(sfun(Afun(Mfun(rk),'transp')));
+        xk = xk + lambdacur*(Tfun(Afun(Mfun(rk),'transp')));
         
     elseif casel == 2
         % SIRT using line search.
         Mrk = Mfun(rk);
         ATMrk = Afun(Mrk,'transp');  %A'*Mrk;        
-        ATMrkS = sum(sfun(ATMrk.^2));
+        ATMrkS = sum(Tfun(ATMrk.^2));
         lambdacur = (rk'*Mrk)/ATMrkS;
-        xk = xk + lambdacur*(sfun(ATMrk));
+        xk = xk + lambdacur*(Tfun(ATMrk));
         
     elseif casel == 3
         % SIRT using psi1 or psi2.
         lambdacur = lambda(k);
-        xk = xk + lambdacur*(sfun(Afun(Mfun(rk),'transp')));
+        xk = xk + lambdacur*(Tfun(Afun(Mfun(rk),'transp')));
     end % end the different cases of lambda strategies.
     
     % Nonnegativity and box constraints.

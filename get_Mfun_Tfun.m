@@ -1,13 +1,13 @@
-function [Mfun,sfun] = get_Mfun_sfun(sirt_method, A, m, n, M, w, s)
+function [Mfun,Tfun] = get_Mfun_Tfun(sirt_method, A, m, n, M, w, s)
 
 switch sirt_method
     
     case 'landweber'
         Mfun = @(XX) XX;
-        sfun = @(XX) XX;
+        Tfun = @(XX) XX;
         
     case 'cimmino'
-        sfun = @(XX) XX;
+        Tfun = @(XX) XX;
         % Define the M matrix.
         if isnan(M)
             % Calculate the norm of each row in A. This calculation can require a
@@ -45,7 +45,7 @@ switch sirt_method
         Mfun = @(XX) M.*XX;
         
     case 'cav'
-        sfun = @(XX) XX;
+        Tfun = @(XX) XX;
         % Define the M matrix.
         if isnan(M)
             if ~isa(A,'function_handle')
@@ -129,7 +129,7 @@ switch sirt_method
             I = (s == Inf);
             s(I) = 0;
         end
-        sfun = @(XX) s.*XX;
+        Tfun = @(XX) s.*XX;
         
     case 'sart'
         % Set diagonal of W = M if not given as input.
@@ -155,7 +155,7 @@ switch sirt_method
             I = (s == Inf);
             s(I) = 0;
         end
-        sfun = @(XX) s.*XX;
+        Tfun = @(XX) s.*XX;
         
         % Note on purpose weights not implemented for SART, as would modify
         % special property causing largest singular value to equal 1.
