@@ -132,7 +132,8 @@ switch sirt_method
         Tfun = @(XX) s.*XX;
         
     case 'sart'
-        % Set diagonal of W = M if not given as input.
+        % Set diagonal of W = M if not given as input. W is the notation of
+        % the original SART article.
         if isnan(M)
             if ~isa(A,'function_handle')
                 Aip = full(sum(abs(A),2));
@@ -144,7 +145,8 @@ switch sirt_method
             M(I) = 0;
         end
         Mfun = @(XX) M.*XX;
-        % Set s-vector representing V = T if not given as input.
+        % Set s-vector representing V = T if not given as input. V is the
+        % notation from the original SART article.
         if isnan(s)
             if ~isa(A,'function_handle')
                 Apj = full(sum(abs(A),1))';
