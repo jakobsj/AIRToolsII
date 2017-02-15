@@ -83,10 +83,10 @@ function [X,info,restart] = landweber(varargin)
 % pp. 615-624.
 
 % Parse inputs.
-[Afun,b,m,n,K,Knew,kmax,x0,nonneg,boxcon,L,stoprule,taudelta,...
+[Afun,b,m,n,K,kmax,x0,nonneg,boxcon,L,stoprule,taudelta,...
     lambdainput,s1,res_dims,ncp_smooth] = check_inputs(varargin{:});
 
-X = zeros(n,length(Knew));
+X = zeros(n,length(K));
 
 % TODO Should there be both Knew and K, or reduce to just Knew?
 
@@ -147,7 +147,7 @@ while ~stop
         stoprule, rxk, lambdacur, taudelta, k, kmax, rk, dk, res_dims);
         
     % If the current iteration is requested saved.
-    if k == Knew(l+1) || stop
+    if k == K(l+1) || stop
         l = l + 1;
         % Save the current iteration.
         % PCH rewrote the lines below.

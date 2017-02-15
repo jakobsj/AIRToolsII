@@ -473,7 +473,7 @@ while ~stop
     elseif casel == 3
         % Cimino using psi1 og psi2.
         ite = ite + 1;
-        xk = xk + lambdak(ite)*Afun(M.*rsk,'transp'); %(A'*(M.*rxk));
+        xk = xk + lambdak(ite)*Afun(M.*rxk,'transp'); %(A'*(M.*rxk));
     end % end the different cases of lambda strategies.
     
     % Nonnegativity and box constraints.

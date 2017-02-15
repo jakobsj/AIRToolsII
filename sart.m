@@ -434,7 +434,7 @@ while ~stop
         % SART using psi1 or psi2
         ite = ite + 1;
         %xk = xk + lambdak(ite)*(V.*(A'*(W.*rxk)));
-        xk = xk + lambdak(ite)*(V.*Afun(AW.*rxk,'transp'));
+        xk = xk + lambdak(ite)*(V.*Afun(W.*rxk,'transp'));
     end % end the different cases of lambda strategies.
     
     % Nonnegativity and box constraints.

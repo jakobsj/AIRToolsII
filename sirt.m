@@ -6,7 +6,7 @@ function [X,info,restart] = sirt(sirt_method, varargin)
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
-    [Mfun,sfun] = get_Mfun_sfun(sirt_method,varargin{1},m,M,w,s);
+    [Mfun,sfun] = get_Mfun_sfun(sirt_method,varargin{1},m,n,M,w,s);
 else
     % Possible to pass in custom SIRT method given by 2-element cell array
     % holding function handles to Mfun and sfun.
