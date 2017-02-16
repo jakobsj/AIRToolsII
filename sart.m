@@ -1,4 +1,4 @@
-function [X,info,restart] = sart_wrapsirt(varargin)
+function [X,info,restart] = sart(varargin)
 
 % Note that any s1 input given to SART is ignored as the value 1 is used.
 %
