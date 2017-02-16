@@ -1,6 +1,8 @@
 function [X,info,ext_info] = sirt(sirt_method, varargin)
 
 % options.s1 now instead of options.restart.s1: largest singval
+% options.savememory = true forces memory-efficient computation of M&T,
+%     default is false.
 
 % Set default SIRT method to be sart.
 if isempty(sirt_method)
@@ -8,12 +10,12 @@ if isempty(sirt_method)
 end
 
 % Parse inputs.
-[Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    relaxparinput,s1,w,res_dims,ncp_smooth] = check_inputs(varargin{:});
+[Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
+    s1,w,res_dims,ncp_smooth,savememory] = check_inputs(varargin{:});
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
-    [Mfun,Tfun] = get_Mfun_Tfun(sirt_method,varargin{1},m,n,w);
+    [Mfun,Tfun] = get_Mfun_Tfun(sirt_method,varargin{1},m,n,w,savememory);
 else
     % Possible to pass in custom SIRT method given by 2-element cell array
     % holding function handles to Mfun and sfun instead of string input.
