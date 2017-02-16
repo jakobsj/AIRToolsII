@@ -101,6 +101,7 @@ elseif size(x0,1) ~= n || size(x0,2) ~= 1
     error('The size of x0 does not match the problem')
 end
 
+% Initialization.
 if nargin < 5
     
     stoprule = 'NO';

@@ -12,7 +12,7 @@ function [X,info] = symkaczmarz(A,b,K,x0,options)
 %   A        m times n matrix, or a function that implements matrix-vector
 %            multiplication with A and A'; please see explanation below.
 %   b        m times 1 vector.
-%   K        Number of iteration. If K is a scalar, then K is the maximum
+%   K        Number of iterations. If K is a scalar, then K is the maximum
 %            number of iterations and only the last iterate is saved.
 %            If K is a vector, then the largest value in K is the maximum
 %            number of iterations and only iterates corresponding to the
@@ -33,9 +33,9 @@ function [X,info] = symkaczmarz(A,b,K,x0,options)
 %                 stopping rule:
 %                     type = 'none' : (Default) the only stopping rule
 %                                     is the maximum number of iterations.
-%                            'NCP'  : Normalized Cumulative Peridogram.
-%                            'DP'   : Discrepancy Principle.
-%                     taudelta = the product of tau and delta, only
+%                            'NCP': Normalized Cumulative Periodogram.
+%                            'DP' : Discrepancy Principle.
+%                     taudelta = The product of tau and delta, only
 %                                necessary for DP.
 %       nonneg    Logical; if true then nonnegativity in enforced in
 %                 each step.
@@ -100,15 +100,16 @@ if nargin < 4 || isempty(x0)
     x0 = zeros(n,1);
 end
 
-% Input check: The sizes of A, b and x must match.
+% The sizes of A, b and x must match.
 if size(b,1) ~= m || size(b,2) ~= 1
-    error('The size of A and b do not match')
+    error('The sizes of A and b do not match')
 elseif size(x0,1) ~= n || size(x0,2) ~= 1
     error('The size of x0 does not match the problem')
 end
 
+% Initialization.
 if nargin < 5
-
+    
     stoprule = 'NO';
     relaxpar = 1;
     casel = 1;
@@ -155,7 +156,7 @@ else
                     taudelta = options.stoprule.taudelta;
                 else
                     error('The factor taudelta must be specified when using DP')
-                end   
+                end
                 
                 % Check that the first iteration should be performed:
                 % rk = b - A'*x0;  % Remember that A is transposed.
@@ -177,18 +178,18 @@ else
                 q = floor(m/2);
                 c_white = (1:q)'./q;
                 K = [K max(K)+1];
-
+                
             elseif strncmpi(stoprule,'NO',2)
                 % No stopping rule.
                 
             else
-                error('The shosen stopping rule is not valid')
-            end % end different stopping rules
+                error('The chosen stopping rule is not valid')
+            end % end different stopping rules.
             
         else
             error('The stoprule type must be a string')
         end % end stoprule is a string.
-
+        
     else
         % No stopping rule specified.
         stoprule = 'NO';
@@ -300,7 +301,7 @@ while ~stop
         if boxcon, xk = min(xk,L); end
     end
     
-    % Stopping rules:
+    % Stopping rules.
     if strncmpi(stoprule,'DP',2)
         % DP stopping rule.
         % nrk = norm(b-A'*xk);  % Remember that A is transposed.
@@ -321,7 +322,7 @@ while ~stop
         
     elseif strncmpi(stoprule,'NC',2)
         % NCP stopping rule.
-        % rkh = fft( b-A'*xk);  % Remember that A is transposed.
+        % rkh = fft(b - A'*xk);    % Remember that A is transposed.
         if isa(A,'function_handle')
             rkh = fft( b - A(xk,'notransp') );
         else
@@ -355,7 +356,7 @@ while ~stop
     % If the current iteration is requested saved.
     if k == Knew(l+1) || stop
         l = l + 1;
-        % Savs the current iteration.
+        % Save the correct iteration.
         if strncmpi(stoprule,'NC',2)
             if ~(stop && klast == k-1)
                 X(:,l) = xkm1;

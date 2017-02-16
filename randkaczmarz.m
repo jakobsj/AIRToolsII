@@ -29,9 +29,9 @@ function [X,info] = randkaczmarz(A,b,K,x0,options)
 %                 stopping rule:
 %                     type = 'none' : (Default) the only stopping rule
 %                                     is the maximum number of iterations.
-%                            'NCP'  : Normalized Cumulative Peridogram.
-%                            'DP'   : Discrepancy Principle.
-%                     taudelta = the product of tau and delta, only
+%                            'NCP': Normalized Cumulative Periodogram.
+%                            'DP' : Discrepancy Principle.
+%                     taudelta = The product of tau and delta, only
 %                                necessary for DP.
 %       nonneg    Logical; if true then nonnegativity in enforced in
 %                 each step.
@@ -78,6 +78,7 @@ else
     A = A';  % Faster to perform sparse column operations.
 end
 
+% Check the number of inputs.
 if nargin < 3
     error('Too few input arguments')
 end
@@ -104,7 +105,7 @@ end
 
 % Initialization.
 if nargin < 5
-
+    
     stoprule = 'NO';
     relaxpar = 1;
     
@@ -153,13 +154,13 @@ else
     else
         relaxpar = 1;
     end
-
+    
     % Stopping rules
     if isfield(options,'stoprule') && isfield(options.stoprule,'type')
         stoprule = options.stoprule.type;
         if ischar(stoprule)
             if strncmpi(stoprule,'DP',2)
-                % DP stopping rule
+                % DP stopping rule.
                 if isfield(options.stoprule,'taudelta')
                     taudelta = options.stoprule.taudelta;
                 else
@@ -273,7 +274,7 @@ while ~stop
         end
     end
     
-    % Stopping rules:
+    % Stopping rules.
     if strncmpi(stoprule,'DP',2)
         % DP stopping rule.
         % nrk = norm(b - A'*xk);  % Remember that A is transposed.
@@ -294,7 +295,7 @@ while ~stop
         
     elseif strncmpi(stoprule,'NC',2)
         % NCP stopping rule.
-        % rkh = fft(b - A'*xk);  % Remember that A is transposed.
+        % rkh = fft(b - A'*xk);    % Remember that A is transposed.
         if isa(A,'function_handle')
             rkh = fft( b - A(xk,'notransp') );
         else
@@ -319,16 +320,16 @@ while ~stop
         
     elseif strncmpi(stoprule,'NO',2)
         % No stopping rule.
-        if k >= kmax 
+        if k >= kmax
             stop = 1;
             info = [0 k relaxpar];
         end
     end % end stoprule type.
-    
+        
     % If the current iteration is requested saved.
     if k == Knew(l+1) || stop
         l = l + 1;
-        % Saves the current iteration.
+        % Save the correct iteration.
         if strncmpi(stoprule,'NC',2)
             if ~(stop && klast == k-1)
                 X(:,l) = xkm1;
