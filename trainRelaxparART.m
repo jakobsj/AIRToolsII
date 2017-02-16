@@ -1,49 +1,47 @@
-function lambda = trainLambdaSIRT(A,b,x_ex,method,kmax,options)
-%TRAINLAMBDASIRT Training to determine optimal lambda for SIRT method
+function relaxpar = trainRelaxparART(A,b,x_ex,method,kmax,options)
+%TRAINLAMBDAART Training to determine optimal relaxpar for ART methods
 %
-%   lambda = trainLambdaSIRT(A,b,x_ex,method)
-%   lambda = trainLambdaSIRT(A,b,x_ex,method,kmax)
-%   lambda = trainLambdaSIRT(A,b,x_ex,method,kmax,options)
+%   relaxpar = trainRelaxparART(A,b,x_ex,method)
+%   relaxpar = trainRelaxparART(A,b,x_ex,method,kmax)
+%   relaxpar = trainRelaxparART(A,b,x_ex,method,kmax,options)
 %
 % This function determines the optimal value of the relaxation parameter
-% lambda for one of the SIRT methods cav, cimmino, drop, landweber, and sart.
-% The optimal value of lambda is defined as the value that gives rise to
-% the fastest convergence to the smallest relative error in the solution. 
+% relaxpar for one of the ART methods kaczmarz and symkaczmarz. The optimal 
+% value of relaxpar is defined as the value that gives rise to the fastest 
+% convergence to the smallest relative error in the solution. 
 %
 % Input:
 %   A           m times n matrix.
 %   b           m times 1 vector containing the right-hand side.
 %   x_ex        n times 1 vector containing the exact solution.
-%   method      Function handle to one of the SIRT methods.
+%   method      Function handle to one of the ART methods.
 %   kmax        Scalar that determines the maximum number of iterations
-%               of the used SIRT-method. Default value is 1000.
+%               of the used ART-method. Default value is 100.
 %   options     Struct used in the call of the method. For this strategy
-%               the fields stoprule and lambda cannot be used.
+%               the fields stoprule and relaxpar cannot be used.
 %
 % Output:   
-%   lambda      Scalar containing the found lambda value.
+%   relaxpar      Scalar containing the found relaxpar value.
 %
-% See also: trainLambdaART
+% See also: trainRelaxparSIRT
 
-% Maria Saxild-Hansen and Per Chr. Hansen, June 10, 2010, DTU Compute.
+% Maria Saxild-Hansen and Per Chr. Hansen, June 6, 2010, DTU Compute.
 
 % Input check for options. Ensure that no stoprule type is chosen.
 if nargin == 6
     options.stoprule.type = 'none';
-    if isfield(options,'lambda')
-        options = rmfield(options,'lambda');
+    if isfield(options,'relaxpar')
+        options = rmfield(options,'relaxpar');
     end
-else
-    options = [];
 end 
 
 % Input checks and default values:
 if nargin < 5 || isempty(kmax)
-    % Default maximum number of iterations.
-    kmax = 1000;
+    % Default maximum number of iterations
+    kmax = 100;
 end
 
-% Minimum error interval.
+% minimum error interval.
 pct = 0.01;
 
 % Initialize the number of iterations.
@@ -59,7 +57,7 @@ normxex = norm(x_ex);
 
 % Step 1: Determine the minimum error at the default value.
 while ~stop
-    % Ensure only the maximum number of iterations are performed.
+    % Ensure only the maximum number of iterations is computed.
     if k+stepk > kmax
         K = 1:(kmax-k);
         k = kmax;
@@ -67,38 +65,18 @@ while ~stop
         % Update the number of iterations.
         k = k + stepk;
     end
-        
+    
     % If the first run in the loop.
     if k <= stepk
-        
-        switch func2str(method)
-            case {'landweber','cimmino','cav','drop'}
-                
-                % Determine the solutions to the K values.
-                [Xnew info restart] = method(A,b,K,x0,options);
-                
-                % Assign the restart struct to options, such that M, T and
-                % s1 are not recalculated in the next call of the method.
-                options.restart = restart;
-                lambdamax = 2/restart.s1^2;
-                
-            case {'sart'}
-                
-                % Determine the solutions to the K values.
-                [Xnew info restart] = method(A,b,K,x0,options);
-                
-                % Assign the restart struct to options, such that M, T and
-                % s1 are not recalculated in the next call of the method.
-                options.restart = restart;
-                lambdamax = 2;
-                
-            otherwise
-                error(['Unknown method ',func2str(method)])
-        end
+
+        % Set relaxpar to 0.25.
+        options.relaxpar = 0.25;
+        Xnew = method(A,b,K,x0,options);
+        relaxparmax = 2;
 
     else
         
-        % Determine the solutions to the next K values.
+        % Determine the solution to the K values.
         Xnew = method(A,b,K,x0,options);
     end
     
@@ -111,25 +89,24 @@ while ~stop
     [minE kopt] = min(rEr);
     
     % If the minimum relative error is in the last iteration, then run the
-    % loop again with stepk new iterations.  Else the minimum error is
+    % loop again with stepk new iterations.  Else the resolution limit is
     % found and the loop is stopped.
     if kopt == k && k < kmax
         x0 = Xnew(:,end);
     else
         stop = 1;
-        
     end
 end
 
-% Determine the minimum error interal.
+% Determine the minimum error interval.
 pinter = [minE-pct*minE minE+pct*minE];
 
-% Step 2: Find the lambda for which the minimum relative error is
+% Step 2: Find the relaxpar for which the minimum relarive error is
 % within pinter and where kopt is the smallest.
 
-% Define a lambda value near the end of the allowed interval, calculate
+% Define a relaxpar value near the end of the allowed interval, calculate
 % the relative errors for the solutions, and find the minimum.
-options.lambda = lambdamax-0.01*lambdamax;
+options.relaxpar = relaxparmax-0.01*relaxparmax;
 Xend = method(A,b,1:kopt,[],options);
 deltaxend = Xend - repmat(x_ex,1,kopt);
 rErend = sqrt(sum(deltaxend.*deltaxend,1))/normxex;
@@ -137,65 +114,47 @@ rErend = sqrt(sum(deltaxend.*deltaxend,1))/normxex;
 [minEend koptend] = min(rErend);
 
 % If kopt is equal to koptend, then the global minimum error is not reached,
-% hence all the k values are equal.  The best lambda value is determined by
+% hence all the k values are equal.  The best relaxpar value is determined by
 % the minimum relative error.
 
 % Define the search interval.
 r = (3-sqrt(5))/2;
 
 i1 = 0;
-i2 = lambdamax;
+i2 = 2;
 i3 = i1 + r*(i2-i1);
 i4 = i1 + (1-r)*(i2-i1);
 
-% Determine the function values for i3 and i4.
-options.lambda = i3;
+% Calculate the function value for i3.
+options.relaxpar = i3;
 xnew = method(A,b,1:kopt,[],options);
+
 if kopt == koptend
     f3 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-    
+
     % Define x3 always to be inside the interval.
     x3 = pinter(2);
 else
     [x3 f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-    
 end
 
-options.lambda = i4;
+% Calculate the function value for i4.
+options.relaxpar = i4;
 xnew = method(A,b,1:kopt,[],options);
 if kopt == koptend
     f4 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-    
+
     % Define x4 always to be inside the interval.
     x4 = pinter(2);
 else
     [x4 f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
 end
 
-while abs(i3-i4) > lambdamax*0.01
+while abs(i3-i4) > relaxparmax*0.01
     
     % Ensure that the minimum error is reached in the left part of
     % the interval.
-    if x3 > pinter(2)
-        
-        % i1 is removed from the search interval.
-        z = i3 + (1-r)*(abs(i2-i3));
-        
-        % [i1 i3 i4 i2] <---- [i3 i4 z i2]
-        i1 = i3;
-        i3 = i4;
-        f3 = f4;
-        x3 = x4;
-        i4 = z;
-        
-        % Find the new function value for f4.
-        options.lambda = i4;
-        xnew = method(A,b,1:kopt,[],options);
-        [x4 f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-        
-    elseif x4 > pinter(2)
-        % Ensure that the minimum error is reached in the left part of
-        % the interval.
+    if x4 > pinter(2)
         
         % i2 is removed from the search interval.
         z = i1 + r*(abs(i4-i1));
@@ -209,11 +168,28 @@ while abs(i3-i4) > lambdamax*0.01
         i3 = z;
         
         % Find the new value for f3.
-        options.lambda = i3;
+        options.relaxpar = i3;
         xnew = method(A,b,1:kopt,[],options);
         [x3 f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
         
-    elseif f3 >= f4
+    elseif x3 > pinter(2)
+        
+        % i1 is removed from the search interval.
+        z = i3 + (1-r)*(abs(i2-i3));
+        
+        % [i1 i3 i4 i2] <---- [i3 i4 z i2]
+        i1 = i3;
+        i3 = i4;
+        f3 = f4;
+        x3 = x4;
+        i4 = z;
+        
+        % Find the new function value for f4.
+        options.relaxpar = i4;
+        xnew = method(A,b,1:kopt,[],options);
+        [x4 f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
+        
+    elseif f3 > f4
         
         % If the relative error for f3 is greater than or equal to f4, then
         % i1 is removed from the interval.
@@ -226,8 +202,8 @@ while abs(i3-i4) > lambdamax*0.01
         x3 = x4;
         i4 = z;
         
-        % Find the new value for f4
-        options.lambda = i4;
+        % Find the new value for f4.
+        options.relaxpar = i4;
         xnew = method(A,b,1:kopt,[],options);
         if kopt == koptend
             f4 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
@@ -248,7 +224,7 @@ while abs(i3-i4) > lambdamax*0.01
         i3 = z;
         
         % Find the new value for f3.
-        options.lambda = i3;
+        options.relaxpar = i3;
         xnew = method(A,b,1:kopt,[],options);
         if kopt == koptend
             f3 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
@@ -259,5 +235,5 @@ while abs(i3-i4) > lambdamax*0.01
     end
 end
 
-% Define the optimal lambda value.
-lambda = (i3+i4)/2;
+% Define the optimal relaxpar value.
+relaxpar = (i3+i4)/2;

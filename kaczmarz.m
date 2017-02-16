@@ -7,7 +7,7 @@ function [X,info] = kaczmarz(A,b,K,x0,options)
 %
 % Implements Kaczmarz's method for the system Ax = b:
 %       
-%       x^{k+1} = x^k + lambda*(b_i - a^i'*x^k)/(||a^i||_2^2)*a^i
+%       x^{k+1} = x^k + relaxpar*(b_i - a^i'*x^k)/(||a^i||_2^2)*a^i
 %
 % where a_i' is the i-th row of A, and i = (k mod m) + 1.
 %
@@ -22,7 +22,7 @@ function [X,info] = kaczmarz(A,b,K,x0,options)
 %            values in K are saved, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
-%       lambda    The relaxation parameter. For this method lambda must
+%       relaxpar  The relaxation parameter. For this method relaxpar must
 %                 be a scalar < 2; default value is 1.
 %       stoprule  Struct containing the following information about the
 %                 stopping rule:
@@ -45,7 +45,7 @@ function [X,info] = kaczmarz(A,b,K,x0,options)
 %                   1 : stopped by NCP-rule
 %                   2 : stopped by DP-rule
 %         info(2) = no. of iterations.
-%         info(3) = the chosen lambda.
+%         info(3) = the chosen relaxpar.
 %
 % How to use a function handle for A.
 % 1) The user must provide a function myfun that implements matrix-vector
@@ -104,7 +104,7 @@ end
 if nargin < 5
     
     stoprule = 'NO';
-    lambda = 1;
+    relaxpar = 1;
     
     % Default is no nonnegativity or box constraint or damping.
     nonneg = false;
@@ -138,18 +138,18 @@ else
         damp = 0;
     end
     
-    if isfield(options,'lambda')
-        if isnumeric(options.lambda)
-            lambda = options.lambda;
-            if lambda <= 0 || lambda >= 2
+    if isfield(options,'relaxpar')
+        if isnumeric(options.relaxpar)
+            relaxpar = options.relaxpar;
+            if relaxpar <= 0 || relaxpar >= 2
                 warning('MATLAB:UnstableRelaxParam',...
-                    'The lambda value is outside the interval (0,2)');
+                    'The relaxpar value is outside the interval (0,2)');
             end
         else
-            error('lambda must be numeric')
+            error('relaxpar must be numeric')
         end
     else
-        lambda = 1;
+        relaxpar = 1;
     end
     
     % Stopping rules
@@ -247,7 +247,7 @@ while ~stop
         else
             ai = A(:,i); % Remember that A is transposed.
         end
-        xk = xk + (lambda*(b(i) - ai'*xk)/normAi(i))*ai;
+        xk = xk + (relaxpar*(b(i) - ai'*xk)/normAi(i))*ai;
         if nonneg, xk = max(xk,0); end
         if boxcon, xk = min(xk,L); end
     end
@@ -265,9 +265,9 @@ while ~stop
         if nrk <= taudelta || k >= kmax
             stop = 1;
             if k >= kmax
-                info = [0 k lambda];
+                info = [0 k relaxpar];
             else
-                info = [2 k lambda];
+                info = [2 k relaxpar];
             end
         end % end the DP-rule.
         
@@ -288,9 +288,9 @@ while ~stop
         if dk < norm(c-c_white) || k >= kmax
             stop = 1;
             if k >= kmax
-                info = [0 k-1 lambda];
+                info = [0 k-1 relaxpar];
             else
-                info = [1 k-1 lambda];
+                info = [1 k-1 relaxpar];
             end
         else
             dk = norm(c-c_white);
@@ -300,7 +300,7 @@ while ~stop
         % No stopping rule.
         if k >= kmax
             stop = 1;
-            info = [0 k lambda];
+            info = [0 k relaxpar];
         end
     end % end stoprule type.
         

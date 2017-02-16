@@ -1,5 +1,5 @@
 function [stop, info, rkm1, dk] = check_stoprules(...
-    stoprule, rk, lambda, taudelta, k, kmax, rkm1, dk, res_dims)
+    stoprule, rk, relaxpar, taudelta, k, kmax, rkm1, dk, res_dims)
 
 % Only NCP uses dk: For all other stoprules, dk=nan is given as input 
 % and % returned untouched as output.
@@ -20,11 +20,11 @@ switch upper(stoprule)
             if k ~= kmax
                 info.stoprule = 2;
                 info.finaliter = k;
-                info.lambda = lambda;
+                info.relaxpar = relaxpar;
             else
                 info.stoprule = 0;
                 info.finaliter = k;
-                info.lambda = lambda;
+                info.relaxpar = relaxpar;
             end
         end % end the DP-rule.
     
@@ -37,12 +37,12 @@ switch upper(stoprule)
             stop = 1;
             info.stoprule = 3;
             info.finaliter = k;
-            info.lambda = lambda;
+            info.relaxpar = relaxpar;
         elseif k >= kmax
             stop = 1;
             info.stoprule = 0;
             info.finaliter = k;
-            info.lambda = lambda;
+            info.relaxpar = relaxpar;
         else
             rkm1 = rk;
         end % end the ME-rule.
@@ -90,11 +90,11 @@ switch upper(stoprule)
             if k ~= kmax
                 info.stoprule = 1;
                 info.finaliter = k;
-                info.lambda = lambda;
+                info.relaxpar = relaxpar;
             else
                 info.stoprule = 0;
                 info.finaliter = k;
-                info.lambda = lambda;
+                info.relaxpar = relaxpar;
             end
         else
             % Replace oldest value by shifting all and storing newest.
@@ -107,7 +107,7 @@ switch upper(stoprule)
             stop = 1;
             info.stoprule = 0;
             info.finaliter = k;
-            info.lambda = lambda;
+            info.relaxpar = relaxpar;
         end % end stoprule type none
         
     otherwise

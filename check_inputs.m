@@ -1,5 +1,5 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    lambdainput,s1,w,res_dims,ncp_smooth] = check_inputs(A,b,K,x0,options)
+    relaxparinput,s1,w,res_dims,ncp_smooth] = check_inputs(A,b,K,x0,options)
 
 % PCH: removed "Knew" from output.
 
@@ -97,9 +97,9 @@ if isfield(options,'stoprule') && isfield(options.stoprule,'taudelta')
     taudelta = options.stoprule.taudelta;
 end
 
-lambdainput = nan;
-if isfield(options,'lambda')
-    lambdainput = options.lambda;
+relaxparinput = nan;
+if isfield(options,'relaxpar')
+    relaxparinput = options.relaxpar;
 end
 
 s1 = nan;

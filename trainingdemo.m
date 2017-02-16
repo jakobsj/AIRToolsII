@@ -1,7 +1,7 @@
 %trainingdemo (script) Demonstrates the use of the training methods.
 %
 % This script demonstrates the use of the training functions
-% trainLambdaSIRT, trainLambdaART, and trainDPME.  We train the SIRT
+% trainRelaxparSIRT, trainRelaxparART, and trainDPME.  We train the SIRT
 % method cimmino and the ART method kaczmarz.  For the SIRT method the
 % stopping rule ME is used, and for the ART method the stopping rule DP
 % is used.  Note that training the relaxation parameter for ART, training
@@ -44,19 +44,19 @@ fprintf(1,'\nTraining the relaxation parameter for the SIRT method.');
 fprintf(1,'\nThis only takes some seconds\n');
 
 % Train the SIRT relaxation parameter.
-lambdaSIRT = trainLambdaSIRT(A,b,x_ex,SIRTmethod);
+relaxparSIRT = trainRelaxparSIRT(A,b,x_ex,SIRTmethod);
 
 % Set the relaxation parameter for the SIRT options.
-optionsSIRT.lambda = lambdaSIRT;
+optionsSIRT.relaxpar = relaxparSIRT;
 
 fprintf(1,'\nTraining the relaxation parameter for the ART method.');
 fprintf(1,'\nThis takes several minutes\n');
 
 % Train the ART relaxation parameter.
-lambdaART = trainLambdaART(A,b,x_ex,ARTmethod);
+relaxparART = trainRelaxparART(A,b,x_ex,ARTmethod);
 
 % Set the relaxation parameter for the SIRT options.
-optionsART.lambda = lambdaART;
+optionsART.relaxpar = relaxparART;
 
 % Stopping rule for the SIRT and ART methods.
 typeSIRT = 'ME';

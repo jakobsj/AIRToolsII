@@ -22,6 +22,6 @@ else
     end
 end
 
-options.lambda
+options.relaxpar
 options.restart
 options.restart.s1

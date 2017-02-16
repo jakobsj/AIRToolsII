@@ -19,15 +19,15 @@ function [X,info] = symkaczmarz(A,b,K,x0,options)
 %            values in K are saved, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
-%       lambda    The relaxation parameter. If lambda is a scalar then
+%       relaxpar  The relaxation parameter. If relaxpar is a scalar then
 %                 the corresponding value is used in each iteration; the
 %                 default value is 1.
-%                 If lambda is a string, then it refers to a method to 
-%                 determine lambda in each iteration. For this method the
+%                 If relaxpar is a string, then it refers to a method to 
+%                 determine relaxpar in each iteration. For this method the
 %                 following strings can be specified:
-%                     'psi1' : lambda is chosen using the Psi_1-based 
+%                     'psi1' : relaxpar is chosen using the Psi_1-based 
 %                                 relaxation method.
-%                     'psi2' : lambda is chosen using the Psi_2-based
+%                     'psi2' : relaxpar is chosen using the Psi_2-based
 %                                 relaxation method.
 %       stoprule  Struct containing the following information about the
 %                 stopping rule:
@@ -50,7 +50,7 @@ function [X,info] = symkaczmarz(A,b,K,x0,options)
 %                   1 : stopped by NCP-rule
 %                   2 : stopped by DP-rule
 %         info(2) = no. of iterations.
-%         info(3) = the chosen lambda.
+%         info(3) = the chosen relaxpar.
 %
 % How to use a function handle for A.
 % 1) The user must provide a function myfun that implements matrix-vector
@@ -110,7 +110,7 @@ end
 if nargin < 5
 
     stoprule = 'NO';
-    lambda = 1;
+    relaxpar = 1;
     casel = 1;
     
     % Default is no nonnegativity or box constraint or damping.
@@ -195,19 +195,19 @@ else
         
     end % end stoprule type specified.
     
-    if isfield(options,'lambda')
-        lambda = options.lambda;
-        % If lambda is a scalar.
-        if ~ischar(lambda)
+    if isfield(options,'relaxpar')
+        relaxpar = options.relaxpar;
+        % If relaxpar is a scalar.
+        if ~ischar(relaxpar)
             % Convergence check.
-            if lambda < 0 || lambda > 2
+            if relaxpar < 0 || relaxpar > 2
                 warning('MATLAB:UnstableRelaxParam',...
-                    'The lambda value is outside the interval (0,2)');
+                    'The relaxpar value is outside the interval (0,2)');
             end
             casel = 1;
         else
-            % Calculates the lambda value according to the chosen method.
-            if strncmpi(lambda,'psi1',4)
+            % Calculates the relaxpar value according to the chosen method.
+            if strncmpi(relaxpar,'psi1',4)
                 % Method: Psi1
                 casel = 3;
                 ite = 0;
@@ -217,10 +217,10 @@ else
                 % Precalculates the roots.
                 z = calczeta(2:max(K)-1);
                 
-                % Define the values for lambda according to Psi1.
-                lambdak = [sqrt(2); sqrt(2); 2*(1-z)]/sigma1tildesquare;
+                % Define the values for relaxpar according to Psi1.
+                relaxpark = [sqrt(2); sqrt(2); 2*(1-z)]/sigma1tildesquare;
                 
-            elseif strncmpi(lambda,'psi2',4)
+            elseif strncmpi(relaxpar,'psi2',4)
                 % Method: Psi2.
                 casel = 3;
                 ite = 0;
@@ -231,18 +231,18 @@ else
                 kk = 2:max(K)-1;
                 z = calczeta(kk);
                 
-                % Define the values for lambda according to the psi2.
-                lambdak = [sqrt(2); sqrt(2); 
+                % Define the values for relaxpar according to the psi2.
+                relaxpark = [sqrt(2); sqrt(2); 
                     2*(1-z)./((1-z.^(kk')).^2)]/sigma1tildesquare;
             else
                 error(['The chosen relaxation strategy is not ',...
                     'valid for this metod.'])
-            end % end check of lambda strategies.
+            end % end check of relaxpar strategies.
         end
         
     else
         casel = 1;
-        lambda = 1;
+        relaxpar = 1;
     end
 end % end if nargin includes options.
 
@@ -291,10 +291,10 @@ while ~stop
             ai = A(:,i); % Remember that A is transposed.
         end
         if casel == 1
-            xk = xk + (lambda*(b(i) - ai'*xk)/normAi(i))*ai;
+            xk = xk + (relaxpar*(b(i) - ai'*xk)/normAi(i))*ai;
         else
             ite = ite + 1;
-            xk = xk + (lambdak(ite)*(b(i) - ai'*xk)/normAi(i))*ai;
+            xk = xk + (relaxpark(ite)*(b(i) - ai'*xk)/normAi(i))*ai;
         end
         if nonneg, xk = max(xk,0); end
         if boxcon, xk = min(xk,L); end
@@ -313,9 +313,9 @@ while ~stop
         if nrk <= taudelta || k >= kmax
             stop = 1;
             if k ~= kmax
-                info = [2 k lambda];
+                info = [2 k relaxpar];
             else
-                info = [0 k lambda];
+                info = [0 k relaxpar];
             end
         end
         
@@ -336,9 +336,9 @@ while ~stop
         if dk < norm(c-c_white) || k >= kmax
             stop = 1;
             if k ~= kmax
-                info = [1 k-1 lambda];
+                info = [1 k-1 relaxpar];
             else
-                info = [0 k-1 lambda];
+                info = [0 k-1 relaxpar];
             end
         else
             dk = norm(c-c_white);
@@ -348,7 +348,7 @@ while ~stop
         % No stopping rule.
         if k >= kmax
             stop = 1;
-            info = [0 k lambda];
+            info = [0 k relaxpar];
         end
     end % end stoprule type.
     
