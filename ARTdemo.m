@@ -20,7 +20,7 @@ theta = 0:5:179;  % No. of used angles.
 p = 75;           % No. of parallel rays.
 eta = 0.05;       % Relative noise level.
 
-fprintf(1,'Creating a parallel-bema tomography test problem\n');
+fprintf(1,'Creating a parallel-beam tomography test problem\n');
 fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f, and p = %2.0f.',...
     [N,theta(1),theta(2)-theta(1),theta(end),p]);
 
