@@ -1,8 +1,4 @@
-function [Mfun,Tfun] = get_Mfun_Tfun(sirt_method, A, m, n, w, savememory)
-
-% New option "savememory" to allow user to choose whether to use the
-% standard fast-but-memory-demanding computation of M and T, or the
-% slower-but-memory-efficient approach, more similar to the matrix-free.
+function [Mfun,Tfun] = get_Mfun_Tfun(sirt_method, A, m, n, w)
 
 switch sirt_method
     
@@ -19,20 +15,8 @@ switch sirt_method
         
         % Define the M matrix.
         % Calculate the norm of each row in A. 
-        % Default (savememory=false) works on whole matrix at once, which
-        % is fast but memory-demanding.
-        % Alternative is savememory=true which works row-by-row, same as
-        % in the function_handle/matrix-free approach.
         if ~isa(A,'function_handle')
-            if savememory
-                normAi = zeros(m,1);
-                for i = 1:m
-                    ai = full(A(i,:));
-                    normAi(i) = norm(ai)^2;
-                end
-            else
-                normAi = full(abs(sum(A.*A,2)));
-            end
+            normAi = full(abs(sum(A.*A,2)));
         else
             normAi = zeros(m,1);
             for i = 1:m
@@ -64,13 +48,9 @@ switch sirt_method
         
         % Define the M matrix.
         if ~isa(A,'function_handle')
-            if savememory
-                error('not implemented')
-            else
-                s = sum(A~=0,1)';
-                s = spdiags(s,0,n,n);
-                normAs = full(sum(A.^2*s,2));
-            end
+            s = sum(A~=0,1)';
+            s = spdiags(s,0,n,n);
+            normAs = full(sum(A.^2*s,2));
         else
             s = zeros(n,1);
             for i=1:n
@@ -104,20 +84,8 @@ switch sirt_method
         
         % Define the M matrix. Same as in Cimmino.
         % Calculate the norm of each row in A. 
-        % Default (savememory=false) works on whole matrix at once, which
-        % is fast but memory-demanding.
-        % Alternative is savememory=true which works row-by-row, same as
-        % in the function_handle/matrix-free approach.
         if ~isa(A,'function_handle')
-            if savememory
-                normAi = zeros(m,1);
-                for i = 1:m
-                    ai = full(A(i,:));
-                    normAi(i) = norm(ai)^2;
-                end
-            else
-                normAi = full(abs(sum(A.*A,2)));
-            end
+            normAi = full(abs(sum(A.*A,2)));
         else
             normAi = zeros(m,1);
             for i = 1:m
@@ -145,11 +113,7 @@ switch sirt_method
         % Define the T matrix.
         % Define the s vector and the M matrix.
         if ~isa(A,'function_handle')
-            if savememory
-                error('not implemented')
-            else
-                s = 1./sum(A~=0,1)';
-            end
+            s = 1./sum(A~=0,1)';
         else
             s = zeros(n,1);
             for i=1:n
@@ -170,11 +134,7 @@ switch sirt_method
         % Set diagonal of W = M if not given as input. W is the notation of
         % the original SART article.
         if ~isa(A,'function_handle')
-            if savememory
-                error('not implemented')
-            else
-                Aip = full(sum(abs(A),2));
-            end
+            Aip = full(sum(abs(A),2));
         else
             Aip = abs(Afun(ones(n,1),'notransp'));
         end
@@ -190,11 +150,7 @@ switch sirt_method
         % Set s-vector representing V = T if not given as input. V is the
         % notation from the original SART article.
         if ~isa(A,'function_handle')
-            if savememory
-                error('not implemented')
-            else
-                Apj = full(sum(abs(A),1))';
-            end
+            Apj = full(sum(abs(A),1))';
         else
             Apj = abs(Afun(ones(m,1),'transp'));
         end

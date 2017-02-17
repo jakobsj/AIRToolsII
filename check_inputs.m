@@ -1,5 +1,5 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    relaxparinput,s1,w,res_dims,ncp_smooth,savememory] = ...
+    relaxparinput,s1,w,res_dims,ncp_smooth] = ...
     check_inputs(A,b,K,x0,options)
 
 % PCH: removed "Knew" from output.
@@ -153,7 +153,3 @@ if isfield(options,'stoprule') && isfield(options.stoprule,'ncp_smooth')
     end
 end
 
-savememory = false;
-if isfield(options,'savememory')
-    savememory = options.savememory;
-end
