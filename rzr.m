@@ -8,8 +8,9 @@ function [A,b] = rzr(A,b,Nthr)
 % If a right-hand side b is present, the corresponding elements of
 % b are also removed (b can be a matrix of several right hand sides).
 %
-% If a positive Nthr is given as the third argument, then all rows with
-% less than or equal to Nthr nonzero elements are removed.
+% If a positive Nthr is given as the third argument, then all rows in
+% which the number of nonzeros is less than or equal to Nthr will be
+% removed.
 %
 % Use this function to 'clean up' a discretized tomography problem.
 % Zero rows do not contribute to the reconstruction.
@@ -20,7 +21,7 @@ function [A,b] = rzr(A,b,Nthr)
 
 if nargin<3, Nthr = 0; end
 
-s = sum(A>0,2);
+s = sum(A~=0,2);
 I = find(s>Nthr);
 A = A(I,:);
 
