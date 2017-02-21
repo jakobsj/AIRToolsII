@@ -1,29 +1,32 @@
-function [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R,d,isDisp)
-%FANBEAMTOMO Creates a 2D tomography test problem using fan beams
+function [A,b,x,theta,p,R,dw,sd] = ...
+    fanbeamtomolinear(N,theta,p,R,dw,sd,isDisp)
+%FANBEAMTOMOLINEAR Creates 2D fan-beam linear-detector tomography test problem.
 %
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R,d)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R,d,isDisp)
+%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N)
+%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta)
+%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p)
+%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p,R)
+%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p,R,dw)
+%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p,R,dw,sd)
+%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p,R,dw,sd,isDisp)
 %
 % This function creates a 2D tomography test problem with an N-times-N
 % domain, using p rays in fan-formation for each angle in the vector theta.
+% Unlike fanbeamtomo, in which the detector is curved, in fanbeamtomolinear
+% the detector is linear, corresponding to the central slice of a
+% flat-panel detector.
 %
 % Input:
 %   N           Scalar denoting the number of discretization intervals in 
 %               each dimesion, such that the domain consists of N^2 cells.
-%   theta       Vector containing the projetion angles in degrees.
-%               Default: theta = 0:1:359.
+%   theta       Vector containing the angles in degrees. Default: theta =
+%               0:1:359.
 %   p           Number of rays for each angle. Default: p =
 %               round(sqrt(2)*N).
 %   R           The distance from the source to the center of the domain
 %               is R*N. Default: R = 2.
-%   d           Scalar that determines the angular span of the rays, in
-%               degrees. The default value is defined such that from the
-%               source at (0,R*N) the first ray hits the corner (-N/2,N/2)
-%               and the last ray hits the corner (N/2,N/2).
+%   dw          Total width of linear detector. Same units as R.
+%   sd          Source to detector distance. Same units as R.
 %   isDisp      If isDisp is non-zero it specifies the time in seconds 
 %               to pause in the display of the rays. If zero (the default), 
 %               no display is shown.
@@ -39,30 +42,39 @@ function [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R,d,isDisp)
 %   R           The radius in side lengths. 
 %   d           The span of the rays.
 %
-% See also: paralleltomo, seismictomo.
+% See also: paralleltomo, fanbeamtomo, seismictomo.
 
-% Jakob Sauer J�rgensen, Maria Saxild-Hansen and Per Christian Hansen,
-% Nov. 5, 2015, DTU Compute.
+% Modified to do linear detector array, from fanbeamtomo in AIRtools 1.0.
+% Jakob Sauer Joergensen, 2012-04-04, DTU Compute, jakj@dtu.dk.
+
+% Jakob Heide Joergensen, Maria Saxild-Hansen and Per Christian Hansen,
+% June 21, 2011, DTU Informatics.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
 % Tomographic Imaging, SIAM, Philadelphia, 2001.
 
 % Default illustration:
-if nargin < 6 || isempty(isDisp)
+if nargin < 7 || isempty(isDisp)
     isDisp = 0;
 end
+
+% Default value of sd.
+if nargin < 6 || isempty(sd)
+    sd = 3;
+end
+sd = sd*N;
+
+% Default value of dw.
+if nargin < 5 || isempty(dw)
+    dw = 2.5;
+end
+dw = dw*N;
 
 % Default value of R.
 if nargin < 4 || isempty(R)
     R = 2;
 end
-
-% Default value of d.
-if nargin < 5 || isempty(d)
-    % Determine angular span. The first and last rays touch points
-    % (-N/2,N/2) and (N/2,N/2), respectively.
-    d = 2*atand(1/(2*R-1));
-end
+R = R*N;
 
 % Default value of the number of rays p.
 if nargin < 3 || isempty(p)
@@ -75,19 +87,13 @@ if nargin < 2 || isempty(theta)
 end
 
 % Input check. The source must lie outside the domain.
-if R < sqrt(2)/2
+if R < sqrt(2)/2*N
     error('R must be greater than half squareroot 2')
 end
-R = R*N;
 
 % Make sure theta is double precison to prevent round-off issues caused by
 % single input.
 theta = double(theta);
-
-% The width of the angle of the source.
-if d < 0 || d > 180
-    error('The angle of the source must be in the interval [0 180]')
-end
 
 % Anonymous function rotation matrix
 Omega_x = @(omega_par) [cosd(omega_par) -sind(omega_par)];
@@ -101,7 +107,21 @@ x0 = 0;
 y0 = R;
 xy0 = [x0;y0];
 
-omega = linspace(-d/2,d/2,p);
+% Width of detector element
+dew = dw/p;
+
+% Set angles to match linear detector
+if mod(p,2)
+    depos = (1:(p-1)/2)*dew;
+    deposall = [-depos(end:-1:1),0,depos];
+    omega = 90-atand(sd./depos);
+    omega = [-omega(end:-1:1),0,omega];
+else
+    depos = ((1:p/2)-0.5)*dew;
+    deposall = [-depos(end:-1:1),depos];
+    omega = 90-atand(sd./depos);
+    omega = [-omega(end:-1:1),omega];
+end
 
 % The intersection lines.
 x = (-N/2:N/2)';
@@ -152,20 +172,23 @@ for i = 1:nA
         a = Omega_x(omega(j))*abtheta;
         b = Omega_y(omega(j))*abtheta;
         
+        xdtheta = Omega_x(theta(i))*[deposall(j); R-sd];
+        ydtheta = Omega_y(theta(i))*[deposall(j); R-sd];
+        
         % Illustration of rays
         if isDisp
-            plot([x0theta,x0theta+1.7*R*a],[y0theta,y0theta+1.7*R*b],'-',...
+            plot([x0theta,xdtheta],[y0theta,ydtheta],'-',...
                 'color',[220 0 0]/255,'linewidth',1.5)
             axis(R*[-1,1,-1,1])
         end
         
         % Use the parametrisation of line to get the y-coordinates of
-        % intersections with x = constant.
+        % intersections with x = k, i.e. x constant.
         tx = (x - x0theta)/a;
         yx = b*tx + y0theta;
         
         % Use the parametrisation of line to get the x-coordinates of
-        % intersections with y = constant.
+        % intersections with y = k, i.e. y constant.
         ty = (y - y0theta)/b;
         xy = a*ty + x0theta;
         
@@ -175,9 +198,10 @@ for i = 1:nA
         yxy = [yx; y];
         
         % Sort the coordinates according to intersection time.
-        [~,I] = sort(t);
+        [t, I] = sort(t);
         xxy = xxy(I);
         yxy = yxy(I);
+        
         
         % Skip the points outside the box.
         I = (xxy >= -N/2 & xxy <= N/2 & yxy >= -N/2 & yxy <= N/2);
@@ -198,18 +222,18 @@ for i = 1:nA
         
         % Calculate the length within cell and determines the number of
         % cells which is hit.
-        avals = sqrt(diff(xxy).^2 + diff(yxy).^2);
-        numvals = numel(avals);
+        d = sqrt(diff(xxy).^2 + diff(yxy).^2);
+        numvals = numel(d);
         
         % Store the values inside the box.
         if numvals > 0
             
             % Calculates the midpoints of the line within the cells.
-            xm = 0.5*(xxy(1:end-1)+xxy(2:end)) + N/2;
-            ym = 0.5*(yxy(1:end-1)+yxy(2:end)) + N/2;
+            xm = 0.5*(xxy(1:end-1)+xxy(2:end));
+            ym = 0.5*(yxy(1:end-1)+yxy(2:end));
             
             % Translate the midpoint coordinates to index.
-            col = floor(xm)*N + (N - floor(ym));
+            col = (floor(xm)+N/2)*N + (N - (floor(ym)+N/2));
             
             % Create the indices to store the values to vector for
             % later creation of A matrix.
@@ -220,7 +244,7 @@ for i = 1:nA
             % Store row numbers, column numbers and values.
             rows(idx) = (i-1)*p + j;
             cols(idx) = col;
-            vals(idx) = avals;
+            vals(idx) = d;
 
         end
         
@@ -237,8 +261,11 @@ vals = vals(1:idxend);
 A = sparse(rows,cols,vals,p*nA,N^2);
 
 if nargout > 1
+    
     % Create phantom head as a reshaped vector.
-    x = phantomgallery('shepplogan',N);
+    x = myphantom(N);
+    x = x(:);
+    
     % Create rhs.
     b = A*x;
 end
@@ -246,3 +273,64 @@ end
 if nargout > 5
     R = R/N;
 end
+
+function X = myphantom(N)
+%MYPHANTOM creates the modified Shepp-Logan phantom
+%   X = myphantom(N)
+% 
+% This function create the modifed Shepp-Logan phantom with the
+% discretization N x N, and returns it as a vector.
+%
+% Input:
+%   N    Scalar denoting the nubmer of discretization intervals in each
+%        dimesion, such that the phantom head consists of N^2 cells.
+% 
+% Output:
+%   X    The modified phantom head reshaped as a vector
+
+% This head phantom is the same as the Shepp-Logan except the intensities
+% are changed to yield higher contrast in the image.
+%
+% Peter Toft, "The Radon Transform - Theory and Implementation", PhD
+% thesis, DTU Informatics, Technical University of Denmark, June 1996.
+
+%         A    a     b    x0    y0    phi
+%        ---------------------------------
+e =    [  1   .69   .92    0     0     0   
+        -.8  .6624 .8740   0  -.0184   0
+        -.2  .1100 .3100  .22    0    -18
+        -.2  .1600 .4100 -.22    0     18
+         .1  .2100 .2500   0    .35    0
+         .1  .0460 .0460   0    .1     0
+         .1  .0460 .0460   0   -.1     0
+         .1  .0460 .0230 -.08  -.605   0 
+         .1  .0230 .0230   0   -.606   0
+         .1  .0230 .0460  .06  -.605   0   ];
+
+xn = ((0:N-1)-(N-1)/2)/((N-1)/2);
+Xn = repmat(xn,N,1);
+Yn = rot90(Xn);
+X = zeros(N);
+     
+% For each ellipse to be added     
+for i = 1:size(e,1)
+    a2 = e(i,2)^2;
+    b2 = e(i,3)^2;
+    x0 = e(i,4);
+    y0 = e(i,5);
+    phi = e(i,6)*pi/180;
+    A = e(i,1);
+    
+    x = Xn-x0;
+    y = Yn-y0;
+    
+    index = find(((x.*cos(phi) + y.*sin(phi)).^2)./a2 + ...
+        ((y.*cos(phi) - x.*sin(phi))).^2./b2 <= 1);
+
+    % Add the amplitude of the ellipse
+    X(index) = X(index) + A;
+
+end
+
+% Return as vector and ensure nonnegative elements.
+X = X(:); X(X<0) = 0;

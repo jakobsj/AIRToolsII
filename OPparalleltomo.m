@@ -80,7 +80,6 @@ y = x;
 
 % If u is a Cartesian unit vector then we only want to compute a single
 % row of A; otherwise we want to multiply with A or A'.
-Determine if we wan to compute a row of A (when u is a Cartesianunit
 if strcmpi(transp_flag,'transp') && nnz(u) == 1 && sum(u) == 1
     % Want to compute a single row of A, stored as a column vector.
     ell = find(u==1);

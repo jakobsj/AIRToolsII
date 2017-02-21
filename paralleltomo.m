@@ -35,7 +35,7 @@ function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp)
 % 
 % See also: fanbeamtomo, seismictomo.
 
-% Jakob Sauer Jørgensen, Maria Saxild-Hansen and Per Christian Hansen,
+% Jakob Sauer Jï¿½rgensen, Maria Saxild-Hansen and Per Christian Hansen,
 % Nov. 5, 2015, DTU Compute.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized 
@@ -60,6 +60,10 @@ end
 if nargin < 5 || isempty(isDisp)
     isDisp = 0;
 end
+
+% Make sure theta is double precison to prevent round-off issues caused by
+% single input.
+theta = double(theta);
 
 % Define the number of angles.
 nA = length(theta);
