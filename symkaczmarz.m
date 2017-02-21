@@ -159,7 +159,7 @@ else
                 end
                 
                 % Check that the first iteration should be performed:
-                % rk = b - A'*x0;  % Remember that A is transposed.
+                % Remember that A is transposed.
                 if isa(A,'function_handle')
                     r = b - A(x0,'notransp');
                 else
@@ -304,7 +304,7 @@ while ~stop
     % Stopping rules.
     if strncmpi(stoprule,'DP',2)
         % DP stopping rule.
-        % nrk = norm(b-A'*xk);  % Remember that A is transposed.
+        % nrk = norm(b - A'*xk);  % Remember that A is transposed.
         if isa(A,'function_handle')
             r = b - A(xk,'notransp');
         else
@@ -318,7 +318,7 @@ while ~stop
             else
                 info = [0 k relaxpar];
             end
-        end
+        end % end the DP-rule.
         
     elseif strncmpi(stoprule,'NC',2)
         % NCP stopping rule.
@@ -343,7 +343,7 @@ while ~stop
             end
         else
             dk = norm(c-c_white);
-        end
+        end % end NCP-rule.
         
     elseif strncmpi(stoprule,'NO',2)
         % No stopping rule.
@@ -352,7 +352,7 @@ while ~stop
             info = [0 k relaxpar];
         end
     end % end stoprule type.
-    
+        
     % If the current iteration is requested saved.
     if k == Knew(l+1) || stop
         l = l + 1;

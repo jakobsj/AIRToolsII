@@ -153,7 +153,7 @@ else
         relaxpar = 1;
     end
     
-    % Stopping rules
+    % Stopping rules.
     if isfield(options,'stoprule') && isfield(options.stoprule,'type')
         stoprule = options.stoprule.type;
         if ischar(stoprule)
@@ -166,7 +166,7 @@ else
                 end
                 
                 % Check that the first iteration should be performed:
-                % nrk = norm(b - A'*x0);  % Remember that A is transposed.
+                % Remember that A is transposed.
                 if isa(A,'function_handle')
                     r = b - A(x0,'notransp');
                 else
@@ -265,10 +265,10 @@ while ~stop
         nrk = norm(r);
         if nrk <= taudelta || k >= kmax
             stop = 1;
-            if k >= kmax
-                info = [0 k relaxpar];
-            else
+            if k ~= kmax
                 info = [2 k relaxpar];
+            else
+                info = [0 k relaxpar];
             end
         end % end the DP-rule.
         
@@ -288,10 +288,10 @@ while ~stop
         
         if dk < norm(c-c_white) || k >= kmax
             stop = 1;
-            if k >= kmax
-                info = [0 k-1 relaxpar];
-            else
+            if k ~= kmax
                 info = [1 k-1 relaxpar];
+            else
+                info = [0 k-1 relaxpar];
             end
         else
             dk = norm(c-c_white);

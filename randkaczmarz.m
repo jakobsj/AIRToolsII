@@ -155,7 +155,7 @@ else
         relaxpar = 1;
     end
     
-    % Stopping rules
+    % Stopping rules.
     if isfield(options,'stoprule') && isfield(options.stoprule,'type')
         stoprule = options.stoprule.type;
         if ischar(stoprule)
@@ -168,7 +168,7 @@ else
                 end
                 
                 % Check that the first iteration should be performed:
-                % rk = b - A'*x0;  % Remember that A is transposed.
+                % Remember that A is transposed.
                 if isa(A,'function_handle')
                     r = b - A(x0,'notransp');
                 else
@@ -291,7 +291,7 @@ while ~stop
             else
                 info = [0 k relaxpar];
             end
-        end
+        end % end the DP-rule.
         
     elseif strncmpi(stoprule,'NC',2)
         % NCP stopping rule.
@@ -307,7 +307,7 @@ while ~stop
             c(index) = sum(pk(2:index+1))/sum(pk(2:end));
         end
         
-        if dk < norm(c-c_white)
+        if dk < norm(c-c_white) || k >= kmax
             stop = 1;
             if k ~= kmax
                 info = [1 k-1 relaxpar];
