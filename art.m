@@ -47,7 +47,27 @@ else
         normAi(i) = norm(v)^2;
     end
 end
-I = find(normAi>0);
+
+% Depending on ART method, set the row order.
+if ischar(art_method)
+    switch lower(art_method)
+        case 'kaczmarz'
+            I = find(normAi>0);
+        case 'symkaczmarz'
+            I = find(normAi>0);
+            I = [I, I(end-1:-1:2)];
+        case 'randkaczmarz'
+            error('not implemented')
+        otherwise
+            error('Unknown ART method specified')
+    end
+else
+    % Custom ART method specified by user giving the row order I as
+    % first input instead of the string with a particular ART method name.
+    I = art_method;
+end
+
+% Apply damping.
 normAi = normAi + damp*max(normAi);
 
 % Initialization before iterations.
