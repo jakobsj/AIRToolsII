@@ -1,5 +1,5 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    relaxparinput,s1,w,res_dims,ncp_smooth] = ...
+    relaxparinput,s1,w,res_dims,ncp_smooth,damp] = ...
     check_inputs(A,b,K,x0,options)
 
 % PCH: removed "Knew" from output.
@@ -153,3 +153,10 @@ if isfield(options,'stoprule') && isfield(options.stoprule,'ncp_smooth')
     end
 end
 
+
+% Damping.
+damp = 0;
+if isfield(options,'damping')
+    damp = options.damping;
+    if damp<0, error('Damping must be positive'), end
+end

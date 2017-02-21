@@ -40,7 +40,7 @@ atma = @(x) Tfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
 if strcmpi(sirt_method,'sart')
     s1 = 1;
 end
-[relaxpar, casel, sigma1tilde] = calcrelaxpar(relaxparinput, s1, kmax, atma, n);
+[relaxpar, casel, sigma1tilde] = calcrelaxpar_sirt(relaxparinput, s1, kmax, atma, n);
 
 % TODO - how to store M and T/s in third output struct.
 if nargout > 2
