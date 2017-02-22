@@ -49,6 +49,7 @@ else
 end
 
 % Depending on ART method, set the row order.
+is_randkaczmarz = false;
 if ischar(art_method)
     switch lower(art_method)
         case 'kaczmarz'
@@ -57,7 +58,9 @@ if ischar(art_method)
             I = find(normAi>0);
             I = [I, I(end-1:-1:2)];
         case 'randkaczmarz'
-            error('not implemented')
+            is_randkaczmarz = true;
+            I = find(normAi>0);
+            
         otherwise
             error('Unknown ART method specified')
     end
@@ -70,6 +73,19 @@ end
 % Apply damping.
 normAi = normAi + damp*max(normAi);
 
+% Special for randkaczmarz - set up random row selection 
+if is_randkaczmarz
+    cumul = cumsum(normAi/sum(normAi));
+    
+    % If all rows have approximately the same norm, treat them as having the
+    % same norm when computing the random row index (which is much faster).
+    if norm(cumul-(1:m)/m,inf) < 0.05  % Arbitrary threshold.
+        fast = true;
+    else
+        fast = false;
+    end
+end    
+
 % Initialization before iterations.
 xk = x0;
 l = 1;
@@ -79,15 +95,36 @@ while ~stop
     % Update the iteration number k.
     k = k + 1;
     
+    % Special for randkaczmarz - need random permutation or rows.
+    if is_randkaczmarz
+        I_torun = I(randperm(length(I)));
+    else
+        I_torun = I;
+    end
+    
     % The Kaczmarz sweep.
-    for i = I
+    for i = I_torun
+        
+        % Special for randkaczmarz - 
+        if is_randkaczmarz
+            % The random row index.
+            if fast
+                ri = i;
+            else
+                ri = sum(cumul<rand)+1;
+            end
+        else
+            % All other methods, just use i.
+            ri = i;
+        end
+        
         if isa(A,'function_handle')
-            e = zeros(m,1); e(i) = 1;
+            e = zeros(m,1); e(ri) = 1;
             ai = Afun(e,'transp');  % ai is a column vector.
         else
-            ai = A(:,i); % Remember that A is transposed.
+            ai = A(:,ri); % Remember that A is transposed.
         end
-        xk = xk + (relaxpar*(b(i) - ai'*xk)/normAi(i))*ai;
+        xk = xk + (relaxpar*(b(ri) - ai'*xk)/normAi(ri))*ai;
         
         % Enforce any lower and upper bounds (scalars or xk-sized vectors)
         if ~isnan(lbound)
