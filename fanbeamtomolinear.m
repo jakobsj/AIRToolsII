@@ -1,5 +1,5 @@
 function [A,b,x,theta,p,R,dw,sd] = ...
-    fanbeamtomolinear(N,theta,p,R,dw,sd,isDisp)
+    fanbeamtomolinear(N,theta,p,R,dw,sd,isDisp,isMatrix)
 %FANBEAMTOMOLINEAR Creates 2D fan-beam linear-detector tomography test problem.
 %
 %   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N)
@@ -86,14 +86,42 @@ if nargin < 2 || isempty(theta)
     theta = 0:359;
 end
 
+% Make sure theta is double precison to prevent round-off issues caused by
+% single input.
+theta = double(theta);
+
 % Input check. The source must lie outside the domain.
 if R < sqrt(2)/2*N
     error('R must be greater than half squareroot 2')
 end
 
-% Make sure theta is double precison to prevent round-off issues caused by
-% single input.
-theta = double(theta);
+% Construct either matrix or function handle
+if isMatrix
+    A = get_or_apply_system_matrix(N,theta,p,R,dw,sd,isDisp);
+else
+    A = @(U,TRANSP_FLAG) get_or_apply_system_matrix(...
+        N,theta,p,R,dw,sd,isDisp,U,TRANSP_FLAG);
+end
+
+if nargout > 1
+    % Create phantom head as a reshaped vector.
+    x = phantomgallery('shepplogan',N);
+    % Create rhs.
+    if isMatrix
+        b = A*x;
+    else
+        b = A(x,'notransp');
+    end
+end
+
+if nargout > 5
+    R = R/N;
+end
+
+
+
+function A = get_or_apply_system_matrix(N,theta,p,R,dw,sd,isDisp,...
+    u,transp_flag)
 
 % Anonymous function rotation matrix
 Omega_x = @(omega_par) [cosd(omega_par) -sind(omega_par)];
@@ -127,30 +155,59 @@ end
 x = (-N/2:N/2)';
 y = x;
 
-% Initialize vectors that contains the row numbers, the column numbers and
-% the values for creating the matrix A effiecently.
-rows = zeros(2*N*nA*p,1);
-cols = rows;
-vals = rows;
-idxend = 0;
-
 % Prepare for illustration
 if isDisp
     AA = rand(N);
     figure
 end
 
+% Deduce whether to set up matrix or apply to input from whether input u is
+% given.
+isMatrix = (nargin < 8);
+
+if isMatrix
+    
+    % Initialize vectors that contains the row numbers, the column numbers and
+    % the values for creating the matrix A effiecently.
+    rows = zeros(2*N*nA*p,1);
+    cols = rows;
+    vals = rows;
+    idxend = 0;
+    
+    II = 1:nA;
+    JJ = 1:p;
+else
+    % If transp_flag is 'size', only return size of operator, otherwise set
+    % proper size of output.
+    switch transp_flag
+        case 'size'
+            A = [p*nA,N^2];
+            return
+        case 'notransp' % Forward project.
+            if length(u) ~= N^2, error('Incorrect length of input vector'), end
+            A = zeros(p*nA,1);
+        case 'transp' % Backproject
+            if length(u) ~= p*nA, error('Incorrect length of input vector'), end
+            A = zeros(N^2,1);
+    end
+    
+    % If u is a Cartesian unit vector then we only want to compute a single
+    % row of A; otherwise we want to multiply with A or A'.
+    if strcmpi(transp_flag,'transp') && nnz(u) == 1 && sum(u) == 1
+        % Want to compute a single row of A, stored as a column vector.
+        ell = find(u==1);
+        JJ = mod(ell,p);  if JJ==0, JJ = p; end
+        II = (ell-JJ)/p + 1;
+    else
+        % Want to multiply with A or A'.
+        II = 1:nA;
+        JJ = 1:p;
+    end
+end
+
+
 % Loop over the chosen angles of the source.
-for i = 1:nA
-    
-    % The starting points for the current angle theta.
-    x0theta = Omega_x(theta(i))*xy0;
-    y0theta = Omega_y(theta(i))*xy0;
-    
-    % The starting (center) direction vector (opposite xytheta) and
-    % normalized.
-    xytheta = [x0theta; y0theta];
-    abtheta = -xytheta/R;
+for i = II
     
     % Illustration of the domain
     if isDisp % illustration of source
@@ -165,8 +222,17 @@ for i = 1:nA
             'linewidth',1.5,'markersize',10)
     end
     
+    % The starting points for the current angle theta.
+    x0theta = Omega_x(theta(i))*xy0;
+    y0theta = Omega_y(theta(i))*xy0;
+    
+    % The starting (center) direction vector (opposite xytheta) and
+    % normalized.
+    xytheta = [x0theta; y0theta];
+    abtheta = -xytheta/R;
+    
     % Loop over the rays.
-    for j = 1:p
+    for j = JJ
         
         % The direction vector for the current ray.
         a = Omega_x(omega(j))*abtheta;
@@ -222,11 +288,12 @@ for i = 1:nA
         
         % Calculate the length within cell and determines the number of
         % cells which is hit.
-        d = sqrt(diff(xxy).^2 + diff(yxy).^2);
-        numvals = numel(d);
+        aval = sqrt(diff(xxy).^2 + diff(yxy).^2);
+        %numvals = numel(aval);
+        col = [];
         
         % Store the values inside the box.
-        if numvals > 0
+        if numel(aval) > 0
             
             % Calculates the midpoints of the line within the cells.
             xm = 0.5*(xxy(1:end-1)+xxy(2:end));
@@ -234,103 +301,42 @@ for i = 1:nA
             
             % Translate the midpoint coordinates to index.
             col = (floor(xm)+N/2)*N + (N - (floor(ym)+N/2));
-            
-            % Create the indices to store the values to vector for
-            % later creation of A matrix.
-            idxstart = idxend + 1;
-            idxend = idxstart + numvals - 1;
-            idx = idxstart:idxend;
-            
-            % Store row numbers, column numbers and values.
-            rows(idx) = (i-1)*p + j;
-            cols(idx) = col;
-            vals(idx) = d;
 
         end
         
-    end
+        if ~isempty(col)
+            if isMatrix
+                % Create the indices to store the values to vector for
+                % later creation of A matrix.
+                idxstart = idxend + 1;
+                idxend = idxstart + numel(col) - 1;
+                idx = idxstart:idxend;
+                
+                % Store row numbers, column numbers and values.
+                rows(idx) = (i-1)*p + j;
+                cols(idx) = col;
+                vals(idx) = aval;
+            else
+                % If any nonzero elements, apply forward or back operator
+                
+                if strcmp(transp_flag,'notransp')
+                    % Insert inner product with u into w.
+                    A( (i-1)*p+j ) = aval'*u(col);
+                else  % Adjoint operator.
+                    A(col) = A(col) + u( (i-1)*p+j )*aval;
+                end
+            end
+        end
+    end % end j
+end %end i
+
+if isMatrix
+    % Truncate excess zeros.
+    rows = rows(1:idxend);
+    cols = cols(1:idxend);
+    vals = vals(1:idxend);
     
+    % Create sparse matrix A from the stored values.
+    A = sparse(rows,cols,vals,p*nA,N^2);
 end
 
-% Truncate excess zeros.
-rows = rows(1:idxend);
-cols = cols(1:idxend);
-vals = vals(1:idxend);
-
-% Create sparse matrix A from the stored values.
-A = sparse(rows,cols,vals,p*nA,N^2);
-
-if nargout > 1
-    
-    % Create phantom head as a reshaped vector.
-    x = myphantom(N);
-    x = x(:);
-    
-    % Create rhs.
-    b = A*x;
-end
-
-if nargout > 5
-    R = R/N;
-end
-
-function X = myphantom(N)
-%MYPHANTOM creates the modified Shepp-Logan phantom
-%   X = myphantom(N)
-% 
-% This function create the modifed Shepp-Logan phantom with the
-% discretization N x N, and returns it as a vector.
-%
-% Input:
-%   N    Scalar denoting the nubmer of discretization intervals in each
-%        dimesion, such that the phantom head consists of N^2 cells.
-% 
-% Output:
-%   X    The modified phantom head reshaped as a vector
-
-% This head phantom is the same as the Shepp-Logan except the intensities
-% are changed to yield higher contrast in the image.
-%
-% Peter Toft, "The Radon Transform - Theory and Implementation", PhD
-% thesis, DTU Informatics, Technical University of Denmark, June 1996.
-
-%         A    a     b    x0    y0    phi
-%        ---------------------------------
-e =    [  1   .69   .92    0     0     0   
-        -.8  .6624 .8740   0  -.0184   0
-        -.2  .1100 .3100  .22    0    -18
-        -.2  .1600 .4100 -.22    0     18
-         .1  .2100 .2500   0    .35    0
-         .1  .0460 .0460   0    .1     0
-         .1  .0460 .0460   0   -.1     0
-         .1  .0460 .0230 -.08  -.605   0 
-         .1  .0230 .0230   0   -.606   0
-         .1  .0230 .0460  .06  -.605   0   ];
-
-xn = ((0:N-1)-(N-1)/2)/((N-1)/2);
-Xn = repmat(xn,N,1);
-Yn = rot90(Xn);
-X = zeros(N);
-     
-% For each ellipse to be added     
-for i = 1:size(e,1)
-    a2 = e(i,2)^2;
-    b2 = e(i,3)^2;
-    x0 = e(i,4);
-    y0 = e(i,5);
-    phi = e(i,6)*pi/180;
-    A = e(i,1);
-    
-    x = Xn-x0;
-    y = Yn-y0;
-    
-    index = find(((x.*cos(phi) + y.*sin(phi)).^2)./a2 + ...
-        ((y.*cos(phi) - x.*sin(phi))).^2./b2 <= 1);
-
-    % Add the amplitude of the ellipse
-    X(index) = X(index) + A;
-
-end
-
-% Return as vector and ensure nonnegative elements.
-X = X(:); X(X<0) = 0;

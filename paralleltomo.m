@@ -38,7 +38,7 @@ function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 %
 % See also: fanbeamtomo, seismictomo.
 
-% Jakob Sauer J�rgensen, Maria Saxild-Hansen and Per Christian Hansen,
+% Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Christian Hansen,
 % Nov. 5, 2015, DTU Compute.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
