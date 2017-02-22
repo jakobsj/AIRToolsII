@@ -61,7 +61,7 @@ function im = phantomgallery(name,N,P1,P2,P3)
 %   b = A*x;
 
 % Per Christian Hansen, July 6, 2015, DTU Compute.
-% With contibutions by Jakob Sauer Jørgensen and Mikhail Romanov, DTU
+% With contibutions by Jakob Sauer Jï¿½rgensen and Mikhail Romanov, DTU
 % Compute and Knud Cordua, Univ. of Copenhagen.
 
 if nargin < 2, error('Not enought input arguments'), end
@@ -131,6 +131,9 @@ switch name
         else
             im = ppower(N,P1,P2,P3);
         end
+        
+    case 'tectonic'
+        im = tectonic(N);
         
     otherwise
         error('Illegal phantom name')
@@ -341,7 +344,7 @@ im = (mod(x+1,4) == 0)*0.33 + (mod(x+2,4) == 0)*0.66 + (mod(x+3,4) == 0);
 function im = grains(N,numGrains,seed)
 %GRAINS Creates a test image of Voronoi cells
 
-% Jakob Sauer Jørgensen, October 9, 2012, DTU Compute.
+% Jakob Sauer Jï¿½rgensen, October 9, 2012, DTU Compute.
 
 if nargin==1 || isempty(numGrains), numGrains = round(3*sqrt(N)); end
 if nargin==3, rng(seed), end
@@ -382,9 +385,9 @@ im = im/max(im(:));
 function F = ppower(N,relnz,p,seed)
 %PPOWER Creates a 2D test image with patterns of nonzero pixels
 
-% Per Christian Hansen and Jakob Sauer Jørgensen, July 6, 2015.
+% Per Christian Hansen and Jakob Sauer Jï¿½rgensen, July 6, 2015.
 
-% Reference: J. S. Jørgensen, E. Y. Sidky, P. C. Hansen, and X. Pan,
+% Reference: J. S. Jï¿½rgensen, E. Y. Sidky, P. C. Hansen, and X. Pan,
 % Empirical average-case relation between undersampling and sparsity in
 % X-ray CT, submitted.
 
@@ -405,6 +408,45 @@ F( F < f(k) ) = 0;
 F = F/f(1);
 
 if Nodd, F = F(1:end-1,1:end-1); end
+
+% -----------------------------------------------------------------------
+
+function x = tectonic(N)
+% Creates a tectonic phantom of size N x N.
+
+x = zeros(N);
+
+N5 = round(N/5);
+N13 = round(N/13);
+N7 = round(N/7);
+N20 = round(N/20);
+
+% The right plate.
+x(N5:N5+N7,5*N13:end) = 0.75;
+
+% The angle of the right plate.
+i = N5;
+for j = 1:N20
+    if rem(j,2) ~= 0
+        i = i - 1;
+        x(i,5*N13+j:end) = 0.75;
+    end
+end
+
+% The left plate before the break.
+x(N5:N5+N5,1:5*N13) = 1;
+
+% The break from the left plate.
+vector = N5:N5+N5;
+for j = 5*N13:min(12*N13,N)
+    if rem(j,2) ~= 0
+        vector = vector + 1;
+    end
+    x(vector,j) = 1;
+end
+
+% Reshape the matrix to a vector.
+x = x(:);
 
 % ------ Below here: subfunctions for 'binary' --------------------------
 

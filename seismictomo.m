@@ -1,4 +1,4 @@
-function [A,b,x,s,p] = seismictomo(N,s,p,isDisp)
+function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 %SEISMICTOMO Creates a 2D seismic travel-time tomography test problem
 %
 %   [A,b,x,s,p] = seismictomo(N)
@@ -21,6 +21,9 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp)
 %   isDisp   If isDisp is nonzero it specifies the time in seconds 
 %            to pause in the display of the rays. If zero (the default), 
 %            no display is shown.
+%   isMatrix    If non-zero, a sparse matrix is set up to represent the
+%               forward problem. If zero, instead a function handle to a
+%               matrix-free version is returned.
 %
 % Output:
 %   A        Coefficient matrix with N^2 columns and s*p rows.
@@ -32,7 +35,7 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp)
 %
 % See also: fanbeamtomo, paralleltomo.
 
-% Jakob Sauer Jørgensen, Maria Saxild-Hansen and Per Chr. Hansen,
+% Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Chr. Hansen,
 % October 1, 2014, DTU Compute.
 
 if nargin < 4 || isempty(isDisp)
@@ -49,6 +52,30 @@ if length(s)>1, error('s must be a scaler'), end
 if nargin < 3 || isempty(p)
     p = 2*N;
 end
+
+% Construct either matrix or function handle
+if isMatrix
+    A = get_or_apply_system_matrix(N,s,p,isDisp);
+else
+    A = @(U,TRANSP_FLAG) get_or_apply_system_matrix(...
+        N,s,p,isDisp,U,TRANSP_FLAG);
+end
+
+% Create the phantom.
+if nargout > 1
+    x = phantomgallery('tectonic',N);
+    if isMatrix
+        b = A*x;
+    else
+        b = A(x,'notransp');
+    end
+end
+
+
+
+
+
+function A = get_or_apply_system_matrix(N,s,p,isDisp,u,transp_flag)
 
 N2 = N/2;
 
@@ -70,20 +97,57 @@ Np2 = (N/p2)/2;
 xp = [-N2*ones(p2,1); linspace(-N2+Np1,N2-Np1,p1)'];
 yp = [linspace(-N2+Np2,N2-Np2,p2)'; N2*ones(p1,1)];
 
-% Initialize the index for storing the results and the number of angles.
-idxend = 0;
-rows = zeros(2*N*s*p,1);
-cols = rows;
-vals = rows;
-
 % Prepare for illustration.
 if isDisp
     AA = rand(N);
     figure
 end
 
+% Deduce whether to set up matrix or apply to input from whether input u is
+% given.
+isMatrix = (nargin < 5);
+
+if isMatrix
+    
+    % Initialize the index for storing the results and the number of angles.
+    idxend = 0;
+    rows = zeros(2*N*s*p,1);
+    cols = rows;
+    vals = rows;
+    
+    II = 1:s;
+    JJ = 1:p;
+else
+    % If transp_flag is 'size', only return size of operator, otherwise set
+    % proper size of output.
+    switch transp_flag
+        case 'size'
+            A = [p*s,N^2];
+            return
+        case 'notransp' % Forward project.
+            if length(u) ~= N^2, error('Incorrect length of input vector'), end
+            A = zeros(p*s,1);
+        case 'transp' % Backproject
+            if length(u) ~= p*s, error('Incorrect length of input vector'), end
+            A = zeros(N^2,1);
+    end
+    
+    % If u is a Cartesian unit vector then we only want to compute a single
+    % row of A; otherwise we want to multiply with A or A'.
+    if strcmpi(transp_flag,'transp') && nnz(u) == 1 && sum(u) == 1
+        % Want to compute a single row of A, stored as a column vector.
+        ell = find(u==1);
+        JJ = mod(ell,p);  if JJ==0, JJ = p; end
+        II = (ell-JJ)/p + 1;
+    else
+        % Want to multiply with A or A'.
+        II = 1:s;
+        JJ = 1:p;
+    end
+end
+
 % Loop over all the sources.
-for i = 1:s
+for i = II
         
     % Illustation of the domain
     if isDisp
@@ -106,7 +170,7 @@ for i = 1:s
     b = yp - y0(i);    
     
     % Loop over the seismographs.
-    for j = 1:p
+    for j = JJ
         
         % Use the parametrization of a line to get the y-coordinates of
         % intersections with x = constant.
@@ -150,11 +214,12 @@ for i = 1:s
         
         % Calculate the lengths within the cells and the determine the
         % number of cells which are hit.
-        d = sqrt(diff(xxy).^2 + diff(yxy).^2);
-        numvals = numel(d);
+        aval = sqrt(diff(xxy).^2 + diff(yxy).^2);
+        %numvals = numel(aval);
+        col = [];
         
         % Store the values inside the box.
-        if numvals > 0
+        if numel(aval) > 0
                            
             % Calculates the midpoints of the line within the cells.
             xm = 0.5*(xxy(1:end-1) + xxy(2:end)) + N2;
@@ -162,71 +227,46 @@ for i = 1:s
             
             % Translate the midpoint coordinates to index.
             col = floor(xm)*N + (N - floor(ym));
-            
-            % Create the indices to store the values to a vector for
-            % later creation of A matrix.
-            idxstart = idxend + 1;
-            idxend = idxstart + numvals - 1;
-            idx = idxstart:idxend;
-            
-            % Store row numbers, column numbers and values.
-            rows(idx) = (i-1)*p + j;
-            cols(idx) = col;
-            vals(idx) = d;
 
         end
         
-    end
+        if ~isempty(col)
+            if isMatrix
+                % Create the indices to store the values to a vector for
+                % later creation of A matrix.
+                idxstart = idxend + 1;
+                idxend = idxstart + numel(col) - 1;
+                idx = idxstart:idxend;
+                
+                % Store row numbers, column numbers and values.
+                rows(idx) = (i-1)*p + j;
+                cols(idx) = col;
+                vals(idx) = aval;
+            else
+                % If any nonzero elements, apply forward or back operator
+                
+                if strcmp(transp_flag,'notransp')
+                    % Insert inner product with u into w.
+                    A( (i-1)*p+j ) = aval'*u(col);
+                else  % Adjoint operator.
+                    A(col) = A(col) + u( (i-1)*p+j )*aval;
+                end
+            end
+        end
+                
+        
+    end % end j
+end % end i
+
+if isMatrix
+    % Truncate excess zeros.
+    rows = rows(1:idxend);
+    cols = cols(1:idxend);
+    vals = vals(1:idxend);
     
+    % Create sparse matrix A from the stored values.
+    A = sparse(rows,cols,vals,s*p,N^2);
 end
 
-% Truncate excess zeros.
-rows = rows(1:idxend);
-cols = cols(1:idxend);
-vals = vals(1:idxend);
 
-% Create sparse matrix A from the stored values.
-A = sparse(rows,cols,vals,s*p,N^2);
 
-% Create the phantom.
-if nargout > 1
-    x = tectonic(N);
-    b = A*x;
-end
-
-function x = tectonic(N)
-% Creates a tectonic phantom of size N x N.
-
-x = zeros(N);
-
-N5 = round(N/5);
-N13 = round(N/13);
-N7 = round(N/7);
-N20 = round(N/20);
-
-% The right plate.
-x(N5:N5+N7,5*N13:end) = 0.75;
-
-% The angle of the right plate.
-i = N5;
-for j = 1:N20
-    if rem(j,2) ~= 0
-        i = i - 1;
-        x(i,5*N13+j:end) = 0.75;
-    end
-end
-
-% The left plate before the break.
-x(N5:N5+N5,1:5*N13) = 1;
-
-% The break from the left plate.
-vector = N5:N5+N5;
-for j = 5*N13:min(12*N13,N)
-    if rem(j,2) ~= 0
-        vector = vector + 1;
-    end
-    x(vector,j) = 1;
-end
-
-% Reshape the matrix to a vector.
-x = x(:);
