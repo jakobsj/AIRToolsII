@@ -1,3 +1,3 @@
-function [X,info,restart] = cimmino(varargin)
+function [X,info,ext_info] = cimmino(varargin)
 
-[X,info,restart] = sirt('cimmino',varargin{:});
+[X,info,ext_info] = sirt('cimmino',varargin{:});

@@ -1,4 +1,4 @@
-function [X,info,restart] = sart(varargin)
+function [X,info,ext_info] = sart(varargin)
 
 % Note that any s1 input given to SART is ignored as the value 1 is used.
 %
@@ -13,4 +13,4 @@ function [X,info,restart] = sart(varargin)
 % explicitly, negative entries are allowed and handled, but this is not
 % possible without explicit access to system matrix entries.
 
-[X,info,restart] = sirt('sart',varargin{:});
+[X,info,ext_info] = sirt('sart',varargin{:});
