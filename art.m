@@ -103,7 +103,7 @@ while ~stop
     
     % Check stopping rules.
     [stop,info,rkm1,dk] = check_stoprules(...
-        stoprule, rk, relaxparcur, taudelta, k, kmax, rkm1, dk, res_dims);
+        stoprule, rk, relaxpar, taudelta, k, kmax, rkm1, dk, res_dims);
     
     % If the current iteration is requested saved.
     if k == K(l) || stop
@@ -111,3 +111,7 @@ while ~stop
         l = l + 1;
     end
 end
+
+% Return only the saved iterations: Only to "l-1" because "l" now points to
+% next candidate.
+X = X(:,1:l-1);
