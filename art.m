@@ -9,6 +9,21 @@ end
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
     s1,w,res_dims,ncp_smooth,damp] = check_inputs(varargin{:});
 
+%% Special check for symkaczmarz: number of iterations must be even
+if ischar(art_method) && strncmpi(art_method,'sym',3)
+    if any(mod(K,2))
+        error('For symkaczmarz only even iteration numbers can be requested.');
+    else
+        % Since in symkaczmarz a sweep is top->bottom->top it is twice as
+        % expensive as other methods, and one sweep is counted as two
+        % iterations. For code reasons, we do this by running half the
+        % number of iterations, then later doubling iteration numbers
+        % again.
+        K = K/2;
+        kmax = kmax/2;
+    end    
+end
+
 A = varargin{1};
 if ~isa(A,'function_handle')
     A = A';
@@ -153,3 +168,8 @@ end
 % Return only the saved iterations: Only to "l-1" because "l" now points to
 % next candidate.
 X = X(:,1:l-1);
+
+% Special for symkaczmarz: double finaliter
+if ischar(art_method) && strncmpi(art_method,'sym',3)
+    info.finaliter = info.finaliter*2;
+end
