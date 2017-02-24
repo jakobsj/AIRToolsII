@@ -130,7 +130,7 @@ end
 % PCH: I think we must force the user to specify res_dims, otherwise we
 % risk that the user forgets to specify it!  (Speking from own experience.)
 if strcmp(stoprule,'NCP') && ~isfield(options.stoprule,'res_dims')
-    error('options.stoprule.dims must be specified for NCP stopping rule.')
+    error('options.stoprule.res_dims must be specified for NCP stopping rule.')
 end
 % res_dims = n;  PCH: removed this line (and it should be "= m").
 res_dims = []; % PCH: added this line because "res_dims" must be returned.

@@ -1,4 +1,4 @@
-function [k,K,rkm1,dk] = init_stoprules(stoprule,rk,K,ncp_smooth)
+function [k,rkm1,dk] = init_stoprules(stoprule,rk,ncp_smooth)
 
 % PCH: changed variable names for better consistency:
 %      rk -> rkm1 (residual correcponding to iteration k-1)
@@ -60,7 +60,7 @@ switch upper(stoprule)
     case 'NCP'
         % NCP stopping rule.
         dk = inf(ncp_smooth,1);
-        K = [K max(K)+1];
+        %K = [K max(K)+1];
         
     case 'NONE'
         % No stopping rule: Nothing to do.

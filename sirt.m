@@ -28,7 +28,7 @@ X = zeros(n,length(K));
 rk = b - Afun(x0,'notransp');
 
 % Initialize for stopping rules.
-[k,K,rkm1,dk] = init_stoprules(stoprule,rk,K,ncp_smooth);
+[k,rkm1,dk] = init_stoprules(stoprule,rk,ncp_smooth);
 
 % Do initial check of stopping criteria - probably relaxpar should be set
 % before this, perhaps just to nan.

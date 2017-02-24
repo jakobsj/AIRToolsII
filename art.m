@@ -39,7 +39,7 @@ rk = b - Afun(x0,'notransp');
 if strcmpi(stoprule,'ME')
     error('Stopping rule ME is not available for ART methods.')
 end
-[k,K,rkm1,dk] = init_stoprules(stoprule,rk,K,ncp_smooth);
+[k,rkm1,dk] = init_stoprules(stoprule,rk,ncp_smooth);
 
 % Do initial check of stopping criteria - probably relaxpar should be set
 % before this, perhaps just to nan.
