@@ -1,9 +1,9 @@
-function relaxpar = calcrelaxpar_art(relaxparinput)
+function relaxpar = calcrelaxpar_cart(relaxparinput)
 
 % Default choice 1. If user gave as input, use that value and throw warning
 % if outside [0,2], but proceed.
 if isnan(relaxparinput)
-    relaxpar = 1;
+    relaxpar = 0.25;
 else
     if relaxparinput <= 0 || relaxparinput >= 2
         warning('MATLAB:UnstableRelaxParam',...

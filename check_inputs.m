@@ -1,5 +1,5 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    relaxparinput,s1,w,res_dims,ncp_smooth,damp] = ...
+    relaxparinput,s1,w,res_dims,ncp_smooth,damp,THR,Kbegin,Nunflag] = ...
     check_inputs(A,b,K,x0,options)
 
 % PCH: removed "Knew" from output.
@@ -159,4 +159,21 @@ damp = 0;
 if isfield(options,'damping')
     damp = options.damping;
     if damp<0, error('Damping must be positive'), end
+end
+
+%% For CART with flagging
+
+THR = 1e-4;
+if isfield(options,'THR')
+    THR = options.THR;
+end
+
+Kbegin = 10;
+if isfield(options,'Kbegin')
+    Kbegin = options.Kbegin;
+end
+
+Nunflag = kmax/4;
+if isfield(options,'Nunfield')
+    options.Nunfield;
 end
