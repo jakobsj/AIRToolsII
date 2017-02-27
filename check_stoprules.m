@@ -49,40 +49,40 @@ switch upper(stoprule)
         
     case 'NCP'
         % Normalized Cumulative Periodogram stopping rule.
-        if length(res_dims) == 1
-            m = length(rk);
-            q = floor(m/2);
-            rkh = fft(rk);
-            pk = abs(rkh(1:q+1)).^2;
-            % PCH: rewrote this using cumsum; 
-            % perhaps move outside if-then-else.
-            c = cumsum(pk(2:end))/sum(pk(2:end));
-        else
-            R = reshape(rk,res_dims);   % reshape(rxk,p,lt);
-            RKH = fft2(R); % rkh = fft(r);
-            q1 = floor(res_dims(1)/2); % PCH: a bit wasted effort to 
-            q2 = floor(res_dims(2)/2); % compute this stuff every time.
-            PK = abs(RKH(1:q1+1,1:q2+1)).^2; % pk = abs(rkh(1:q+1)).^2; 
-            P = zeros(size(PK));  % PCH: note to self, this is faster than
-                                  % [I,J] = meshgrid(0:n-1); P = I.^2+J.^2;
-                                  % and uses less memory.
-            for i=1:size(P,1)
-                for j=1:size(P,2)
-                    P(i,j) = (i-1)^2+(j-1)^2;
-                end
-            end
-            [~,I] = sort(P(:));
-            pk = PK(I);
-            q = length(pk)-1;
-            % PCH: rewrote this using cumsum; 
-            % perhaps move outside if-then-else.
-            c = cumsum(pk(2:end))/sum(pk(2:end));
+        
+        % Depending on residual being 1D or 2D, set up NCP
+        switch length(res_dims)
+            case 1
+                % If 1D signal.
+                m = length(rk);
+                q = floor(m/2);
+                rkh = fft(rk);
+                pk = abs(rkh(1:q+1)).^2;
+                c = cumsum(pk(2:end))/sum(pk(2:end));
+                
+            case 2
+                % If 2D signal, reshape and do columnwise NCP -> mean.
+                R = reshape(rk,res_dims);
+                q = floor(res_dims(1)/2);
+                RKH = fft(R);
+                PK = abs(RKH(1:q+1,:)).^2;
+                c = bsxfun(@rdivide,cumsum(PK(2:end,:)),sum(PK(2:end,:)));
+                
+            otherwise
+                % Only implemented NCP for 1D and 2D signals.
+                error(['NCP stopping rule only implemented for 1D and ',...
+                    '2D residuals, the size of which should be given ',...
+                    'using options.stoprule.res_dims.'])
         end
         
-        c_white = (1:q)'./q;  % PCH: moved the above line to here.
-                              % A bit wasted effort to compute every time.
+        % The cumulative white noise spectrum (spectrum is flat, hence
+        % cumulative increasing linearly).
+        c_white = (1:q)'./q;
         
-        ncc = norm(c-c_white); % PCH: avoid computing this norm twice.
+        % Compute the norm of the difference between columns of c and
+        % c_white. The below handles both 2D and 1D and is generalized from
+        % the 1D statement   ncc = norm(c-c_white);
+        ncc = mean(sqrt(sum(bsxfun(@minus,c,c_white).^2)));
         
         % Compare filtered new value with the previous filtered value.
         if  mean(dk) < mean([dk(2:end); ncc]) || k >= kmax
