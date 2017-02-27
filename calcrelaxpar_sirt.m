@@ -36,7 +36,6 @@ else
     elseif strncmpi(relaxparinput,'psi1',4)
         % Method: ENH psi1.
         casel = 3;
-        ite = 0;
         
         % Precalculate the roots.
         z = calczeta(2:kmax-1);
@@ -47,7 +46,6 @@ else
             nu = 2;
             relaxpar = [sqrt(2); sqrt(2); nu*2*(1-z)]/sigma1tilde^2;
         else
-            
             relaxpar = [sqrt(2); sqrt(2); 2*(1-z)]/sigma1tilde^2;
         end
         

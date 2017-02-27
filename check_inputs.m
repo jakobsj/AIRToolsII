@@ -108,18 +108,6 @@ if isfield(options,'s1')
      s1 = options.s1;
 end
 
-% % If M is given as input
-% M = nan;
-% if isfield(options,'restart') && isfield(options.restart,'M')
-%     M = options.restart.M;
-% end
-% 
-% % If T is given as input
-% s = nan;
-% if isfield(options,'restart') && isfield(options.restart,'T')
-%     s = options.restart.T;
-% end
-
 % If weights are given as input
 w = nan;
 if isfield(options,'w')
