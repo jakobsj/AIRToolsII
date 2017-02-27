@@ -160,6 +160,7 @@ while ~stop
                 F(j) = false;
                 Nflag(j) = 1;  % PCH
             end
+
             
             AXPY = AXPY + 1;
             rk = rk - od*A(:,j);
@@ -175,7 +176,8 @@ while ~stop
     WORK(k) = DOT + AXPY;
     
     % New residual.
-    rk = b - Afun(xk,'notransp');
+    %rk = b - Afun(xk,'notransp');
+    %rk = b - Afun(xk,'notransp');
     
     % Check stopping rules.
     [stop,info,rkm1,dk] = check_stoprules(...

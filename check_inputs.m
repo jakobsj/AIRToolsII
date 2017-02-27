@@ -173,7 +173,7 @@ if isfield(options,'Kbegin')
     Kbegin = options.Kbegin;
 end
 
-Nunflag = kmax/4;
-if isfield(options,'Nunfield')
-    options.Nunfield;
+Nunflag = round(kmax/4);
+if isfield(options,'Nunflag')
+    Nunflag = options.Nunflag;
 end
