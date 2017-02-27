@@ -141,7 +141,17 @@ while ~stop
         mm = max(abs(xk)); % Max abs element of previous iteration.
         if F(j)
             DOT = DOT + 1;
-            delta = A(:,j)'*rk/normAj(j);
+            
+            % Get the j'th column of A
+            if ~isa(A,'function_handle')
+                aj = A(:,j);
+            else
+                e = zeros(n,1);
+                e(j) = 1;
+                aj = A(e,'notransp');
+            end
+            
+            delta = aj'*rk/normAj(j);
             od = relaxpar*delta;           % The update.
         
             % Correction for constraints.
@@ -163,7 +173,7 @@ while ~stop
 
             
             AXPY = AXPY + 1;
-            rk = rk - od*A(:,j);
+            rk = rk - od*aj;
         else
             SKIP = SKIP + 1;
             if Nflag(j) < randi(Nunflag)
