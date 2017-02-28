@@ -64,8 +64,6 @@ function [X,info] = cart(varargin)
 % 
 % - In old kaczmarz, I is computed before applying damping. In cart J is
 % only computed AFTER damping is applied. Not consistent? Correct?
-% 
-% - Implement vector lbound/ubound
 
 
 % Parse inputs.
