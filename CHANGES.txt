@@ -1,7 +1,7 @@
 **********************************************************************                                                                    
-*          This is Version 1.3 of AIR Tools for Matlab 8.0           *
+*          This is Version 2.0 of AIR Tools for Matlab 8.0           *
 *--------------------------------------------------------------------*
-*                 Per Christian Hansen, DTU Compute                  *
+*    Per Christian Hansen  &  Jakob Sauer Jorgensen - DTU Compute    *
 **********************************************************************
 
 Revisions in Version 2.0
