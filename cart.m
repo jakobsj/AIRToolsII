@@ -53,7 +53,7 @@ function [X,info] = cart(varargin)
 %
 % See also: kaczmarz, randkaczmarz, symkaczmarz
 
-% Jacob Fr�sig, Nicolai Riis, Per Chr. Hansen, Nov. 7, 2015, DTU Compute.
+% Jacob Froesig, Nicolai Riis, Per Chr. Hansen, Nov. 7, 2015, DTU Compute.
 
 
 
@@ -93,7 +93,7 @@ end
     stoprule, rk, relaxparinput, taudelta, k, kmax, rkm1, dk, res_dims);
 
 % Compute the relaxation parameter to be used throughout iterations.
-relaxpar = calcrelaxpar_cart(relaxparinput);
+relaxpar = calc_relaxpar_cart(relaxparinput);
 
 % Calculate the norm of each column in A. This calculation can require a
 % lot of memory. Unlike art methods, A is NOT transposed.
@@ -181,10 +181,6 @@ while ~stop
         end
     end
     WORK(k) = DOT + AXPY;
-    
-    % New residual.
-    %rk = b - Afun(xk,'notransp');
-    %rk = b - Afun(xk,'notransp');
     
     % Check stopping rules.
     [stop,info,rkm1,dk] = check_stoprules(...

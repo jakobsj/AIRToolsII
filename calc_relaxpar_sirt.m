@@ -1,4 +1,4 @@
-function [relaxpar, casel, sigma1tilde] = calcrelaxpar_sirt(relaxparinput, s1, kmax, atma, n)
+function [relaxpar, casel, sigma1tilde] = calc_relaxpar_sirt(relaxparinput, s1, kmax, atma, n)
 
 % Check if the largest singular value is given.
 if isnan(s1)

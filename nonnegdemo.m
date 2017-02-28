@@ -31,7 +31,7 @@ fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f, and p = %2.0f.',...
 delta = eta*norm(b_ex);
 
 % Add noise to the rhs.
-randn('state',0);
+rng(0);
 e = randn(size(b_ex));
 e = delta*e/norm(e);
 b = b_ex + e;
@@ -45,7 +45,7 @@ title('Exact phantom')
 
 % No. of iterations; set nonnegativity off.
 k = 50;
-options.nonneg = false;
+options.lbound = -inf;
 
 fprintf(1,'\n\n');
 fprintf(1,'Perform k = %2.0f iterations with Cimmino''s method.',k);
@@ -62,7 +62,7 @@ caxis(c);
 title('Cimmino reconstruction')
 
 % Set nonnegativity on.
-options.nonneg = true;
+options.lbound = 0;
 
 fprintf(1,'\n');
 fprintf(1,'Repeat with nonnegativity constraints.\n');
@@ -79,7 +79,7 @@ caxis(c);
 title('Cimmino reconstruction w. nonnegativity')
 
 % Set nonnegativity off.
-options.nonneg = false;
+options.lbound = -inf;
 
 fprintf(1,'\n');
 fprintf(1,'Perform k = %2.0f iterations with Kaczmarz''s method.',k);
@@ -96,7 +96,7 @@ caxis(c);
 title('Kaczmarz reconstruction')
 
 % Set nonnegativity on.
-options.nonneg = true;
+options.lbound = 0;
 
 fprintf(1,'\n');
 fprintf(1,'Repeat with nonnegativity constraints.\n');

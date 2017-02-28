@@ -28,7 +28,7 @@ end
 if isa(A,'function_handle')
     Afun = A;
 else
-    Afun = @(xx,transp_flag) Afun_matrix(xx,transp_flag,A);
+    Afun = @(xx,transp_flag) afun_matrix(xx,transp_flag,A);
 end
 
 % Check that the sizes of A and b match.

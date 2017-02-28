@@ -1,4 +1,4 @@
-function [Mfun,Tfun] = get_Mfun_Tfun(sirt_method, A, m, n, w)
+function [Mfun,Tfun] = get_mfun_tfun(sirt_method, A, m, n, w)
 
 switch sirt_method
     

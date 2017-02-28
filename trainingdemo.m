@@ -1,13 +1,13 @@
 %trainingdemo (script) Demonstrates the use of the training methods.
 %
 % This script demonstrates the use of the training functions
-% trainRelaxparSIRT, trainRelaxparART, and trainDPME.  We train the SIRT
-% method cimmino and the ART method kaczmarz.  For the SIRT method the
+% train_relaxpar_sirt, train_relaxpar_art, and train_dpme.  We train the 
+% SIRT method cimmino and the ART method kaczmarz.  For the SIRT method the
 % stopping rule ME is used, and for the ART method the stopping rule DP
 % is used.  Note that training the relaxation parameter for ART, training
 % the stopping parameter for ART, and using ART takes several minutes.
 %
-% See also: ARTdemo, nonnegdemo, SIRTdemo.
+% See also: artdemo, nonnegdemo, sirtdemo.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, May 23, 2010, DTU Compute.
 
@@ -31,7 +31,7 @@ fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f and p = %2.0f.\n',...
 delta = eta*norm(b_ex);
 
 % Add noise to the rhs.
-randn('state',0);
+randn(0);
 e = randn(size(b_ex));
 e = delta*e/norm(e);
 b = b_ex + e;
@@ -44,7 +44,7 @@ fprintf(1,'\nTraining the relaxation parameter for the SIRT method.');
 fprintf(1,'\nThis only takes some seconds\n');
 
 % Train the SIRT relaxation parameter.
-relaxparSIRT = trainRelaxparSIRT(A,b,x_ex,SIRTmethod);
+relaxparSIRT = train_relaxpar_sirt(A,b,x_ex,SIRTmethod);
 
 % Set the relaxation parameter for the SIRT options.
 optionsSIRT.relaxpar = relaxparSIRT;
@@ -53,7 +53,7 @@ fprintf(1,'\nTraining the relaxation parameter for the ART method.');
 fprintf(1,'\nThis takes several minutes\n');
 
 % Train the ART relaxation parameter.
-relaxparART = trainRelaxparART(A,b,x_ex,ARTmethod);
+relaxparART = train_relaxpar_art(A,b,x_ex,ARTmethod);
 
 % Set the relaxation parameter for the SIRT options.
 optionsART.relaxpar = relaxparART;
@@ -66,10 +66,10 @@ s = 5;
 
 fprintf(1,'\nTraining the stopping parameter for the SIRT method.');
 fprintf(1,'\nThis takes a few seconds\n');
-tauSIRT = trainDPME(A,b_ex,x_ex,SIRTmethod,typeSIRT,delta,s,optionsSIRT);
+tauSIRT = train_dpme(A,b_ex,x_ex,SIRTmethod,typeSIRT,delta,s,optionsSIRT);
 fprintf(1,'\nTraining the stopping parameter for the ART method.');
 fprintf(1,'\nThis takes several minutes\n');
-tauART = trainDPME(A,b_ex,x_ex,ARTmethod,typeART,delta,s,optionsART);
+tauART = train_dpme(A,b_ex,x_ex,ARTmethod,typeART,delta,s,optionsART);
 
 % Set the stopping rules for the SIRT and ART methods.
 optionsSIRT.stoprule.type = typeSIRT;
@@ -99,10 +99,10 @@ figure
 imagesc(reshape(XSIRT,N,N)), colormap gray,
 axis image off
 caxis(c);
-title(['SIRT: k = ',num2str(infoSIRT(2))])
+title(['SIRT: k = ',num2str(infoSIRT.finaliter)])
 
 figure
 imagesc(reshape(XART,N,N)), colormap gray,
 axis image off
 caxis(c);
-title(['ART: k = ',num2str(infoART(2))])
+title(['ART: k = ',num2str(infoART.finaliter)])

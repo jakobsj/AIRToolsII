@@ -1,8 +1,8 @@
-function tau = trainDPME(A,b_exact,x_exact,method,type,delta,s,options)
-%TRAINDPME Training method for the stopping rules DP and ME
+function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,options)
+%TRAIN_DPME Training method for the stopping rules DP and ME
 %
-%   tau = trainDPME(A,b_exact,x_exact,method,type,delta,s)
-%   tau = trainDPME(A,b_exact,x_exact,method,type,delta,s,options)
+%   tau = train_dpme(A,b_exact,x_exact,method,type,delta,s)
+%   tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,options)
 %
 % This function determines the parameter tau for a given method, for
 % the stopping rule DP or ME, by training on a problem given by A, b_exact,

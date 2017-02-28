@@ -13,7 +13,7 @@ end
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
-    [Mfun,Tfun] = get_Mfun_Tfun(sirt_method,varargin{1},m,n,w);
+    [Mfun,Tfun] = get_mfun_tfun(sirt_method,varargin{1},m,n,w);
 else
     % Possible to pass in custom SIRT method given by 2-element cell array
     % holding function handles to Mfun and sfun instead of string input.
@@ -40,9 +40,9 @@ atma = @(x) Tfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
 if strcmpi(sirt_method,'sart')
     s1 = 1;
 end
-[relaxpar, casel, sigma1tilde] = calcrelaxpar_sirt(relaxparinput, s1, kmax, atma, n);
+[relaxpar, casel, sigma1tilde] = calc_relaxpar_sirt(relaxparinput, s1, kmax, atma, n);
 
-% TODO - how to store M and T/s in third output struct.
+% Store M and T in third output struct.
 if nargout > 2
     ext_info.M = Mfun(ones(m,1));
     ext_info.T = Tfun(ones(n,1));

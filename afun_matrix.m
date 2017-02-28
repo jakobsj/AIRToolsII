@@ -1,4 +1,4 @@
-function y = Afun_matrix(x,transp_flag,A)
+function y = afun_matrix(x,transp_flag,A)
 switch transp_flag
     case 'size'
         y = size(A);

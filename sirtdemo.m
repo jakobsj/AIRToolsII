@@ -1,4 +1,4 @@
-%SIRTdemo (script) Demonstrates the use of, and the results from, the SIRT methods.
+%sirtdemo (script) Demonstrates the use of, and the results from, the SIRT methods.
 %
 % This script illustrates the use of the SIRT methods landweber,
 % cimmino, cav, drop, and sart.
@@ -31,7 +31,7 @@ fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f, and p = %2.0f.',...
 delta = eta*norm(b_ex);
 
 % Add noise to the rhs.
-randn('state',0);
+rng(0);
 e = randn(size(b_ex));
 e = delta*e/norm(e);
 b = b_ex + e;

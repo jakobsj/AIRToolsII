@@ -1,4 +1,4 @@
-function relaxpar = calcrelaxpar_cart(relaxparinput)
+function relaxpar = calc_relaxpar_cart(relaxparinput)
 
 % Default choice 1. If user gave as input, use that value and throw warning
 % if outside [0,2], but proceed.

@@ -1,4 +1,4 @@
-%ARTdemo (script) Demonstrates the use of, and the results from, the ART methods.
+%artdemo (script) Demonstrates the use of, and the results from, the ART methods.
 %
 % This script illustrates the use of the ART methods kaczmarz, symmetric
 % kaczmarz, and randomized kaczmarz.
@@ -7,7 +7,7 @@
 % the problems with the ART methods.  The exact solution and the results
 % from the methods are shown.
 %
-% See also: nonnegdemo, SIRTdemo, trainingdemo.
+% See also: nonnegdemo, sirtdemo, trainingdemo.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Mar 11, 2011, DTU Compute.
 
@@ -31,7 +31,7 @@ fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f, and p = %2.0f.',...
 delta = eta*norm(b_ex);
 
 % Add noise to the rhs.
-randn('state',0);
+rng(0);
 e = randn(size(b_ex));
 e = delta*e/norm(e);
 b = b_ex + e;

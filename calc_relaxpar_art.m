@@ -1,4 +1,4 @@
-function relaxpar = calcrelaxpar_art(relaxparinput)
+function relaxpar = calc_relaxpar_art(relaxparinput)
 
 % Default choice 1. If user gave as input, use that value and throw warning
 % if outside [0,2], but proceed.
