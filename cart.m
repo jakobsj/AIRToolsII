@@ -127,6 +127,11 @@ SKIP = 0;
 DODO = zeros(n,max(K));
 WORK = zeros(max(K),1);
 
+% For deciding how to apply constraints. Can be nan, scalar or vector.
+is_lbound_empty  = isempty(lbound);
+is_lbound_scalar = isscalar(lbound);
+is_ubound_empty  = isempty(ubound);
+is_ubound_scalar = isscalar(ubound);
 
 while ~stop
     
@@ -152,14 +157,32 @@ while ~stop
             od = relaxpar*delta;           % The update.
         
             % Correction for constraints.
-            if ~isnan(lbound) && od < lbound - xk(j)    
-                od = lbound - xk(j);
-            end
-            if ~isnan(ubound) && od > ubound - xk(j)
-                od = ubound - xk(j);
-            end
-            xk(j) = xk(j) + od;
+            xkj = xk(j);
             
+            % Apply, only if not NaN, and if od would take xkj below lbj or
+            % above ubj, correction to od, so new xk(j) will be set to
+            % either lbj or ubj.
+            if ~is_lbound_empty
+                % Handle that lbound can be either scalar or vector: If
+                % scalar extract first element, if non-scalar extract
+                % element j of lbound.
+                lbj = lbound( (~is_lbound_scalar)*j + is_lbound_scalar );
+                if od < lbj - xkj
+                    od = lbj - xkj;
+                end
+            end
+            % Same for ubound.
+            if ~is_ubound_empty
+                ubj = ubound( (~is_ubound_scalar)*j + is_ubound_scalar );
+                if od > ubj - xkj
+                    od = ubj - xkj;
+                end
+            end
+            
+            % Apply update.
+            xk(j) = xkj + od;
+            
+            % Store work done.
             DODO(j,k) = abs(od);
             UPD = UPD + 1;
             

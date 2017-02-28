@@ -66,7 +66,7 @@ if nargin < 5
     options = struct;
 end
 
-% Lower bound(s). Default NaN. Can be specified as either scalar or vector
+% Lower bound(s). Default empty. Can be specified as either scalar or vector
 % of same length as x. If vector, check length/orientation.
 if isfield(options,'lbound')
     lbound = options.lbound(:);
@@ -74,10 +74,10 @@ if isfield(options,'lbound')
         error('lbound (lower bound) must either be scalar or same length as vector of unknowns x.')
     end
 else
-    lbound = nan;
+    lbound = [];
 end
 
-% Upper bound(s). Default NaN. Can be specified as either scalar or vector
+% Upper bound(s). Default empty. Can be specified as either scalar or vector
 % of same length as x. If vector, check length/orientation.
 if isfield(options,'ubound')
     ubound = options.ubound(:);
@@ -85,7 +85,7 @@ if isfield(options,'ubound')
         error('ubound (upper bound) must either be scalar or same length as vector of unknowns x.')
     end
 else
-    ubound = nan;
+    ubound = [];
 end
 
 % Default stoprules

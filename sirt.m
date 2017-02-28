@@ -76,10 +76,10 @@ while ~stop
     xk = xk + relaxparcur*(Tfun(ATMrk));
     
     % Enforce any lower and upper bounds (scalars or xk-sized vectors)
-    if ~isnan(lbound)
+    if ~isempty(lbound)
         xk = max(xk,lbound);
     end
-    if ~isnan(ubound)
+    if ~isempty(ubound)
         xk = min(xk,ubound);
     end
     

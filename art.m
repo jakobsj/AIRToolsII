@@ -143,7 +143,7 @@ while ~stop
         xk = xk + (relaxpar*(b(ri) - ai'*xk)/normAi(ri))*ai;
         
         % Enforce any lower and upper bounds (scalars or xk-sized vectors)
-        if ~isnan(lbound)
+        if ~isempty(lbound)
             xk = max(xk,lbound);
         end
         if ~isnan(ubound)
