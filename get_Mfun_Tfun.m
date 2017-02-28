@@ -165,6 +165,10 @@ switch sirt_method
         
         % Note on purpose weights not implemented for SART, as would modify
         % special property causing largest singular value to equal 1.
+        if ~isnan(w)
+            warning(['Weights detected in input, but ignored, ',...
+                'since SART does not support weights.']);
+        end
         
     otherwise
         error('SIRT method not defined.')

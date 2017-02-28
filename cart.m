@@ -209,3 +209,6 @@ info.DOT = DOT;
 info.AXPY = AXPY;
 info.UPD = UPD;
 info.SKIP = SKIP;
+
+% List of iterates saved: all in K smaller than the final, and the final.
+info.itersaved = [K(K<info.finaliter), info.finaliter];
