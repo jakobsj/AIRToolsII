@@ -55,22 +55,12 @@ function [X,info] = cart(varargin)
 
 % Jacob Froesig, Nicolai Riis, Per Chr. Hansen, Nov. 7, 2015, DTU Compute.
 
-
-
-% TODOS
-% 
-% - In cartFlag third output of info is NOT relaxpar, but "number of times an
-% element is updated."
-% 
-% - In old kaczmarz, I is computed before applying damping. In cart J is
-% only computed AFTER damping is applied. Not consistent? Correct?
-
-
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
     s1,w,res_dims,ncp_smooth,damp,THR,Kbegin,Nunflag] = ...
     check_inputs(varargin{:});
 
+% Faster to access rows of matrix directly if available.
 A = varargin{1};
 
 % Initialize array to hold requested iterates.
@@ -94,7 +84,7 @@ end
 relaxpar = calc_relaxpar_cart(relaxparinput);
 
 % Calculate the norm of each column in A. This calculation can require a
-% lot of memory. Unlike art methods, A is NOT transposed.
+% lot of memory. Unlike ART methods, A is NOT transposed.
 if ~isa(A,'function_handle')
     normAj = full(abs(sum(A.*A,1)));
 else
@@ -107,9 +97,11 @@ else
     end
 end
 
-% Apply damping and determine non-zero columns.
-normAj = normAj + damp*max(normAj);
+% Only loop over nonzero columns.
 J = find(normAj>0);
+
+% Apply damping.
+normAj = normAj + damp*max(normAj);
 
 % Initialization before iterations.
 xk = x0;
@@ -118,12 +110,6 @@ l = 1;
 % Set additional CART "flagging" parameters.
 F = true(n,1);       % Vector of logical "flags."
 Nflag = zeros(n,1);  % Counts "flagged" iterations for each component.
-DOT = 0;
-AXPY = 0;
-UPD = 0;
-SKIP = 0;
-DODO = zeros(n,max(K));
-WORK = zeros(max(K),1);
 
 % For deciding how to apply constraints. Can be nan, scalar or vector.
 is_lbound_empty  = isempty(lbound);
@@ -140,7 +126,6 @@ while ~stop
     for j = J
         mm = max(abs(xk)); % Max abs element of previous iteration.
         if F(j)
-            DOT = DOT + 1;
             
             % Get the j'th column of A
             if ~isa(A,'function_handle')
@@ -151,10 +136,11 @@ while ~stop
                 aj = A(e,'notransp');
             end
             
+            % The update.
             delta = aj'*rk/normAj(j);
-            od = relaxpar*delta;           % The update.
+            od = relaxpar*delta;           
         
-            % Correction for constraints.
+            % Correction for constraints, first get current value for reuse
             xkj = xk(j);
             
             % Apply, only if not NaN, and if od would take xkj below lbj or
@@ -171,6 +157,7 @@ while ~stop
             end
             % Same for ubound.
             if ~is_ubound_empty
+                % Same for ubound.
                 ubj = ubound( (~is_ubound_scalar)*j + is_ubound_scalar );
                 if od > ubj - xkj
                     od = ubj - xkj;
@@ -180,20 +167,15 @@ while ~stop
             % Apply update.
             xk(j) = xkj + od;
             
-            % Store work done.
-            DODO(j,k) = abs(od);
-            UPD = UPD + 1;
-            
-            if k >= Kbegin && abs(od) < THR*mm; % "Flag" if needed.
+            % "Flag" if needed.
+            if k >= Kbegin && abs(od) < THR*mm;
                 F(j) = false;
                 Nflag(j) = 1;  % PCH
             end
-
             
-            AXPY = AXPY + 1;
+            % Update residual.
             rk = rk - od*aj;
         else
-            SKIP = SKIP + 1;
             if Nflag(j) < randi(Nunflag)
                 Nflag(j) = Nflag(j) + 1;
             else
@@ -201,7 +183,6 @@ while ~stop
             end
         end
     end
-    WORK(k) = DOT + AXPY;
     
     % Check stopping rules.
     [stop,info,rkm1,dk] = check_stoprules(...
@@ -217,12 +198,6 @@ end
 % Return only the saved iterations: Only to "l-1" because "l" now points to
 % next candidate.
 X = X(:,1:l-1);
-
-% Special for CART: Update info.
-info.DOT = DOT;
-info.AXPY = AXPY;
-info.UPD = UPD;
-info.SKIP = SKIP;
 
 % List of iterates saved: all in K smaller than the final, and the final.
 info.itersaved = [K(K<info.finaliter), info.finaliter];
