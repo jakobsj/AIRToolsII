@@ -1,0 +1,105 @@
+**********************************************************************                                                                    
+*          This is Version 1.3 of AIR Tools for Matlab 8.0           *
+*--------------------------------------------------------------------*
+*                 Per Christian Hansen, DTU Compute                  *
+**********************************************************************
+
+Revisions in Version 2.0
+------------------------
+
+All ART, CART and SIRT functions now accept a function handle as input 
+instead of a sparse matrix. This allows matrix-free versions of the system 
+matrix to be used. This also allows interfacing to external functions 
+implementing forward and backprojection. See the function afun_matrix for 
+an example of the interface used.
+
+All test problems now can return either the system matrix explicitly as a 
+sparse matrix, or a function handle to allow matrix-free application of 
+forward and backprojection operations, as determined by the boolean input 
+isMatrix.
+
+New test problem fanbeamtomolinear implementing a linear detector array 
+unlike the curved detector array in the existing fanbeamtomo function.
+
+The code has been reorganized in a modular fashion to allow more reuse of 
+code allowing higher reliability and easier maintainability.
+
+The filtered backprojection method fbp.m introduced in version 1.3 has 
+been removed.
+
+New general interfaces art.m and sirt.m are introduced, which contain the 
+core functionality of all ART and SIRT methods. This has turned all ART 
+and SIRT files into wrappers of these. In addition to the provided methods
+also custom methods can be constructed. For art.m this is done by passing 
+in the order in which rows are to be traversed; for sirt.m by passing in 
+function handles to the matrices M and T identifying the desired SIRT 
+method.
+
+More general bound constraints can be used. For both lower and upper 
+bounds it is possible to specify either no constraint, a scalar enforced 
+on all entries of x and a vector specifying elementwise constraints.
+
+In paralleltomo, the default value of d has been changed to d=p-1. This 
+choice leads for the default p to detector pixels of the same size as the 
+image pixels.
+
+For improved consistency across ART methods, psi1 and psi2 strategies for 
+choosing the relaxation parameter have been removed from symkaczmarz.
+
+TODO: Changes to stopping rules/which iterates are returned (now looking 
+to next iterate instead of previous)
+
+TODO: Describe new NCP criterion. Allowing 2D/multi1D residuals, as well 
+as filtering.
+
+In symkaczmarz a change of convention has been made. Previously a sweep 
+top->bottom->top was counted as one iteration. Now it is counted as two 
+iterations, and implemented by only allowing even numbers of iterations to 
+be returned. This is in order to make the computational work of an 
+iteration comparable to the other ART methods.
+
+For SIRT methods, the possibility to give third input restart has been 
+removed due to ambiguities and lack of demand. It is now possible to input 
+a known largest singular value through a field s1 in the options struct.
+
+The info output has been changed from a 3-element vector to a struct with 
+more informative field names and more information such as the list of 
+iterates returned.
+
+
+Revisions in Version 1.3
+------------------------
+
+A bug was found in fanbeamtomo, paralleltomo, and seismictomo that caused
+some elements of the matrix A to incorectly be set to zero; it was fixed
+in Version 1.2.
+
+All iterative methods run faster and use less memory.
+
+fanbeamtomo and paralleltomo now return the correct d.
+
+rzr allows b with multiple columns.
+
+All iterative methods now include box constraints.
+
+All ART methods now include a damping factor to avoid division by
+very small norms.
+
+All SIRT methods had some of the stopping rules changed:
+ - DP now always uses the standard residual vector r^k = b - A x^k,
+ - ME now always uses 0.5 r^k'(r^{k+1}+r^k)/||r^k||_2.
+
+The default value for lambda was changed to 1 in kaczmarz and symkaczmarz.
+
+The default value for lambda was changed to 1.9/norm(A'*M*A) in all
+SIRT methods.
+
+New functions:
+ - fbp             - filtered back projection, conforming to AIR Tools,
+ - cart            - columnwise version of Kaczmarz's method (CART),
+ - phantomgallery  - collection of 2D phantoms,
+ - seismicwavetomo - similar to seismictomo but without ray model.
+
+Note: for all ART methods NCP is implemented correct but it is not
+recommended as it often leads to a very early termination. CART with
+a random choice of columns converges very slowly and is not included.

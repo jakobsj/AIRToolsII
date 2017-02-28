@@ -62,9 +62,6 @@ function [X,info] = cart(varargin)
 % - In cartFlag third output of info is NOT relaxpar, but "number of times an
 % element is updated."
 % 
-% - In cartFlag additional options.THR=1e-4, options.Kbegin=10,
-% options.Nunflag=max(K)/4
-% 
 % - In old kaczmarz, I is computed before applying damping. In cart J is
 % only computed AFTER damping is applied. Not consistent? Correct?
 % 
