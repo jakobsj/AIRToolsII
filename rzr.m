@@ -1,5 +1,5 @@
 function [A,b] = rzr(A,b,Nthr)
-%rzr  Remove zero rows of A and the corresponding elements of b.
+%RZR  Remove zero rows of A and the corresponding elements of b.
 %
 % [A,b] = rzr(A,b)
 % [A,b] = rzr(A,b,Nthr)
