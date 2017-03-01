@@ -18,9 +18,10 @@
 % (identical) results of the methods and the (identical) sinograms and
 % backprojected images are shown.
 %
-% See also: demo_art, demo_constraints, demo_sirt, demo_training.
+% See also: demo_art, demo_constraints, demo_custom, demo_sirt, 
+% demo_training.
 
-% Maria Saxild-Hansen and Per Chr. Hansen, May 23, 2010, DTU Compute.
+% Jakob Sauer Jorgensen, 2017-03-01, DTU Compute.
 
 close all
 fprintf(1,'\nStarting demo_matrixfree:\n\n');

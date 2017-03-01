@@ -70,6 +70,16 @@ artdemo.m now also contains a demonstration of the columnwise Kaczmarz
 method (CART) together with all ART methods (kaczmarz, symkaczmarz and 
 randkaczmarz).
 
+New demo demo_matrixfree to illustrate the use of matrix-free versions of 
+test problem operators and reconstruction methods.
+
+New demo demo_custom to illustrate the user of user-specified custom 
+versions of ART and SIRT methods.
+
+New demo demo_constraint to illustrate how general elementwise constraints 
+can be used. This demo replaces the old demo script nonnegdemo.
+
+
 
 Revisions in Version 1.3
 ------------------------

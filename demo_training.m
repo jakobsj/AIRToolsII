@@ -7,7 +7,8 @@
 % is used.  Note that training the relaxation parameter for ART, training
 % the stopping parameter for ART, and using ART takes several minutes.
 %
-% See also: demo_art, demo_constraints, demo_matrixfree, demo_sirt.
+% See also: demo_art, demo_constraints, demo_custom, demo_matrixfree, 
+% demo_sirt.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, May 23, 2010, DTU Compute.
 

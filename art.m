@@ -82,8 +82,8 @@ if ischar(art_method)
 else
     % Custom ART method specified by user giving the row order I as
     % first input instead of the string with a particular ART method name.
-    I = art_method;
-    I = I(normAi>0);
+    I = art_method(:)';
+    I = I(normAi(I)>0);
 end
 
 % Apply damping.

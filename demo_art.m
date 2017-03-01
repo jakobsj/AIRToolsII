@@ -7,7 +7,8 @@
 % the problems with the ART methods.  The exact solution and the results
 % from the methods are shown.
 %
-% See also: demo_constraints, demo_matrixfree, demo_sirt, demo_training.
+% See also: demo_constraints, demo_custom, demo_matrixfree, demo_sirt, 
+% demo_training.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Mar 11, 2011, DTU Compute.
 

@@ -7,7 +7,8 @@
 % the problem with the SIRT methods. The exact solution and the results
 % from the methods are shown. 
 %
-% See also: demo_art, demo_constraints, demo_matrixfree, demo_training.
+% See also: demo_art, demo_constraints, demo_custom, demo_matrixfree, 
+% demo_training.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, May 23, 2010, DTU Compute.
 
