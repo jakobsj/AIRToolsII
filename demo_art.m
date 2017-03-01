@@ -1,13 +1,13 @@
-%artdemo (script) Demonstrates the use of, and the results from, the ART methods.
+%demo_art (script) Demonstrates the use of, and the results from, the ART methods.
 %
 % This script illustrates the use of the ART methods kaczmarz, symmetric
-% kaczmarz, and randomized kaczmarz.
+% kaczmarz, randomized kaczmarz, as well as the columnwise kaczmarz method.
 %
 % The script creates a parallel-beam test problem, adds noise, and solves
 % the problems with the ART methods.  The exact solution and the results
 % from the methods are shown.
 %
-% See also: nonnegdemo, sirtdemo, trainingdemo.
+% See also: demo_nonneg, demo_sirt, demo_training.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Mar 11, 2011, DTU Compute.
 

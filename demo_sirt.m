@@ -1,4 +1,4 @@
-%sirtdemo (script) Demonstrates the use of, and the results from, the SIRT methods.
+%demo_sirt (script) Demonstrates the use of, and the results from, the SIRT methods.
 %
 % This script illustrates the use of the SIRT methods landweber,
 % cimmino, cav, drop, and sart.
@@ -7,7 +7,7 @@
 % the problem with the SIRT methods. The exact solution and the results
 % from the methods are shown. 
 %
-% See also: ARTdemo, nonnegdemo, trainingdemo.
+% See also: demo_art, demo_nonneg, demo_training.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, May 23, 2010, DTU Compute.
 

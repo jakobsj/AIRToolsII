@@ -1,4 +1,4 @@
-%trainingdemo (script) Demonstrates the use of the training methods.
+%demo_training (script) Demonstrates the use of the training methods.
 %
 % This script demonstrates the use of the training functions
 % train_relaxpar_sirt, train_relaxpar_art, and train_dpme.  We train the 
@@ -7,7 +7,7 @@
 % is used.  Note that training the relaxation parameter for ART, training
 % the stopping parameter for ART, and using ART takes several minutes.
 %
-% See also: artdemo, nonnegdemo, sirtdemo.
+% See also: demo_art, demo_nonneg, demo_sirt.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, May 23, 2010, DTU Compute.
 

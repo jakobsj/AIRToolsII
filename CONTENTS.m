@@ -47,10 +47,10 @@
 %   seismicwavetomo     - Similar to seismictomo but without a ray assumption.
 %
 % Demonstration Scripts:
-%   artdemo             - Demonstrates the use of, and the results from, the ART methods.
-%   nonnegdemo          - Demonstrates the use of nonnegativity constraints.
-%   sirtdemo            - Demonstrates the use of, and the results from, the SIRT methods.
-%   trainingdemo        - Demonstrates the use of the training methods.
+%   demo_art            - Demonstrates the use of, and the results from, the ART methods.
+%   demo_nonneg         - Demonstrates the use of nonnegativity constraints.
+%   demo_sirt           - Demonstrates the use of, and the results from, the SIRT methods.
+%   demo_training       - Demonstrates the use of the training methods.
 %
 % Auxiliary Routines:
 %   afun_matrix         - Wrap a matrix into a "matrix-free" function handle.

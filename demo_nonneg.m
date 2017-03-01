@@ -1,4 +1,4 @@
-%nonnegdemo (script) Demonstrates the use of nonnegativity constraints.
+%demo_nonneg (script) Demonstrates the use of nonnegativity constraints.
 %
 % This script illustrates the use of the cimmino and kaczmarz methods
 % with the nonnegativity option.
@@ -7,7 +7,7 @@
 % the problem without and with the constraints.  The exact solution and
 % the results from the methods are shown. 
 %
-% See also: ARTdemo, SIRTdemo, trainingdemo.
+% See also: demo_art, demo_sirt, demo_training.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Oct. 21, 2010, DTU Compute.
 
