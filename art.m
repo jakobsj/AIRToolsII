@@ -75,7 +75,6 @@ if ischar(art_method)
         case 'randkaczmarz'
             is_randkaczmarz = true;
             I = find(normAi>0);
-            
         otherwise
             error('Unknown ART method specified')
     end

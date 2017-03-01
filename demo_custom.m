@@ -83,6 +83,39 @@ axis image off
 caxis(c);
 title('Custom (backwards) Kaczmarz reconstruction')
 
+%% Standard column kaczmarz
+
+fprintf(1,'\n\n');
+fprintf(1,'Perform k = %2.0f iterations with column Kaczmarz''s method.',k);
+fprintf(1,'\nThis takes a while ...');
+
+% Perform the standard kaczmarz iterations using general interface
+Xcolu = cart('columnkaczmarz',A,b,k);
+
+% Show the kaczmarz solution.
+figure
+imagesc(reshape(Xcolu,N,N)), colormap gray,
+axis image off
+caxis(c);
+title('Column Kaczmarz reconstruction')
+
+%% Custom (backwards) column kaczmarz
+
+fprintf(1,'\n\n');
+fprintf(1,'Perform k = %2.0f iterations of custom (backwards) column Kaczmarz''s method.',k);
+fprintf(1,'\nThis takes a while ...');
+
+% Perform a custom Kaczmarz method running backwards through rows
+col_order = size(A,2):-1:1;
+Xcolu_back = cart(col_order,A,b,k);
+
+% Show the custom (backwards) kaczmarz solution.
+figure
+imagesc(reshape(Xcolu_back,N,N)), colormap gray,
+axis image off
+caxis(c);
+title('Custom (backwards) column Kaczmarz reconstruction')
+
 %% Standard landweber
 
 fprintf(1,'\n\n');

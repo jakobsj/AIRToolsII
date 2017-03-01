@@ -23,7 +23,8 @@
 %   symkaczmarz         - Symmetric Kaczmarz method.
 %
 % Iterative CART Methods:
-%   cart                - Columnwise version of Kaczmarz's method.
+%   cart                - General interface for all Column Kaczmarz (CART) methods.
+%   columnkaczmarz      - Columnwise version of Kaczmarz's method.
 %
 % Iterative SIRT Methods:
 %   sirt                - General interface for all SIRT methods.
@@ -48,6 +49,7 @@
 %
 % Demonstration Scripts:
 %   demo_art            - Demonstrates the use of, and the results from, the ART methods.
+%   demo_cart           - Demonstrates the use of, and the results from, the CART method.
 %   demo_constraints    - Demonstrates the use of nonnegativity and other constraints.
 %   demo_custom         - Demonstrates how to specify custom ART and SIRT methods.
 %   demo_matrixfree     - Demonstrates the matrix-free mode for test problems and reconstruction methods.

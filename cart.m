@@ -1,4 +1,4 @@
-function [X,info] = cart(varargin)
+function [X,info] = cart(cart_method, varargin)
 %CART Columnwise version of Kaczmarz's method
 %
 %   [X,info] = cart(A,b,K)
@@ -55,6 +55,11 @@ function [X,info] = cart(varargin)
 
 % Jacob Froesig, Nicolai Riis, Per Chr. Hansen, Nov. 7, 2015, DTU Compute.
 
+% Set default CART method to be columnkaczmarz.
+if isempty(cart_method)
+    cart_method = 'columnkaczmarz';
+end
+
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
     s1,w,res_dims,ncp_smooth,damp,THR,Kbegin,Nunflag] = ...
@@ -97,8 +102,21 @@ else
     end
 end
 
-% Only loop over nonzero columns.
-J = find(normAj>0);
+% Depending on CART method, set the column order.
+if ischar(cart_method)
+    switch lower(cart_method)
+        case 'columnkaczmarz'
+            % Only loop over nonzero columns.
+            J = find(normAj>0);
+        otherwise
+            error('Unknown CART method specified')
+    end
+else
+    % Custom CART method specified by user giving the column order J as
+    % first input instead of the string with a particular CART method name.
+    J = cart_method(:)';
+    J = J(normAj(J)>0);
+end
 
 % Apply damping.
 normAj = normAj + damp*max(normAj);

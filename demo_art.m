@@ -1,7 +1,7 @@
 %DEMO_ART (script) Demonstrates the use of, and the results from, the ART methods.
 %
 % This script illustrates the use of the ART methods kaczmarz, symmetric
-% kaczmarz, randomized kaczmarz, as well as the columnwise kaczmarz method.
+% kaczmarz and randomized kaczmarz.
 %
 % The script creates a parallel-beam test problem, adds noise, and solves
 % the problems with the ART methods.  The exact solution and the results
