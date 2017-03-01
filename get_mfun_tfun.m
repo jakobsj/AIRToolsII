@@ -91,7 +91,7 @@ switch sirt_method
             for i = 1:m
                 e = zeros(m,1);
                 e(i) = 1;
-                v = Afun(e,'transp');
+                v = A(e,'transp');
                 normAi(i) = norm(v)^2;
             end
         end
@@ -118,7 +118,7 @@ switch sirt_method
             s = zeros(n,1);
             for i=1:n
                 e = zeros(n,1); e(i) = 1;
-                Aj = Afun(e,'notransp');
+                Aj = A(e,'notransp');
                 s(i) = 1./sum(Aj~=0);
             end
         end
@@ -136,7 +136,7 @@ switch sirt_method
         if ~isa(A,'function_handle')
             Aip = full(sum(abs(A),2));
         else
-            Aip = abs(Afun(ones(n,1),'notransp'));
+            Aip = abs(A(ones(n,1),'notransp'));
         end
         M = 1./Aip;
         
@@ -152,7 +152,7 @@ switch sirt_method
         if ~isa(A,'function_handle')
             Apj = full(sum(abs(A),1))';
         else
-            Apj = abs(Afun(ones(m,1),'transp'));
+            Apj = abs(A(ones(m,1),'transp'));
         end
         s = 1./Apj;
         

@@ -1,4 +1,4 @@
-%demo_constraints (script) Demonstrates the use of nonnegativity and more
+%DEMO_CONSTRAINTS (script) Demonstrates the use of nonnegativity and more
 %general upper and lower bound constraints.
 %
 % This script illustrates the use of the cimmino and kaczmarz methods
@@ -8,7 +8,7 @@
 % the problem without and with the constraints.  The exact solution and
 % the results from the methods are shown. 
 %
-% See also: demo_art, demo_sirt, demo_training.
+% See also: demo_art, demo_matrixfree, demo_sirt, demo_training.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Oct. 21, 2010, DTU Compute.
 

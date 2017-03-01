@@ -1,4 +1,4 @@
-%demo_training (script) Demonstrates the use of the training methods.
+%DEMO_TRAINING (script) Demonstrates the use of the training methods.
 %
 % This script demonstrates the use of the training functions
 % train_relaxpar_sirt, train_relaxpar_art, and train_dpme.  We train the 
@@ -7,12 +7,12 @@
 % is used.  Note that training the relaxation parameter for ART, training
 % the stopping parameter for ART, and using ART takes several minutes.
 %
-% See also: demo_art, demo_nonneg, demo_sirt.
+% See also: demo_art, demo_constraints, demo_matrixfree, demo_sirt.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, May 23, 2010, DTU Compute.
 
 close all
-fprintf(1,'\nStarting trainingdemo:\n\n');
+fprintf(1,'\nStarting demo_training:\n\n');
 
 % Set the parameters for the test problem:
 N = 50;           % Discretization points.

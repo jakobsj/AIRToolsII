@@ -1,4 +1,4 @@
-%demo_art (script) Demonstrates the use of, and the results from, the ART methods.
+%DEMO_ART (script) Demonstrates the use of, and the results from, the ART methods.
 %
 % This script illustrates the use of the ART methods kaczmarz, symmetric
 % kaczmarz, randomized kaczmarz, as well as the columnwise kaczmarz method.
@@ -7,12 +7,12 @@
 % the problems with the ART methods.  The exact solution and the results
 % from the methods are shown.
 %
-% See also: demo_nonneg, demo_sirt, demo_training.
+% See also: demo_constraints, demo_matrixfree, demo_sirt, demo_training.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Mar 11, 2011, DTU Compute.
 
 close all
-fprintf(1,'\nStarting ARTdemo:\n\n');
+fprintf(1,'\nStarting demo_art:\n\n');
 
 % Set the parameters for the test problem.
 N = 50;           % The discretization points.
