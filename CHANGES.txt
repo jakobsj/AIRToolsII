@@ -66,6 +66,10 @@ The info output has been changed from a 3-element vector to a struct with
 more informative field names and more information such as the list of 
 iterates returned.
 
+artdemo.m now also contains a demonstration of the columnwise Kaczmarz 
+method (CART) together with all ART methods (kaczmarz, symkaczmarz and 
+randkaczmarz).
+
 
 Revisions in Version 1.3
 ------------------------

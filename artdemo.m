@@ -76,7 +76,7 @@ title('Symmetric Kaczmarz reconstruction')
 
 fprintf(1,'\n\n');
 fprintf(1,'Perform k = %2.0f iterations with the randomized Kaczmarz method.',k);
-fprintf(1,'\nThis takes a moment ...\n');
+fprintf(1,'\nThis takes a moment ...');
 
 % Perform the randomized kaczmarz iterations.
 Xrand = randkaczmarz(A,b,k);
@@ -87,3 +87,17 @@ imagesc(reshape(Xrand,N,N)), colormap gray,
 axis image off
 caxis(c);
 title('Randomized Kaczmarz reconstruction')
+
+fprintf(1,'\n\n');
+fprintf(1,'Perform k = %2.0f iterations with the columnwise Kaczmarz method.',k);
+fprintf(1,'\nThis takes a moment ...\n');
+
+% Perform the columnwise Kaczmarz iterations.
+Xcart = cart(A,b,k);
+
+% Show the columnwise kaczmarz solution.
+figure
+imagesc(reshape(Xcart,N,N)), colormap gray,
+axis image off
+caxis(c);
+title('Columnwise Kaczmarz reconstruction')
