@@ -90,6 +90,11 @@ end
 % single input.
 theta = double(theta);
 
+% Default matrix or matrix-free function handle? Matrix
+if nargin < 8 || isempty(isMatrix)
+    isMatrix = 1;
+end
+
 % Input check. The source must lie outside the domain.
 if R < sqrt(2)/2*N
     error('R must be greater than half squareroot 2')
@@ -209,6 +214,10 @@ end
 % Loop over the chosen angles of the source.
 for i = II
     
+    % The starting points for the current angle theta.
+    x0theta = Omega_x(theta(i))*xy0;
+    y0theta = Omega_y(theta(i))*xy0;
+    
     % Illustration of the domain
     if isDisp % illustration of source
         clf
@@ -221,10 +230,6 @@ for i = II
         plot(x0theta,y0theta,'o','color',[60 179 113]/255,...
             'linewidth',1.5,'markersize',10)
     end
-    
-    % The starting points for the current angle theta.
-    x0theta = Omega_x(theta(i))*xy0;
-    y0theta = Omega_y(theta(i))*xy0;
     
     % The starting (center) direction vector (opposite xytheta) and
     % normalized.

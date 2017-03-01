@@ -11,7 +11,7 @@ function relaxpar = train_relaxpar_sirt(A,b,x_ex,method,kmax,options)
 % the fastest convergence to the smallest relative error in the solution. 
 %
 % Input:
-%   A           m times n matrix.
+%   A           m times n matrix or function handle to matrix-free version.
 %   b           m times 1 vector containing the right-hand side.
 %   x_ex        n times 1 vector containing the exact solution.
 %   method      Function handle to one of the SIRT methods.
@@ -23,7 +23,7 @@ function relaxpar = train_relaxpar_sirt(A,b,x_ex,method,kmax,options)
 % Output:   
 %   relaxpar      Scalar containing the found relaxpar value.
 %
-% See also: trainRelaxparART
+% See also: train_relaxpar_art
 
 % Maria Saxild-Hansen and Per Chr. Hansen, June 10, 2010, DTU Compute.
 
@@ -75,7 +75,7 @@ while ~stop
             case {'landweber','cimmino','cav','drop'}
                 
                 % Determine the solutions to the K values.
-                [Xnew info] = method(A,b,K,x0,options);
+                [Xnew, info] = method(A,b,K,x0,options);
                 
                 % Assign the restart struct to options, such that M, T and
                 % s1 are not recalculated in the next call of the method.
@@ -85,7 +85,7 @@ while ~stop
             case {'sart'}
                 
                 % Determine the solutions to the K values.
-                [Xnew info] = method(A,b,K,x0,options);
+                [Xnew, info] = method(A,b,K,x0,options);
                 
                 % Assign the restart struct to options, such that M, T and
                 % s1 are not recalculated in the next call of the method.
@@ -108,7 +108,7 @@ while ~stop
     rEr = [rEr sqrt(sum(deltax.*deltax,1))/normxex];
     
     % Find the minimum relative error.
-    [minE kopt] = min(rEr);
+    [minE, kopt] = min(rEr);
     
     % If the minimum relative error is in the last iteration, then run the
     % loop again with stepk new iterations.  Else the minimum error is
@@ -134,7 +134,7 @@ Xend = method(A,b,1:kopt,[],options);
 deltaxend = Xend - repmat(x_ex,1,kopt);
 rErend = sqrt(sum(deltaxend.*deltaxend,1))/normxex;
 
-[minEend koptend] = min(rErend);
+[minEend, koptend] = min(rErend);
 
 % If kopt is equal to koptend, then the global minimum error is not reached,
 % hence all the k values are equal.  The best relaxpar value is determined by
@@ -157,7 +157,7 @@ if kopt == koptend
     % Define x3 always to be inside the interval.
     x3 = pinter(2);
 else
-    [x3 f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
+    [x3, f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
     
 end
 
@@ -169,7 +169,7 @@ if kopt == koptend
     % Define x4 always to be inside the interval.
     x4 = pinter(2);
 else
-    [x4 f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
+    [x4, f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
 end
 
 while abs(i3-i4) > relaxparmax*0.01
@@ -191,7 +191,7 @@ while abs(i3-i4) > relaxparmax*0.01
         % Find the new function value for f4.
         options.relaxpar = i4;
         xnew = method(A,b,1:kopt,[],options);
-        [x4 f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
+        [x4, f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
         
     elseif x4 > pinter(2)
         % Ensure that the minimum error is reached in the left part of
@@ -211,7 +211,7 @@ while abs(i3-i4) > relaxparmax*0.01
         % Find the new value for f3.
         options.relaxpar = i3;
         xnew = method(A,b,1:kopt,[],options);
-        [x3 f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
+        [x3, f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
         
     elseif f3 >= f4
         
@@ -232,7 +232,7 @@ while abs(i3-i4) > relaxparmax*0.01
         if kopt == koptend
             f4 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
         else
-            [x4 f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
+            [x4, f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
         end
         
     else
@@ -253,7 +253,7 @@ while abs(i3-i4) > relaxparmax*0.01
         if kopt == koptend
             f3 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
         else
-            [x3 f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
+            [x3, f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
         end
         
     end

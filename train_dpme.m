@@ -10,7 +10,7 @@ function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,options)
 % side are created, and from these samples the value of tau is determined.
 %
 % Input:
-%   A           m times n matrix.
+%   A           m times n matrix or function handle to matrix-free version.
 %   b_exact     m times 1 vector containing the exact rhs.
 %   x_exact     n times 1 vectir containing the exact solution.
 %   method      Function handle to a SIRT or ART method.

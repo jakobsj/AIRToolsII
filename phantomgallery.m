@@ -53,6 +53,9 @@ function im = phantomgallery(name,N,P1,P2,P3)
 %   P3 = seed for random number generator
 % The larger the P2 the larger the domains of nonzero pixels.
 %
+% tectonic: a test image for the seismic tomography test problems.
+%   im = phantomgallery('tectonic',N)
+%
 % To use these images on connection with fanbeamtomo, paralleltomo, and
 % semismictomo, use the commands:
 %   im = phantomgallery(name,N,...);
@@ -61,7 +64,7 @@ function im = phantomgallery(name,N,P1,P2,P3)
 %   b = A*x;
 
 % Per Christian Hansen, July 6, 2015, DTU Compute.
-% With contibutions by Jakob Sauer J�rgensen and Mikhail Romanov, DTU
+% With contibutions by Jakob Sauer Jorgensen and Mikhail Romanov, DTU
 % Compute and Knud Cordua, Univ. of Copenhagen.
 
 if nargin < 2, error('Not enought input arguments'), end
