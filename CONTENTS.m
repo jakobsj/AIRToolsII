@@ -49,6 +49,7 @@
 % Demonstration Scripts:
 %   demo_art            - Demonstrates the use of, and the results from, the ART methods.
 %   demo_constraints    - Demonstrates the use of nonnegativity and other constraints.
+%   demo_matrixfree     - Demonstrates the matrix-free mode for test problems and reconstruction methods.
 %   demo_sirt           - Demonstrates the use of, and the results from, the SIRT methods.
 %   demo_training       - Demonstrates the use of the training methods.
 %
