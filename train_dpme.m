@@ -40,7 +40,15 @@ if nargin == 8
     end
 end
 
-m = size(A,1);
+% If A is not a function (i.e., A is a matrix or an object), convert A
+% to a function.
+if isa(A,'function_handle')
+    Afun = A;
+else
+    Afun = @(xx,transp_flag) afun_matrix(xx,transp_flag,A);
+end
+m = Afun([],'size');
+m = m(1);
 
 % Generate s noisy samples of the rhs.
 % Debugging
@@ -59,8 +67,8 @@ switch func2str(method)
     case {'landweber','cimmino','cav','drop','sart'}
         
         % Determine the M12 and its norm.
-        [ignore ignore restart] = method(A,b(:,1),1);
-        M = restart.M;
+        [ignore1, ignore2, ext_info] = method(Afun,b(:,1),1);
+        M = ext_info.M;
         if ~isempty(M)
             M12 = sqrt(M);
             M12norm = max(M12);
@@ -68,7 +76,6 @@ switch func2str(method)
             M12 = 1;
             M12norm = 1;
         end
-        options.restart = restart;
         options.stoprule.type = 'none';
         % The maximum number of iterations for SIRT methods.
         kmax = 1000;
@@ -115,7 +122,7 @@ for i = 1:s
     while ~stop
         
         % Perform the K iterations.
-        Xny = method(A,bi,K,x0,options);
+        Xny = method(Afun,bi,K,x0,options);
         
         % Calculate the relative error.
         xd = Xny - repmat(x_exact,1,size(Xny,2));
@@ -123,7 +130,7 @@ for i = 1:s
         X = [X Xny];
         
         % Find the minimum relative error.
-        [minEk I] = min(Ek);
+        [minEk, I] = min(Ek);
         
         % If the minimum error is not in the last iteration, then the
         % loop is stopped.
@@ -151,8 +158,8 @@ for i = 1:s
     end
     
     % Calculate the residual for the optimal iteration and the previous one.
-    rk = M12.*(bi-A*X(:,kopt+1));
-    rkm1 = M12.*(bi-A*X(:,kopt));
+    rk = M12.*(bi-Afun(X(:,kopt+1),'notransp'));
+    rkm1 = M12.*(bi-Afun(X(:,kopt),'notransp'));
     
     % Split in the types DP and ME.
     if strncmpi(type,'DP',2)
@@ -167,12 +174,12 @@ for i = 1:s
         % Ensuring that there is enough iterations to find the next
         % residual
         if kopt +2 > size(X,2)
-            Xny = method(A,bi,2,Xny(:,end),options);
+            Xny = method(Afun,bi,2,Xny(:,end),options);
             X = [X Xny]; 
         end
         
         % Define the residual for the iteration after the optimal.
-        rkp1 = M12.*(bi-A*X(:,kopt+2));
+        rkp1 = M12.*(bi-Afun(X(:,kopt+2),'notransp'));
                
         Rk = (rk'*(rk+rkp1))/(delta*M12norm*norm(rk));
         Rkm1 = (rkm1'*(rkm1+rk))/(delta*M12norm*norm(rkm1));
