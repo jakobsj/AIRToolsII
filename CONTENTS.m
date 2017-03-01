@@ -48,7 +48,7 @@
 %
 % Demonstration Scripts:
 %   demo_art            - Demonstrates the use of, and the results from, the ART methods.
-%   demo_nonneg         - Demonstrates the use of nonnegativity constraints.
+%   demo_constraints    - Demonstrates the use of nonnegativity and other constraints.
 %   demo_sirt           - Demonstrates the use of, and the results from, the SIRT methods.
 %   demo_training       - Demonstrates the use of the training methods.
 %

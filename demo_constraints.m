@@ -1,7 +1,8 @@
-%demo_nonneg (script) Demonstrates the use of nonnegativity constraints.
+%demo_constraints (script) Demonstrates the use of nonnegativity and more
+%general upper and lower bound constraints.
 %
 % This script illustrates the use of the cimmino and kaczmarz methods
-% with the nonnegativity option.
+% with the lbound and ubound options.
 %
 % The script creates a parallel-beam test problem, adds noise and solves
 % the problem without and with the constraints.  The exact solution and
@@ -12,7 +13,8 @@
 % Maria Saxild-Hansen and Per Chr. Hansen, Oct. 21, 2010, DTU Compute.
 
 close all
-fprintf(1,'\nStarting SIRTdemo:\n\n');
+clear options
+fprintf(1,'\nStarting demo_constraints:\n\n');
 
 % Set the parameters for the test problem.
 N = 50;           % The discretization points.
@@ -43,7 +45,8 @@ axis image off
 c = caxis;
 title('Exact phantom')
 
-% No. of iterations; set nonnegativity off.
+% No. of iterations; set nonnegativity off. This is also the default
+% behavior obtained if not specifying an lbound field of options.
 k = 50;
 options.lbound = -inf;
 
@@ -85,12 +88,12 @@ fprintf(1,'\n');
 fprintf(1,'Perform k = %2.0f iterations with Kaczmarz''s method.',k);
 fprintf(1,'\nThis takes a while ...\n');
 
-% Perform the cimmino iterations.
-Xcimp = kaczmarz(A,b,k,[],options);
+% Perform the kaczmarz iterations.
+Xkacp = kaczmarz(A,b,k,[],options);
 
 % Show the kaczmarz solution.
 figure
-imagesc(reshape(Xcimp,N,N)), colormap gray,
+imagesc(reshape(Xkacp,N,N)), colormap gray,
 axis image off
 caxis(c);
 title('Kaczmarz reconstruction')
@@ -102,12 +105,52 @@ fprintf(1,'\n');
 fprintf(1,'Repeat with nonnegativity constraints.\n');
 fprintf(1,'This takes a while ...\n');
 
+% Perform the kaczmarz iterations.
+Xkacp = kaczmarz(A,b,k,[],options);
+
+% Show the kaczmarz solution.
+figure
+imagesc(reshape(Xkacp,N,N)), colormap gray,
+axis image off
+caxis(c);
+title('Kaczmarz reconstruction w. nonnegativity')
+
+% Set scalar lower and upper bounds (too tight to demonstrate effect).
+options.lbound = 0.1;
+options.ubound = 0.7;
+
+fprintf(1,'\n');
+fprintf(1,'Repeat Cimmino with too tight lower and upper scalar bounds.\n');
+fprintf(1,'This takes a moment ...\n');
+
 % Perform the cimmino iterations.
-Xcimp = kaczmarz(A,b,k,[],options);
+Xcimp = cimmino(A,b,k,[],options);
 
 % Show the cimmino solution.
 figure
 imagesc(reshape(Xcimp,N,N)), colormap gray,
 axis image off
 caxis(c);
-title('Kaczmarz reconstruction w. nonnegativity')
+title('Cimmino reconstruction w. bounds 0.1 and 0.7')
+
+% Set vector lower and upper bounds: Different bounds in left and right
+% half of image (all too tight to demonstrate effect). If non-scalar,
+% vector input must have the same length as image to be reconstructed to
+% enforce elementwise bounds.
+ov = ones(N^2/2,1);
+options.lbound = [0.1*ov; 0.15*ov];
+options.ubound = [0.6*ov; 0.5*ov];
+
+fprintf(1,'\n');
+fprintf(1,'Repeat Cimmino with too tight lower and upper scalar bounds.\n');
+fprintf(1,'This takes a moment ...\n');
+
+% Perform the cimmino iterations.
+Xcimp = cimmino(A,b,k,[],options);
+
+% Show the cimmino solution.
+figure
+imagesc(reshape(Xcimp,N,N)), colormap gray,
+axis image off
+caxis(c);
+title('Cimmino reconstruction w. vector bounds.')
