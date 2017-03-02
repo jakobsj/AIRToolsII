@@ -13,7 +13,7 @@
 % Jakob Sauer Jorgensen, 2017-03-01, DTU Compute.
 
 close all
-fprintf(1,'\nStarting demo_art:\n\n');
+fprintf(1,'\nStarting demo_cart:\n\n');
 
 % Set the parameters for the test problem.
 N = 50;           % The discretization points.

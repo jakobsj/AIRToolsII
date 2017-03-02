@@ -138,12 +138,12 @@ fprintf(1,'\n\n');
 fprintf(1,'Perform k = %2.0f iterations of custom (also landweber) SIRT method.',k);
 fprintf(1,'\nThis takes a moment ...');
 
-% Set M and T function handles to do nothing as in landweber's method
+% Set M and D function handles to do nothing as in landweber's method
 Mfun = @(XX) XX;
-Tfun = @(XX) XX;
+Dfun = @(XX) XX;
 
 % Perform the standard landweber iteration using general interface
-Xland_c = sirt({Mfun,Tfun},A,b,k);
+Xland_c = sirt({Mfun,Dfun},A,b,k);
 
 % Show the custom (backwards) kaczmarz solution.
 figure
@@ -158,13 +158,13 @@ fprintf(1,'\n\n');
 fprintf(1,'Perform k = %2.0f iterations of custom (scaled landweber) SIRT method.',k);
 fprintf(1,'\nThis takes a moment ...\n');
 
-% Set M and T function handles to do nothing as in landweber's method
+% Set M and D function handles to do nothing as in landweber's method
 scaling = 10;
 Mfun = @(XX) scaling*XX;
-Tfun = @(XX) (1/scaling)*XX;
+Dfun = @(XX) (1/scaling)*XX;
 
 % Perform the standard landweber iteration using general interface
-Xland_s = sirt({Mfun,Tfun},A,b,k);
+Xland_s = sirt({Mfun,Dfun},A,b,k);
 
 % Show the custom (backwards) kaczmarz solution.
 figure

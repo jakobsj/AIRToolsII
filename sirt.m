@@ -9,7 +9,8 @@ end
 
 % Special for SART: A cannot have negative elements. Give warning if any
 % detected (only feasible for when A is a matrix.)
-if strcmpi(sirt_method,'sart') && isnumeric(varargin{1}) && any(any(varargin{1}<0))
+if ischar(sirt_method) && strcmpi(sirt_method,'sart') && ...
+        isnumeric(varargin{1}) && any(any(varargin{1}<0))
     warning('SART assumes all elements of A are non-negative, but negative elements detected.')
 end
 
@@ -19,12 +20,12 @@ end
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
-    [Mfun,Tfun] = get_mfun_tfun(sirt_method,varargin{1},m,n,w);
+    [Mfun,Dfun] = get_mfun_dfun(sirt_method,varargin{1},m,n,w);
 else
     % Possible to pass in custom SIRT method given by 2-element cell array
     % holding function handles to Mfun and sfun instead of string input.
     Mfun = sirt_method{1};
-    Tfun = sirt_method{2};
+    Dfun = sirt_method{2};
 end
 
 % Initialize array to hold requested iterates.
@@ -42,16 +43,16 @@ rk = b - Afun(x0,'notransp');
     stoprule, rk, relaxparinput, taudelta, k, kmax, rkm1, dk, res_dims);
 
 % Calculate relaxpar. Special case for SART largest singval is 1.
-atma = @(x) Tfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
+atma = @(x) Dfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
 if strcmpi(sirt_method,'sart')
     s1 = 1;
 end
 [relaxpar, casel, sigma1tilde] = calc_relaxpar_sirt(relaxparinput, s1, kmax, atma, n);
 
-% Store M and T in third output struct.
+% Store M and D in third output struct.
 if nargout > 2
     ext_info.M = Mfun(ones(m,1));
-    ext_info.T = Tfun(ones(n,1));
+    ext_info.D = Dfun(ones(n,1));
 end
 
 % Initialize the values.
@@ -71,7 +72,7 @@ while ~stop
         relaxparcur = relaxpar;        
     elseif casel == 2
         % SIRT using line search.    
-        ATMrkS = sum(Tfun(ATMrk.^2));
+        ATMrkS = sum(Dfun(ATMrk.^2));
         relaxparcur = (rk'*Mrk)/ATMrkS;
     elseif casel == 3
         % SIRT using psi1 or psi2.
@@ -79,7 +80,7 @@ while ~stop
     end % end the different cases of relaxpar strategies.
     
     % The update step with current relaxpar
-    xk = xk + relaxparcur*(Tfun(ATMrk));
+    xk = xk + relaxparcur*(Dfun(ATMrk));
     
     % Enforce any lower and upper bounds (scalars or xk-sized vectors)
     if ~isempty(lbound)

@@ -64,5 +64,5 @@
 %   calc_relaxpar_sirt  - Computes the relaxation parameter for SIRT methods.
 %   check_inputs        - Checks inputs and sets default values.
 %   check_stoprules     - Checks if stopping rule criteria are met.
-%   get_mfun_tfun       - Computes matrices M and T for SIRT methods.
+%   get_mfun_dfun       - Computes matrices M and D for SIRT methods.
 %   init_stoprules      - Initializes stopping rules.

@@ -1,17 +1,17 @@
-function [Mfun,Tfun] = get_mfun_tfun(sirt_method, A, m, n, w)
+function [Mfun,Dfun] = get_mfun_dfun(sirt_method, A, m, n, w)
 
 switch sirt_method
     
     case 'landweber'
         
-        % Both M and T are identity, so do nothing.
+        % Both M and D are identity, so do nothing.
         Mfun = @(XX) XX;
-        Tfun = @(XX) XX;
+        Dfun = @(XX) XX;
         
     case 'cimmino'
         
-        % T is identity, so do nothing.
-        Tfun = @(XX) XX;
+        % D is identity, so do nothing.
+        Dfun = @(XX) XX;
         
         % Define the M matrix.
         % Calculate the norm of each row in A. 
@@ -43,8 +43,8 @@ switch sirt_method
         
     case 'cav'
         
-        % T is identity, so do nothing.
-        Tfun = @(XX) XX;
+        % D is identity, so do nothing.
+        Dfun = @(XX) XX;
         
         % Define the M matrix.
         if ~isa(A,'function_handle')
@@ -110,7 +110,7 @@ switch sirt_method
         % Store M in function handle.
         Mfun = @(XX) M.*XX;
         
-        % Define the T matrix.
+        % Define the D matrix.
         % Define the s vector and the M matrix.
         if ~isa(A,'function_handle')
             s = 1./sum(A~=0,1)';
@@ -127,8 +127,8 @@ switch sirt_method
         I = (s == Inf);
         s(I) = 0;
         
-        % Store T in function handle.
-        Tfun = @(XX) s.*XX;
+        % Store D in function handle.
+        Dfun = @(XX) s.*XX;
         
     case 'sart'
         % Set diagonal of W = M if not given as input. W is the notation of
@@ -147,7 +147,7 @@ switch sirt_method
         % Store M in function handle.
         Mfun = @(XX) M.*XX;
         
-        % Set s-vector representing V = T if not given as input. V is the
+        % Set s-vector representing V = D if not given as input. V is the
         % notation from the original SART article.
         if ~isa(A,'function_handle')
             Apj = full(sum(abs(A),1))';
@@ -160,8 +160,8 @@ switch sirt_method
         I = (s == Inf);
         s(I) = 0;
         
-        % Store T as function handle.
-        Tfun = @(XX) s.*XX;
+        % Store D as function handle.
+        Dfun = @(XX) s.*XX;
         
         % Note on purpose weights not implemented for SART, as would modify
         % special property causing largest singular value to equal 1.

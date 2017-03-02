@@ -33,7 +33,7 @@ turned all ART, CART and SIRT files into wrappers of these. In addition to
 the provided methods also custom methods can be constructed. For art.m and 
 cart.m this is done by passing in vector with the order in which rows/
 columns are to be traversed; for sirt.m by passing in function handles to 
-the matrices M and T identifying the desired SIRT method.
+the matrices M and D identifying the desired SIRT method.
 
 More general bound constraints can be used. For both lower and upper 
 bounds it is possible to specify either no constraint, a scalar enforced 
