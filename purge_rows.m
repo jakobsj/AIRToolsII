@@ -1,12 +1,14 @@
-function [A,b] = rzr(A,b,Nthr)
-%RZR  Remove zero rows of A and the corresponding elements of b.
+function [A,b] = purge_rows(A,b,Nthr)
+%PURGE_ROWS  Remove zero rows of A and the corresponding elements of b.
 %
-% [A,b] = rzr(A,b)
-% [A,b] = rzr(A,b,Nthr)
+% [A,b] = purge_rows(A,b)
+% [A,b] = purge_rows(A,b,Nthr)
 %
 % Identifies zero rows of the coefficient matrix A and removes them.
 % If a right-hand side b is present, the corresponding elements of
-% b are also removed (b can be a matrix of several right hand sides).
+% b are also removed (b can be a matrix of several right hand sides). A
+% needs to be matrix, i.e., cannot be a function handle representing the
+% forward operator.
 %
 % If a positive Nthr is given as the third argument, then all rows in
 % which the number of nonzeros is less than or equal to Nthr will be

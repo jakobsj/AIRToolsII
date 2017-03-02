@@ -44,6 +44,7 @@
 %   fanbeamtomo         - 2D tomography test problem using fan beam and arc detector.
 %   fanbeamtomolinear   - 2D tomography test problem using fan beam and linear detector.
 %   phantomgallery      - A collection of different 2D phantoms.
+%   purge_rows          - Remove zero rows of A and the corresponding elements of b.
 %   seismictomo         - 2D seismic travel-time tomography test problem.
 %   seismicwavetomo     - Similar to seismictomo but without a ray assumption.
 %
@@ -65,4 +66,3 @@
 %   check_stoprules     - Checks if stopping rule criteria are met.
 %   get_mfun_tfun       - Computes matrices M and T for SIRT methods.
 %   init_stoprules      - Initializes stopping rules.
-%   rzr                 - Remove zero rows of A and the corresponding elements of b.
