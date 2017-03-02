@@ -7,6 +7,12 @@ if isempty(sirt_method)
     sirt_method = 'sart';
 end
 
+% Special for SART: A cannot have negative elements. Give warning if any
+% detected (only feasible for when A is a matrix.)
+if strcmpi(sirt_method,'sart') && isnumeric(varargin{1}) && any(any(varargin{1}<0))
+    warning('SART assumes all elements of A are non-negative, but negative elements detected.')
+end
+
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
     s1,w,res_dims,ncp_smooth] = check_inputs(varargin{:});
