@@ -1,5 +1,5 @@
 function [A,b] = purge_rows(A,b,Nthr)
-%PURGE_ROWS  Remove zero rows of A and the corresponding elements of b.
+%PURGE_ROWS  Remove zero/"small" rows of A and corresponding elements of b.
 %
 % [A,b] = purge_rows(A,b)
 % [A,b] = purge_rows(A,b,Nthr)
