@@ -347,7 +347,7 @@ im = (mod(x+1,4) == 0)*0.33 + (mod(x+2,4) == 0)*0.66 + (mod(x+3,4) == 0);
 function im = grains(N,numGrains,seed)
 %GRAINS Creates a test image of Voronoi cells
 
-% Jakob Sauer J�rgensen, October 9, 2012, DTU Compute.
+% Jakob Sauer Jorgensen, October 9, 2012, DTU Compute.
 
 if nargin==1 || isempty(numGrains), numGrains = round(3*sqrt(N)); end
 if nargin==3, rng(seed), end
@@ -388,9 +388,9 @@ im = im/max(im(:));
 function F = ppower(N,relnz,p,seed)
 %PPOWER Creates a 2D test image with patterns of nonzero pixels
 
-% Per Christian Hansen and Jakob Sauer J�rgensen, July 6, 2015.
+% Per Christian Hansen and Jakob Sauer Jorgensen, July 6, 2015.
 
-% Reference: J. S. J�rgensen, E. Y. Sidky, P. C. Hansen, and X. Pan,
+% Reference: J. S. Jorgensen, E. Y. Sidky, P. C. Hansen, and X. Pan,
 % Empirical average-case relation between undersampling and sparsity in
 % X-ray CT, submitted.
 

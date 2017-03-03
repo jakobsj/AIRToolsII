@@ -62,7 +62,7 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 % Modified to do linear detector array, from fanbeamtomo in AIRtools 1.0.
 % Jakob Sauer Jorgensen, 2012-04-04, DTU Compute, jakj@dtu.dk.
 
-% Jakob Heide Joergensen, Maria Saxild-Hansen and Per Christian Hansen,
+% Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Christian Hansen,
 % June 21, 2011, DTU Informatics.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
