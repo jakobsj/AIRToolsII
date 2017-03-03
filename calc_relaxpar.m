@@ -1,6 +1,39 @@
 function [relaxpar, casel, sigma1tilde] = calc_relaxpar(relaxparinput, s1, kmax, atma, n)
+%CALC_RELAXPAR Aux. function to compute relaxation parameter from input.
+%
+%   relaxpar = calc_relaxpar(relaxparinput)
+%   [relaxpar, casel, sigma1tilde] = calc_relaxpar(relaxparinput, s1, kmax, atma, n)
+%
+% Short form is used by art and cart and sets the relaxpar to be used
+% either to default values of 1 or 0.25, respectively, or assigns a value
+% given by the user. If the value given by the user is outside the
+% required interval a warning is given.
+% 
+% Long form is used by sirt and inputs and outputs are explained below.
+% 
+% Input:
+%    relaxparinput     Any relaxation parameter or flag determining method 
+%                      to use for determinin relaxpar as specified by user.
+%    s1                The largest singular value if given by user.
+%    kmax              The maximum number of SIRT iterations to run.
+%    atma              A function handle to the iteration matrix
+%                      characterizing the SIRT method, for which to compute
+%                      the largest singular value.
+%    n                 The number of columns in A.
+%    
+% Output:
+%    relaxpar          The computed relaxation parameter or vector of
+%                      iteration-dependent relaxation parameters.
+%    casel             A flag indicating whether a constant lambda is
+%                      returned (casel=1), line search is to be used
+%                      (casel=2) or the psi1/psi2 strategies to be used
+%                      (casel=3).
+%    sigma1tilde       The computed largest singular value.
+%
+% See also: art.m, cart.m, sirt.m
 
-
+% Jakob Sauer Jorgensen, Per Christian Hansen, Maria Saxild-Hansen
+% 2017-03-03 DTU Compute
 
 % First determine whether called from art, cart or sirt. Just testing for
 % the specific method name such as cimmino would not cover the case of
@@ -10,8 +43,8 @@ stack = dbstack;
 switch stack(2).name
     
     case 'art'
-        % Default choice 1. If user gave as input, use that value and throw warning
-        % if outside [0,2], but proceed.
+        % Default choice 1. If user gave as input, use that value and 
+        % throw warning if outside [0,2], but proceed.
         if isnan(relaxparinput)
             relaxpar = 1;
         else
@@ -23,8 +56,8 @@ switch stack(2).name
         end
         
     case 'cart'
-        % Default choice 1. If user gave as input, use that value and throw warning
-        % if outside [0,2], but proceed.
+        % Default choice 1. If user gave as input, use that value and throw
+        % warning if outside [0,2], but proceed.
         if isnan(relaxparinput)
             relaxpar = 0.25;
         else
@@ -38,15 +71,16 @@ switch stack(2).name
     case 'sirt'
         % Check if the largest singular value is given.
         if isnan(s1)
-            % Calculates the largest singular value.
+            % If not, calculate the largest singular value.
             optionsEIGS.disp = 0;
             sigma1tilde = sqrt( eigs(atma,n,1,'lm',optionsEIGS) );
         else
+            % Otherwise, use the given value.
             sigma1tilde = s1;
         end
         
         % Determine the relaxation parameter relaxpar.
-        % If relaxparinput is nan, set default
+        % If relaxparinput is nan, set default.
         if isnan(relaxparinput)
             
             % Define a default constant relaxpar value.
@@ -63,6 +97,7 @@ switch stack(2).name
             end
             relaxpar = relaxparinput;
             casel = 1;
+            
         else
             % Calculate the relaxpar value according to the chosen method.
             if strncmpi(relaxparinput,'line',4)
@@ -88,7 +123,6 @@ switch stack(2).name
             elseif strncmpi(relaxparinput,'psi2',4)
                 % Method: ENH psi2.
                 casel = 3;
-                ite = 0;
                 
                 % Precalculate the roots.
                 kk = 2:kmax-1;
