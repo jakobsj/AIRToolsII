@@ -46,11 +46,19 @@ image pixels.
 For improved consistency across ART methods, psi1 and psi2 strategies for 
 choosing the relaxation parameter have been removed from symkaczmarz.
 
-TODO: Changes to stopping rules/which iterates are returned (now looking 
-to next iterate instead of previous)
-
-TODO: Describe new NCP criterion. Allowing 2D/multi1D residuals, as well 
-as filtering.
+PCH TO CHECK: A few changes to implementation of stopping rules. Both ME and NCP 
+rely on detecting when a quantity no longer decreases and previously 
+stored the previous iterate for returning if a decrease at the current 
+iteration was detected. To save the memory instead now the current iterate 
+is returned. Also, as NCP can be prone to oscillatory behavior a filtering 
+or moving average across values at previous iterations has been introduced
+with option for the user to specify the length of the window. Further, NCP 
+was previously implemented assuming the residual is a 1D signal. In many 
+cases, such as all the 2D tomography test problems of AIR Tools, the 
+residual is more naturally described as a collection of 1D residuals (one 
+for each projection). NCP is now implemented separately for each 1D signal 
+and an average is applied to determine whether overall the stopping rule 
+is satisfied.
 
 In symkaczmarz a change of convention has been made. Previously a sweep 
 top->bottom->top was counted as one iteration. Now it is counted as two 
