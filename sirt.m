@@ -1,17 +1,14 @@
 function [X,info,ext_info] = sirt(sirt_method, varargin)
 
+% For SART using matrix-free it is assumed (not checked) that the
+% underlying matrix has nonnegative elements. With a sparse matrix,
+% negative elements are allowed and handled properly.
+
 % options.s1 now instead of options.restart.s1: largest singval
 
 % Set default SIRT method to be sart.
 if isempty(sirt_method)
     sirt_method = 'sart';
-end
-
-% Special for SART: A cannot have negative elements. Give warning if any
-% detected (only feasible for when A is a matrix.)
-if ischar(sirt_method) && strcmpi(sirt_method,'sart') && ...
-        isnumeric(varargin{1}) && any(any(varargin{1}<0))
-    warning('SART assumes all elements of A are non-negative, but negative elements detected.')
 end
 
 % Parse inputs.
