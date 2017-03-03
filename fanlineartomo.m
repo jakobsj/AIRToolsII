@@ -1,18 +1,18 @@
 function [A,b,x,theta,p,R,dw,sd] = ...
-    fanbeamtomolinear(N,theta,p,R,dw,sd,isDisp,isMatrix)
-%FANBEAMTOMOLINEAR Creates 2D fan-beam linear-detector tomography test problem.
+    fanlineartomo(N,theta,p,R,dw,sd,isDisp,isMatrix)
+%FANLINEARTOMO Creates 2D fan-beam linear-detector tomography test problem.
 %
-%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N)
-%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta)
-%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p)
-%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p,R)
-%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p,R,dw)
-%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p,R,dw,sd)
-%   [A,b,x,theta,p,R,d] = fanbeamtomolinear(N,theta,p,R,dw,sd,isDisp)
+%   [A,b,x,theta,p,R,d] = fanlineartomo(N)
+%   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta)
+%   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p)
+%   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R)
+%   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R,dw)
+%   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R,dw,sd)
+%   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R,dw,sd,isDisp)
 %
 % This function creates a 2D tomography test problem with an N-times-N
 % domain, using p rays in fan-formation for each angle in the vector theta.
-% Unlike fanbeamtomo, in which the detector is curved, in fanbeamtomolinear
+% Unlike fancurvedtomo, in which the detector is curved, in fanlineartomo 
 % the detector is linear, corresponding to the central slice of a
 % flat-panel detector.
 %
@@ -42,7 +42,7 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 %   R           The radius in side lengths. 
 %   d           The span of the rays.
 %
-% See also: paralleltomo, fanbeamtomo, seismictomo.
+% See also: paralleltomo, fancurvedtomo, seismictomo, seismicwavetomo.
 
 % Modified to do linear detector array, from fanbeamtomo in AIRtools 1.0.
 % Jakob Sauer Joergensen, 2012-04-04, DTU Compute, jakj@dtu.dk.

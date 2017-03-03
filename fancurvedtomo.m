@@ -1,12 +1,12 @@
-function [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R,d,isDisp,isMatrix)
-%FANBEAMTOMO Creates a 2D tomography test problem using fan beams
+function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
+%FANCURVEDTOMO Creates a 2D tomography test problem using fan beams
 %
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R,d)
-%   [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R,d,isDisp)
+%   [A,b,x,theta,p,R,d] = fancurvedtomo(N)
+%   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta)
+%   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p)
+%   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R)
+%   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d)
+%   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp)
 %
 % This function creates a 2D tomography test problem with an N-times-N
 % domain, using p rays in fan-formation for each angle in the vector theta.
@@ -42,7 +42,7 @@ function [A,b,x,theta,p,R,d] = fanbeamtomo(N,theta,p,R,d,isDisp,isMatrix)
 %   R           The radius in side lengths. 
 %   d           The span of the rays.
 %
-% See also: paralleltomo, seismictomo.
+% See also: paralleltomo, fanlineartomo, seismictomo, seismicwavetomo.
 
 % Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Christian Hansen,
 % Nov. 5, 2015, DTU Compute.
