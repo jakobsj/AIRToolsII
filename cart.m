@@ -86,7 +86,7 @@ end
     stoprule, rk, relaxparinput, taudelta, k, kmax, rkm1, dk, res_dims);
 
 % Compute the relaxation parameter to be used throughout iterations.
-relaxpar = calc_relaxpar_cart(relaxparinput);
+relaxpar = calc_relaxpar(relaxparinput);
 
 % Calculate the norm of each column in A. This calculation can require a
 % lot of memory. Unlike ART methods, A is NOT transposed.

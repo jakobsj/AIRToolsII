@@ -44,7 +44,7 @@ atma = @(x) Dfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
 if strcmpi(sirt_method,'sart')
     s1 = 1;
 end
-[relaxpar, casel, sigma1tilde] = calc_relaxpar_sirt(relaxparinput, s1, kmax, atma, n);
+[relaxpar, casel, sigma1tilde] = calc_relaxpar(relaxparinput, s1, kmax, atma, n);
 
 % Store M and D in third output struct.
 if nargout > 2

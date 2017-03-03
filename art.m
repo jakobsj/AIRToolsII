@@ -47,7 +47,7 @@ end
     stoprule, rk, relaxparinput, taudelta, k, kmax, rkm1, dk, res_dims);
 
 % Compute the relaxation parameter to be used throughout iterations.
-relaxpar = calc_relaxpar_art(relaxparinput);
+relaxpar = calc_relaxpar(relaxparinput);
 
 % Calculate the norm of each row in A. This calculation can require a
 % lot of memory.
