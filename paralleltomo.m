@@ -1,11 +1,12 @@
 function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
-%PARALLELTOMO Creates a 2D tomography test problem using parallel beams
+%PARALLELTOMO Creates a 2D parallel-beam tomography test problem
 %
 %   [A,b,x,theta,p,d] = paralleltomo(N)
 %   [A,b,x,theta,p,d] = paralleltomo(N,theta)
 %   [A,b,x,theta,p,d] = paralleltomo(N,theta,p)
 %   [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d)
 %   [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp)
+%   [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 %
 % This function creates a 2D tomography test problem with an N-times-N
 % domain, using p parallel rays for each angle in the vector theta.
@@ -27,8 +28,19 @@ function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 %               matrix-free version is returned.
 %
 % Output:
-%   A           Coefficient matrix with N^2 columns and nA*p rows,
-%               where nA is the number of angles, i.e., length(theta).
+%   A           If input isMatrix is 1 (default): Coefficient matrix with 
+%               N^2 columns and nA*p rows, where nA is the number of
+%               angles, i.e., length(theta). 
+%               If isMatrix is 0: A function handle representing a
+%               matrix-free version of A in which the forward and backward
+%               operations can be called as A(x,'notransp') and
+%               A(y,'transp'), respectively, for column vectors x and y of
+%               appropriate size. The size of A can be retrieved using
+%               A([],'size'). The matrix is never formed explicitly, thus
+%               saving memory, which for large problems can be essential.
+%               Instead output elements are computed on the fly as
+%               required, so each call to A requires full computation of
+%               elements in A.
 %   b           Vector containing the rhs of the test problem.
 %   x           Vector containing the exact solution, with elements
 %               between 0 and 1.

@@ -1,6 +1,6 @@
 function [A,b,x,theta,p,R,dw,sd] = ...
     fanlineartomo(N,theta,p,R,dw,sd,isDisp,isMatrix)
-%FANLINEARTOMO Creates 2D fan-beam linear-detector tomography test problem.
+%FANLINEARTOMO Creates 2D fan-beam linear-detector tomography test problem
 %
 %   [A,b,x,theta,p,R,d] = fanlineartomo(N)
 %   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta)
@@ -9,6 +9,7 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 %   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R,dw)
 %   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R,dw,sd)
 %   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R,dw,sd,isDisp)
+%   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R,dw,sd,isDisp,isMatrix)
 %
 % This function creates a 2D tomography test problem with an N-times-N
 % domain, using p rays in fan-formation for each angle in the vector theta.
@@ -20,7 +21,7 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 %   N           Scalar denoting the number of discretization intervals in 
 %               each dimesion, such that the domain consists of N^2 cells.
 %   theta       Vector containing the angles in degrees. Default: theta =
-%               0:1:359.
+%               0:2:358.
 %   p           Number of rays for each angle. Default: p =
 %               round(sqrt(2)*N).
 %   R           The distance from the source to the center of the domain
@@ -30,10 +31,24 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 %   isDisp      If isDisp is non-zero it specifies the time in seconds 
 %               to pause in the display of the rays. If zero (the default), 
 %               no display is shown.
+%   isMatrix    If non-zero, a sparse matrix is set up to represent the
+%               forward problem. If zero, instead a function handle to a
+%               matrix-free version is returned.
 %
 % Output:
-%   A           Coefficient matrix with N^2 columns and nA*p rows, 
-%               where nA is the number of angles, i.e., length(theta).
+%   A           If input isMatrix is 1 (default): Coefficient matrix with
+%               N^2 columns and nA*p rows, where nA is the number of
+%               angles, i.e., length(theta). 
+%               If isMatrix is 0: A function handle representing a
+%               matrix-free version of A in which the forward and backward
+%               operations can be called as A(x,'notransp') and
+%               A(y,'transp'), respectively, for column vectors x and y of
+%               appropriate size. The size of A can be retrieved using
+%               A([],'size'). The matrix is never formed explicitly, thus
+%               saving memory, which for large problems can be essential.
+%               Instead output elements are computed on the fly as
+%               required, so each call to A requires full computation of
+%               elements in A.
 %   b           Vector containing the rhs of the test problem.
 %   x           Vector containing the exact solution, with elements
 %               between 0 and 1.
@@ -45,7 +60,7 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 % See also: paralleltomo, fancurvedtomo, seismictomo, seismicwavetomo.
 
 % Modified to do linear detector array, from fanbeamtomo in AIRtools 1.0.
-% Jakob Sauer Joergensen, 2012-04-04, DTU Compute, jakj@dtu.dk.
+% Jakob Sauer Jorgensen, 2012-04-04, DTU Compute, jakj@dtu.dk.
 
 % Jakob Heide Joergensen, Maria Saxild-Hansen and Per Christian Hansen,
 % June 21, 2011, DTU Informatics.
@@ -83,7 +98,7 @@ end
 
 % Default value of the angles theta.
 if nargin < 2 || isempty(theta)
-    theta = 0:359;
+    theta = 0:2:358;
 end
 
 % Make sure theta is double precison to prevent round-off issues caused by
@@ -344,4 +359,3 @@ if isMatrix
     % Create sparse matrix A from the stored values.
     A = sparse(rows,cols,vals,p*nA,N^2);
 end
-

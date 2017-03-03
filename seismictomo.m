@@ -5,6 +5,7 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 %   [A,b,x,s,p] = seismictomo(N,s)
 %   [A,b,x,s,p] = seismictomo(N,s,p)
 %   [A,b,x,s,p] = seismictomo(N,s,p,isDisp)
+%   [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 %
 % This function creates a 2D seismic tomography test problem with an
 % N-times-N domain, using s sources located on the right boundary and p
@@ -21,12 +22,23 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 %   isDisp   If isDisp is nonzero it specifies the time in seconds 
 %            to pause in the display of the rays. If zero (the default), 
 %            no display is shown.
-%   isMatrix    If non-zero, a sparse matrix is set up to represent the
-%               forward problem. If zero, instead a function handle to a
-%               matrix-free version is returned.
+%   isMatrix If non-zero, a sparse matrix is set up to represent the
+%            forward problem. If zero, instead a function handle to a
+%            matrix-free version is returned.
 %
 % Output:
-%   A        Coefficient matrix with N^2 columns and s*p rows.
+%   A        If input isMatrix is 1 (default): Coefficient matrix with N^2
+%            columns and s*p rows.
+%            If isMatrix is 0: A function handle representing a
+%            matrix-free version of A in which the forward and backward
+%            operations can be called as A(x,'notransp') and
+%            A(y,'transp'), respectively, for column vectors x and y of
+%            appropriate size. The size of A can be retrieved using
+%            A([],'size'). The matrix is never formed explicitly, thus
+%            saving memory, which for large problems can be essential.
+%            Instead output elements are computed on the fly as
+%            required, so each call to A requires full computation of
+%            elements in A.
 %   b        Vector containing the rhs of the test problem.
 %   x        Vector containing the exact solution, with elements
 %            between 0 and 1.
@@ -267,6 +279,3 @@ if isMatrix
     % Create sparse matrix A from the stored values.
     A = sparse(rows,cols,vals,s*p,N^2);
 end
-
-
-

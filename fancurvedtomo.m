@@ -1,5 +1,5 @@
 function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
-%FANCURVEDTOMO Creates a 2D tomography test problem using fan beams
+%FANCURVEDTOMO Creates 2D fan-beam curved-detector tomography test problem
 %
 %   [A,b,x,theta,p,R,d] = fancurvedtomo(N)
 %   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta)
@@ -7,6 +7,7 @@ function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
 %   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R)
 %   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d)
 %   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp)
+%   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
 %
 % This function creates a 2D tomography test problem with an N-times-N
 % domain, using p rays in fan-formation for each angle in the vector theta.
@@ -15,7 +16,7 @@ function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
 %   N           Scalar denoting the number of discretization intervals in 
 %               each dimesion, such that the domain consists of N^2 cells.
 %   theta       Vector containing the projetion angles in degrees.
-%               Default: theta = 0:1:359.
+%               Default: theta = 0:2:358.
 %   p           Number of rays for each angle. Default: p =
 %               round(sqrt(2)*N).
 %   R           The distance from the source to the center of the domain
@@ -32,8 +33,19 @@ function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
 %               matrix-free version is returned.
 %
 % Output:
-%   A           Coefficient matrix with N^2 columns and nA*p rows, 
-%               where nA is the number of angles, i.e., length(theta).
+%   A           If input isMatrix is 1 (default): Coefficient matrix with
+%               N^2 columns and nA*p rows, where nA is the number of
+%               angles, i.e., length(theta).
+%               If isMatrix is 0: A function handle representing a
+%               matrix-free version of A in which the forward and backward
+%               operations can be called as A(x,'notransp') and
+%               A(y,'transp'), respectively, for column vectors x and y of
+%               appropriate size. The size of A can be retrieved using
+%               A([],'size'). The matrix is never formed explicitly, thus
+%               saving memory, which for large problems can be essential.
+%               Instead output elements are computed on the fly as
+%               required, so each call to A requires full computation of
+%               elements in A.
 %   b           Vector containing the rhs of the test problem.
 %   x           Vector containing the exact solution, with elements
 %               between 0 and 1.
@@ -74,7 +86,7 @@ end
 
 % Default value of the angles theta.
 if nargin < 2 || isempty(theta)
-    theta = 0:359;
+    theta = 0:2:358;
 end
 
 % Make sure theta is double precison to prevent round-off issues caused by
