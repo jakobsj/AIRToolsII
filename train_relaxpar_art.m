@@ -37,11 +37,11 @@ end
 
 % Input checks and default values:
 if nargin < 5 || isempty(kmax)
-    % Default maximum number of iterations
+    % Default maximum number of iterations.
     kmax = 100;
 end
 
-% minimum error interval.
+% Minimum error interval.
 pct = 0.01;
 
 % Initialize the number of iterations.
@@ -76,7 +76,7 @@ while ~stop
 
     else
         
-        % Determine the solution to the K values.
+        % Determine the solutions to the next K values.
         Xnew = method(A,b,K,x0,options);
     end
     
@@ -89,7 +89,7 @@ while ~stop
     [minE, kopt] = min(rEr);
     
     % If the minimum relative error is in the last iteration, then run the
-    % loop again with stepk new iterations.  Else the resolution limit is
+    % loop again with stepk new iterations.  Else the minimum error is
     % found and the loop is stopped.
     if kopt == k && k < kmax
         x0 = Xnew(:,end);
@@ -101,7 +101,7 @@ end
 % Determine the minimum error interval.
 pinter = [minE-pct*minE minE+pct*minE];
 
-% Step 2: Find the relaxpar for which the minimum relarive error is
+% Step 2: Find the relaxpar for which the minimum relative error is
 % within pinter and where kopt is the smallest.
 
 % Define a relaxpar value near the end of the allowed interval, calculate
@@ -121,7 +121,7 @@ rErend = sqrt(sum(deltaxend.*deltaxend,1))/normxex;
 r = (3-sqrt(5))/2;
 
 i1 = 0;
-i2 = 2;
+i2 = relaxparmax;
 i3 = i1 + r*(i2-i1);
 i4 = i1 + (1-r)*(i2-i1);
 
@@ -131,7 +131,7 @@ xnew = method(A,b,1:kopt,[],options);
 
 if kopt == koptend
     f3 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-
+    
     % Define x3 always to be inside the interval.
     x3 = pinter(2);
 else
@@ -143,7 +143,7 @@ options.relaxpar = i4;
 xnew = method(A,b,1:kopt,[],options);
 if kopt == koptend
     f4 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-
+    
     % Define x4 always to be inside the interval.
     x4 = pinter(2);
 else

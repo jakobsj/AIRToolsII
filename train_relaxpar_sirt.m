@@ -59,7 +59,7 @@ normxex = norm(x_ex);
 
 % Step 1: Determine the minimum error at the default value.
 while ~stop
-    % Ensure only the maximum number of iterations are performed.
+    % Ensure only the maximum number of iterations is computed.
     if k+stepk > kmax
         K = 1:(kmax-k);
         k = kmax;
@@ -67,30 +67,20 @@ while ~stop
         % Update the number of iterations.
         k = k + stepk;
     end
-        
+    
     % If the first run in the loop.
     if k <= stepk
         
         switch func2str(method)
-            case {'landweber','cimmino','cav','drop'}
+            case {'landweber','cimmino','cav','drop','sart'}
                 
                 % Determine the solutions to the K values.
                 [Xnew, info] = method(A,b,K,x0,options);
                 
-                % Assign the restart struct to options, such that M, T and
-                % s1 are not recalculated in the next call of the method.
+                % Assign the computed s1 to options, such that s1 does not 
+                % require recalculation in the next call of the method.
                 options.s1 = info.s1;
                 relaxparmax = 2/info.s1^2;
-                
-            case {'sart'}
-                
-                % Determine the solutions to the K values.
-                [Xnew, info] = method(A,b,K,x0,options);
-                
-                % Assign the restart struct to options, such that M, T and
-                % s1 are not recalculated in the next call of the method.
-                options.s1 = info.s1;
-                relaxparmax = 2;
                 
             otherwise
                 error(['Unknown method ',func2str(method)])
@@ -117,11 +107,10 @@ while ~stop
         x0 = Xnew(:,end);
     else
         stop = 1;
-        
     end
 end
 
-% Determine the minimum error interal.
+% Determine the minimum error interval.
 pinter = [minE-pct*minE minE+pct*minE];
 
 % Step 2: Find the relaxpar for which the minimum relative error is
@@ -148,9 +137,10 @@ i2 = relaxparmax;
 i3 = i1 + r*(i2-i1);
 i4 = i1 + (1-r)*(i2-i1);
 
-% Determine the function values for i3 and i4.
+% Calculate the function value for i3.
 options.relaxpar = i3;
 xnew = method(A,b,1:kopt,[],options);
+
 if kopt == koptend
     f3 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
     
@@ -158,9 +148,9 @@ if kopt == koptend
     x3 = pinter(2);
 else
     [x3, f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-    
 end
 
+% Calculate the function value for i4.
 options.relaxpar = i4;
 xnew = method(A,b,1:kopt,[],options);
 if kopt == koptend
@@ -226,7 +216,7 @@ while abs(i3-i4) > relaxparmax*0.01
         x3 = x4;
         i4 = z;
         
-        % Find the new value for f4
+        % Find the new value for f4.
         options.relaxpar = i4;
         xnew = method(A,b,1:kopt,[],options);
         if kopt == koptend
