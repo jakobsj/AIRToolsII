@@ -55,6 +55,7 @@ function [X,info] = cart(cart_method, varargin)
 
 % Jacob Froesig, Nicolai Riis, Per Chr. Hansen, Nov. 7, 2015, DTU Compute.
 
+
 % Set default CART method to be columnkaczmarz.
 if isempty(cart_method)
     cart_method = 'columnkaczmarz';
@@ -62,7 +63,7 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    s1,w,res_dims,ncp_smooth,damp,THR,Kbegin,Nunflag] = ...
+    s1,w,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
     check_inputs(varargin{:});
 
 % Faster to access rows of matrix directly if available.
@@ -74,11 +75,10 @@ X = zeros(n,length(K));
 % Residual of initial guess.
 rk = b - Afun(x0,'notransp');
 
-% Initialize for stopping rules.
-if strcmpi(stoprule,'ME')
-    error('Stopping rule ME is not available for CART method.')
-end
-[k,rkm1,dk] = init_stoprules(stoprule,rk,ncp_smooth);
+% Initialization before iterations.
+k = 0;   % Iteration counter
+xk = x0; % Use initial vector.
+l = 1;   % Pointing to the next iterate number in K to be saved.
 
 % Do initial check of stopping criteria - probably relaxpar should be set
 % before this, perhaps just to nan.
@@ -121,10 +121,6 @@ end
 % Apply damping.
 normAj = normAj + damp*max(normAj);
 
-% Initialization before iterations.
-xk = x0;
-l = 1;
-
 % Set additional CART "flagging" parameters.
 F = true(n,1);       % Vector of logical "flags."
 Nflag = zeros(n,1);  % Counts "flagged" iterations for each component.
@@ -135,6 +131,7 @@ is_lbound_scalar = isscalar(lbound);
 is_ubound_empty  = isempty(ubound);
 is_ubound_scalar = isscalar(ubound);
 
+% Main CART loop.
 while ~stop
     
     % Update the iteration number k.

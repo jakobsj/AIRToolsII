@@ -125,14 +125,14 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    s1,w,res_dims,ncp_smooth] = check_inputs(varargin{:});
+    s1,w,res_dims,rkm1,dk] = check_inputs(varargin{:});
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
     [Mfun,Dfun] = get_mfun_dfun(sirt_method,varargin{1},m,n,w);
 else
     % Possible to pass in custom SIRT method given by 2-element cell array
-    % holding function handles to Mfun and sfun instead of string input.
+    % holding function handles to Mfun and Dfun instead of string input.
     Mfun = sirt_method{1};
     Dfun = sirt_method{2};
 end
@@ -143,11 +143,12 @@ X = zeros(n,length(K));
 % Residual of initial guess.
 rk = b - Afun(x0,'notransp');
 
-% Initialize for stopping rules.
-[k,rkm1,dk] = init_stoprules(stoprule,rk,ncp_smooth);
+% Initialize the values.
+k = 0;   % Iteration counter
+xk = x0; % Use initial vector.
+l = 1;   % Pointing to the next iterate number in K to be saved.
 
-% Do initial check of stopping criteria - probably relaxpar should be set
-% before this, perhaps just to nan.
+% Do initial check of stopping criteria for x0.
 [stop, info, rkm1, dk] = check_stoprules(...
     stoprule, rk, relaxparinput, taudelta, k, kmax, rkm1, dk, res_dims);
 
@@ -156,8 +157,7 @@ atma = @(x) Dfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
 if strcmpi(sirt_method,'sart')
     s1 = 1;
 end
-[relaxpar, casel, sigma1tilde] = ...
-    calc_relaxpar(relaxparinput, s1, kmax, atma, n);
+[relaxpar,casel,sigma1tilde] = calc_relaxpar(relaxparinput,s1,kmax,atma,n);
 
 % Store M and D in third output struct if asked for.
 if nargout > 2
@@ -165,10 +165,7 @@ if nargout > 2
     ext_info.D = Dfun(ones(n,1));
 end
 
-% Initialize the values.
-xk = x0; 
-l = 1;   % Pointing to the next iterate number in K to be saved.
-
+% Main SIRT loop
 while ~stop
     
     % Update the iteration number k.

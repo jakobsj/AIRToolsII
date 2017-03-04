@@ -322,8 +322,6 @@ I2 = find(im2 >= t2);
 im2(I2) = (im2(I2) - min(im2(I2)))/max(im2(:))*v + 0.3;
 
 % Combine the two images onto a smooth background..
-[X,Y] = meshgrid(linspace(-2,2,N), linspace(-2,2,N));
-im = 0.5*exp( -0.5*X.^2 -0.5*Y.^2);
 im = (v/3)*ppower(N,1,2.5);
 im(im1 > 0) = im1(im1 > 0);
 im(im2 > 0) = im2(im2 > 0);

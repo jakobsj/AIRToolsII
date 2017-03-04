@@ -1,22 +1,8 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    relaxparinput,s1,w,res_dims,ncp_smooth,damp,THR,Kbegin,Nunflag] = ...
+    relaxparinput,s1,w,res_dims,rkm1,dk,damp,THR,Kbegin, Nunflag] = ...
     check_inputs(A,b,K,x0,options)
 
-% PCH: removed "Knew" from output.
-
-% PCH: we ought to check if the user inputs options.stoprule.taudelta
-%      is case of DP and ME.
-
-% Add check of options input, including stopping criteria ones, such as
-% taudelta
-
-% Probably change landweber etc inputs to collected all in varargin. This
-% allows a variable number of inputs (eg with or without options) to be
-% passed on to check_inputs and then just return back to landweber Afun etc
-% so that not also A is available. Then also rename check_inputs to
-% parse_inputs, since inputs are not really just checked put changed into
-% the ones to be used.
-
+%% Check first number and dimensions of inputs given are correct.
 
 % Check that at least 3 inputs are given.
 if nargin < 3
@@ -42,13 +28,12 @@ end
 if isempty(K)
     error('Max no. of iterations must ALWAYS be specified.')
 end
-% PCH: added this check that the elements of the user's K appear in
-%      strictly increasing order:
+
+% Elements of K must appear in strictly increasing order:
 if ~all(diff(K)>0)
     error('Elements of K must be strictly increasing.')
 end
-% Knew = sort(K);  PCH: removed this line.
-kmax = K(end);   % PCH: changed "Knew" to "K".
+kmax = K(end);
 
 % Default value for x0.
 if nargin < 4 || isempty(x0)
@@ -61,10 +46,13 @@ if size(x0,1) ~= n || size(x0,2) ~= 1
 end
 
 
-%% After here, fix options etc.
+%% After here, extract from options or use defaults
 if nargin < 5
     options = struct;
 end
+
+
+%% Bound constraints lbound and ubound
 
 % Lower bound(s). Default empty. Can be specified as either scalar or vector
 % of same length as x. If vector, check length/orientation.
@@ -88,68 +76,114 @@ else
     ubound = [];
 end
 
-% Default stoprules
-stoprule = 'NONE';
-taudelta = nan;
-if isfield(options,'stoprule') && isfield(options.stoprule,'type')
-    stoprule = options.stoprule.type;
-end
-if isfield(options,'stoprule') && isfield(options.stoprule,'taudelta')
-    taudelta = options.stoprule.taudelta;
-end
+
+%% Relaxation parameter
 
 relaxparinput = nan;
 if isfield(options,'relaxpar')
     relaxparinput = options.relaxpar;
 end
 
+
+%% Largest singular value
+
 s1 = nan;
 if isfield(options,'s1')
      s1 = options.s1;
 end
 
-% If weights are given as input
+
+%% Weights
+
 w = nan;
 if isfield(options,'w')
     w = options.w;
 end
 
 
-% PCH: I think we must force the user to specify res_dims, otherwise we
-% risk that the user forgets to specify it!  (Speking from own experience.)
+%% Stopping rules
+
+% Default stopping rule.
+stoprule = 'NONE';
+if isfield(options,'stoprule') && isfield(options.stoprule,'type')
+    stoprule = options.stoprule.type;
+end
+
+% For stopping rules DP and ME, taudelta must be given in options.
+taudelta = nan;
+if strcmpi(stoprule,'DP') || strcmpi(stoprule,'ME')
+    if isfield(options,'stoprule') && ...
+       isfield(options.stoprule,'taudelta') && ...
+       isscalar(options.stoprule.taudelta) && ...
+       isnumeric(options.stoprule.taudelta)
+        taudelta = options.stoprule.taudelta;
+    else
+        error('For stopping rules DP and ME a scalar taudelta must be given in options.')
+    end
+end
+
+% For stopping rule NCP, res_dims must be given in options.
 if strcmp(stoprule,'NCP') && ~isfield(options.stoprule,'res_dims')
     error('options.stoprule.res_dims must be specified for NCP stopping rule.')
 end
-% res_dims = n;  PCH: removed this line (and it should be "= m").
-res_dims = []; % PCH: added this line because "res_dims" must be returned.
+res_dims = []; 
 if isfield(options,'stoprule') && isfield(options.stoprule,'res_dims')
     res_dims = options.stoprule.res_dims;
     if ~strcmp(stoprule,'NCP')
-        % PCH: modified the string below a little bit.
         warning(['options.stoprule.res_dims given but only used by NCP ',...
             'stopping rule, not the one currently specified.']);
     end
 end
 
+% For stopping rule NCP, set filter length from options or to default.
 ncp_smooth = 4;
 if isfield(options,'stoprule') && isfield(options.stoprule,'ncp_smooth')
     ncp_smooth = options.stoprule.ncp_smooth;
     if ~strcmp(stoprule,'NCP')
-        % PCH: modified the string below a little bit.
-        warning(['options.stoprule.ncp_Smooth given but only used by NCP ',...
+        warning(['options.stoprule.ncp_smooth given but only used by NCP ',...
             'stopping rule, not the one currently specified.']);
     end
 end
 
+% Initialize stopping rules
+rkm1 = nan; % Only used in ME , otherwise nan as placeholder.
+dk = nan;   % Only used in NCP, otherwise nan as placeholder.
 
-% Damping.
+switch upper(stoprule)
+    case 'DP'
+        % DP stopping rule: Nothing to do.
+        
+    case 'ME'
+        % ME stopping rule.
+        rkm1 = nan(m,1);
+        
+    case 'NCP'
+        % NCP stopping rule.
+        dk = inf(ncp_smooth,1);
+        
+    case 'NONE'
+        % No stopping rule: Nothing to do.
+        
+    otherwise
+        error('The chosen stopping rule is not valid.');
+end
+
+% ME is only available for SIRT. If specified for ART or CART, throw error.
+stack = dbstack;
+if strcmpi(stoprule,'ME') && ~strcmp(stack(2).name,'sirt')
+    error('Stopping rule ME is only available for SIRT methods, not ART and CART.')
+end
+
+
+%% Damping in ART and CART methods.
+
 damp = 0;
 if isfield(options,'damping')
     damp = options.damping;
     if damp<0, error('Damping must be positive'), end
 end
 
-%% For CART with flagging
+%% CART flagging
 
 THR = 1e-4;
 if isfield(options,'THR')

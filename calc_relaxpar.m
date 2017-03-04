@@ -205,7 +205,7 @@ while  k < kmax
     h = f/df;
 end
 
-function [f df] = fung(x,k)
+function [f, df] = fung(x,k)
 % Uses Horner's algorithm to evaluate the ploynomial and its derivative
 
 C = [0 2*k-1 -ones(1,k-1)];

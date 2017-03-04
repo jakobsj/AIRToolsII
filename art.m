@@ -7,9 +7,9 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    s1,w,res_dims,ncp_smooth,damp] = check_inputs(varargin{:});
+    s1,w,res_dims,rkm1,dk,damp] = check_inputs(varargin{:});
 
-%% Special check for symkaczmarz: number of iterations must be even
+% Special check for symkaczmarz: number of iterations must be even
 if ischar(art_method) && strncmpi(art_method,'sym',3)
     if any(mod(K,2))
         error('For symkaczmarz only even iteration numbers can be requested.');
@@ -24,6 +24,7 @@ if ischar(art_method) && strncmpi(art_method,'sym',3)
     end    
 end
 
+% If A is matrix, it is more efficient for ART to work with transposed A.
 A = varargin{1};
 if ~isa(A,'function_handle')
     A = A';
@@ -35,11 +36,10 @@ X = zeros(n,length(K));
 % Residual of initial guess.
 rk = b - Afun(x0,'notransp');
 
-% Initialize for stopping rules.
-if strcmpi(stoprule,'ME')
-    error('Stopping rule ME is not available for ART methods.')
-end
-[k,rkm1,dk] = init_stoprules(stoprule,rk,ncp_smooth);
+% Initialization before iterations.
+k = 0;   % Iteration counter
+xk = x0; % Use initial vector.
+l = 1;   % Pointing to the next iterate number in K to be saved.
 
 % Do initial check of stopping criteria - probably relaxpar should be set
 % before this, perhaps just to nan.
@@ -101,10 +101,7 @@ if is_randkaczmarz
     end
 end    
 
-% Initialization before iterations.
-xk = x0;
-l = 1;
-
+% Main ART loop.
 while ~stop
     
     % Update the iteration number k.
