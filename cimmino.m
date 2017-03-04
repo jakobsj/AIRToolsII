@@ -92,7 +92,7 @@ function [X,info,ext_info] = cimmino(varargin)
 %       myfun(v,'notransp',p1,p2,...) returns A*v,
 %       myfun(w,'transp',p1,p2,...) returns A'*w.
 % 2) Before calling cimmino, the user must assign values to the parameters
-%    p1,p2,... and define an new function handle A in this way:
+%    p1,p2,... and define a new function handle A in this way:
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then cimmino is called with this A.
 %
