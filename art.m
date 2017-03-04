@@ -18,7 +18,7 @@ function [X,info] = art(art_method, varargin)
 %   art_method  Either one of the strings 'kaczmarz', 'symkaczmarz', or 
 %               'randkaczmarz' to specify one of the provided methods.
 %                Default is 'kaczmarz'.
-%                Or a row index vector size m times 1 (for matrix A m times
+%                Or a row index vector of length m (for matrix A m times
 %                n) with a desired fixed order in which to step through all 
 %                rows of A. Please see demo_custom for an example.
 %   A            m times n matrix, or a function that implements matrix-
@@ -46,7 +46,7 @@ function [X,info] = art(art_method, varargin)
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
 %                                  E.g. for paralleltomo, res_dims should
-%                                  b e [p,length(theta)]. For a 1D signal
+%                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
 %                     ncp_smooth = An positive integer specifying number of

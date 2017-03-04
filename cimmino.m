@@ -49,7 +49,7 @@ function [X,info,ext_info] = cimmino(varargin)
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
 %                                  E.g. for paralleltomo, res_dims should
-%                                  b e [p,length(theta)]. For a 1D signal
+%                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
 %                     ncp_smooth = An positive integer specifying number of

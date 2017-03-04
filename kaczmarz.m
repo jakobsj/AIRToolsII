@@ -35,7 +35,7 @@ function [X,info] = kaczmarz(varargin)
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
 %                                  E.g. for paralleltomo, res_dims should
-%                                  b e [p,length(theta)]. For a 1D signal
+%                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
 %                     ncp_smooth = An positive integer specifying number of
@@ -72,7 +72,7 @@ function [X,info] = kaczmarz(varargin)
 %       myfun([],'size',p1,p2,...) returns the size of the matrix,
 %       myfun(v,'notransp',p1,p2,...) returns A*v,
 %       myfun(w,'transp',p1,p2,...) returns A'*w.
-% 2) Before calling kaczmarz, the user must assign values the parameters
+% 2) Before calling kaczmarz, the user must assign values to the parameters
 %    p1,p2,... and define an new function handle A in this way:
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then kaczmarz is called with this A.
