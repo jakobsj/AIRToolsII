@@ -1,9 +1,9 @@
 function [X,info,ext_info] = landweber(varargin)
 %LANDWEBER The classical Landweber method
 %
-%   [X,info,restart] = landweber(A,b,K)
-%   [X,info,restart] = landweber(A,b,K,x0)
-%   [X,info,restart] = landweber(A,b,K,x0,options)
+%   [X,info,ext_info] = landweber(A,b,K)
+%   [X,info,ext_info] = landweber(A,b,K,x0)
+%   [X,info,ext_info] = landweber(A,b,K,x0,options)
 %
 % Implements the classical Landweber method for the linear system Ax = b:
 %

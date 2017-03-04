@@ -1,9 +1,9 @@
 function [X,info,ext_info] = cav(varargin)
 %CAV Component Averaging (CAV) method
 %
-%   [X,info,restart] = cav(A,b,K)
-%   [X,info,restart] = cav(A,b,K,x0)
-%   [X,info,restart] = cav(A,b,K,x0,options)
+%   [X,info,ext_info] = cav(A,b,K)
+%   [X,info,ext_info] = cav(A,b,K,x0)
+%   [X,info,ext_info] = cav(A,b,K,x0,options)
 %
 % Implements the CAV method for the linear system Ax = b:
 %

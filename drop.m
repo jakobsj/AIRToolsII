@@ -1,9 +1,9 @@
 function [X,info,ext_info] = drop(varargin)
 %DROP Diagonally Relaxed Orthogonal Projections (DROP) method
 %
-%   [X,info,restart] = drop(A,b,K)
-%   [X,info,restart] = drop(A,b,K,x0)
-%   [X,info,restart] = drop(A,b,K,x0,options)
+%   [X,info,ext_info] = drop(A,b,K)
+%   [X,info,ext_info] = drop(A,b,K,x0)
+%   [X,info,ext_info] = drop(A,b,K,x0,options)
 %
 % Implements the DROP method for the linear system Ax = b:
 %

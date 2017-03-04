@@ -1,9 +1,9 @@
 function [X,info,ext_info] = cimmino(varargin)
 %CIMMINO Cimmino's method
 %
-%   [X,info,restart] = cimmino(A,b,K)
-%   [X,info,restart] = cimmino(A,b,K,x0)
-%   [X,info,restart] = cimmino(A,b,K,x0,options)
+%   [X,info,ext_info] = cimmino(A,b,K)
+%   [X,info,ext_info] = cimmino(A,b,K,x0)
+%   [X,info,ext_info] = cimmino(A,b,K,x0,options)
 %
 % Implements Cimmino's method for the linear system Ax = b:
 %

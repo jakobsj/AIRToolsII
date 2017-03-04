@@ -1,9 +1,9 @@
 function [X,info,ext_info] = sart(varargin)
 %SART Simultaneous Algebraic Reconstruction Technique (SART) method
 %
-%   [X,info,restart] = sart(A,b,K)
-%   [X,info,restart] = sart(A,b,K,x0)
-%   [X,info,restart] = sart(A,b,K,x0,options)
+%   [X,info,ext_info] = sart(A,b,K)
+%   [X,info,ext_info] = sart(A,b,K,x0)
+%   [X,info,ext_info] = sart(A,b,K,x0,options)
 %
 % Implements the SART method for the linear system Ax = b:
 %
