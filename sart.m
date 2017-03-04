@@ -91,7 +91,7 @@ function [X,info,ext_info] = sart(varargin)
 %       myfun([],0,p1,p2,...) returns the size of the matrix,
 %       myfun(v,'notransp',p1,p2,...) returns A*v,
 %       myfun(w,'transp',p1,p2,...) returns A'*w.
-% 2) Before calling landweber, the user must assign values the parameters
+% 2) Before calling sart, the user must assign values the parameters
 %    p1,p2,... and define an new function handle A in this way:
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then sart is called with this A.
