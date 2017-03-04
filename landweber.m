@@ -7,7 +7,7 @@ function [X,info,ext_info] = landweber(varargin)
 %
 % Implements the classical Landweber method for the linear system Ax = b:
 %
-%       x^{k+1} = x^k + lambda_k*A'*(b-A*x^k)
+%       x^{k+1} = x^k + relaxpar_k*A'*(b-A*x^k)
 %
 % Input:
 %   A        m times n matrix, or a function that implements matrix-vector
@@ -20,20 +20,20 @@ function [X,info,ext_info] = landweber(varargin)
 %            values in K are saved, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
-%       lambda    The relaxation parameter. If lambda is a scalar then
+%       relaxpar  The relaxation parameter. If relaxpar is a scalar then
 %                 the corresponding value is used in each iteration;
 %                 default value is 1.9/norm(A)^2.
-%                 If lambda is a string, then it refers to a method to
-%                 determine lambda in each iteration. For this method the
+%                 If relaxpar is a string, then it refers to a method to
+%                 determine relaxpar in each iteration. For this method the
 %                 following strings can be specified:
-%                     'line'    : lambda is chosen using line search.
-%                     'psi1'    : lambda is chosen using the Psi_1-based
+%                     'line'    : relaxpar is chosen using line search.
+%                     'psi1'    : relaxpar is chosen using the Psi_1-based
 %                                 relaxation method.
-%                     'psi1mod' : lambda is chosen using the modified
+%                     'psi1mod' : relaxpar is chosen using the modified
 %                                 Psi_1-based relaxation method.
-%                     'psi2'    : lambda is chosen using the Psi_2-based
+%                     'psi2'    : relaxpar is chosen using the Psi_2-based
 %                                 relaxation method.
-%                     'psi2mod' : lambda is chosen using the modified
+%                     'psi2mod' : relaxpar is chosen using the modified
 %                                 Psi_2-based relaxation method.
 %       stoprule  Struct containing the following information about the
 %                 stopping rule:
@@ -95,7 +95,7 @@ function [X,info,ext_info] = landweber(varargin)
 %
 % See also: cimmino, cav, drop, sart.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Joergensen,
+% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
 % November 8, 2015, DTU Compute.
 
 % Reference: L. Landweber, An iteration formula for Fredholm integral
