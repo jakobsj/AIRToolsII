@@ -1,8 +1,6 @@
 function [k,rkm1,dk] = init_stoprules(stoprule,rk,ncp_smooth)
 
-% PCH: changed variable names for better consistency:
-%      rk -> rkm1 (residual correcponding to iteration k-1)
-%      rxk -> rk  (residual corresponding to iteration k)
+
 
 % At this time, we know stoprule has been set. If no stoprule was given by
 % user, now set to 'none'. If taudelta was missing, error has been thrown,
@@ -53,14 +51,11 @@ switch upper(stoprule)
         
     case 'ME'
         % ME stopping rule.
-        %rk = rxk;
         rkm1 = nan(size(rk));
-        %K = K + 1;
         
     case 'NCP'
         % NCP stopping rule.
         dk = inf(ncp_smooth,1);
-        %K = [K max(K)+1];
         
     case 'NONE'
         % No stopping rule: Nothing to do.
