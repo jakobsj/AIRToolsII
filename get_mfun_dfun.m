@@ -1,4 +1,28 @@
 function [Mfun,Dfun] = get_mfun_dfun(sirt_method, A, m, n, w)
+%GET_MFUN_DFUN Aux. function to set up M and D matrices for SIRT methods
+%
+%   [Mfun,Dfun] = get_mfun_dfun(sirt_method, A, m, n, w)
+%
+% Set up the matrices M and D characterizing a SIRT method.
+% 
+% Input:
+%    sirt_method  Name of SIRT method: 'landweber', 'cimmino', 'cav', 
+%                 'drop', or 'sart'.
+%    A            The forward operator A, either as matrix or function.
+%    m            Number of rows in A.
+%    n            Number of columns in A.
+%    w            Weights to be used in SIRT method.
+%    
+% Output:
+%    Mfun         Function handle which applies the matrix-vector
+%                 multiplication of M on input Mfun(v) is M*v.
+%    Dfun         Function handle which applies the matrix-vector
+%                 multiplication of D on input Dfun(v) is D*v.
+%
+% See also: art.m, cart.m, sirt.m
+
+% Jakob Sauer Jorgensen, Per Christian Hansen, Maria Saxild-Hansen
+% 2017-03-05 DTU Compute
 
 switch sirt_method
     
