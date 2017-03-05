@@ -96,7 +96,7 @@ function [X,info,ext_info] = cimmino(varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then cimmino is called with this A.
 %
-% See also: landweber, cav, drop, sart.
+% See also: sirt, landweber, cav, drop, sart.
 
 % Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
 % November 8, 2015, DTU Compute.

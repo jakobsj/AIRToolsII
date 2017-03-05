@@ -93,7 +93,7 @@ function [X,info,ext_info] = landweber(varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then landweber is called with this A.
 %
-% See also: cimmino, cav, drop, sart.
+% See also: sirt, cimmino, cav, drop, sart.
 
 % Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
 % November 8, 2015, DTU Compute.

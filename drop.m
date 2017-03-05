@@ -97,7 +97,7 @@ function [X,info,ext_info] = drop(varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then drop is called with this A.
 %
-% See also: landweber, cimmino, cav, sart.
+% See also: sirt, landweber, cimmino, cav, sart.
 
 % Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
 % November 8, 2015, DTU Compute.

@@ -101,7 +101,7 @@ function [X,info,ext_info] = sart(varargin)
 % singular value to always be 1, would potentially be lost. Any such input
 % is ignored.
 % 
-% See also: landweber, cimmino, cav, drop.
+% See also: sirt, landweber, cimmino, cav, drop.
 
 % Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
 % November 8, 2015, DTU Compute.

@@ -97,7 +97,7 @@ function [X,info,ext_info] = cav(varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then cav is called with this A.
 %
-% See also: landweber, cimmino, drop, sart.
+% See also: sirt, landweber, cimmino, drop, sart.
 
 % Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
 % November 8, 2015, DTU Compute.
