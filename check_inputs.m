@@ -1,6 +1,51 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    relaxparinput,s1,w,res_dims,rkm1,dk,damp,THR,Kbegin, Nunflag] = ...
+    relaxparinput,s1,w,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
     check_inputs(A,b,K,x0,options)
+%CHECK_INPUTS Aux. function to check inputs, set defaults for ART,CART,SIRT
+%
+%   [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
+%    relaxparinput,s1,w,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
+%    check_inputs(A,b,K,x0,options)
+%
+% From inputs given by user to a ART, CART or SIRT method check for
+% inconsistencies, extract options or set default values.
+% 
+% Input:
+%    A              Forward operator matrix or function.
+%    b              Right-hand side vector.
+%    K              List of iterates to return.
+%    x0             Starting vector.
+%    options        Struct with options.
+%    
+% Output:
+%    Afun           Function handle to forward operator matrix or function.
+%    b              Right-hand side vector.
+%    m              Number of rows in A.
+%    n              Number of columns in A.
+%    K              List of iterates to return.
+%    kmax           Maximal number of iterations to run.
+%    x0             Starting vector.
+%    lbound         Lower bound (scalar or vector) on iterates.
+%    ubound         Upper bound (scalar or vector) on iterates.
+%    stoprule       The name of the stopping rule chosen.
+%    taudelta       Stopping rule parameter used by DP and ME.
+%    relaxparinput  Relaxation parameter specified by user or default.
+%    s1             Largest singular value.
+%    w              Weights to apply in SIRT method.
+%    res_dims       Dimensions of residual needed for NCP stopping rule.
+%    rkm1           Initialized variable to hold residual at previous 
+%                   iteration.
+%    dk             Initizlized vector for averaging in NCP.
+%    damp           Scalar stating level of damping in ART and CART 
+%                   methods.
+%    THR            Threshold for use in CART.
+%    Kbegin         Flagging parameter for CART.
+%    Nunflag        Unflagging parameter for CART.
+%
+% See also: art.m, cart.m, sirt.m
+
+% Jakob Sauer Jorgensen, Per Christian Hansen, Maria Saxild-Hansen
+% 2017-03-05 DTU Compute
 
 %% Check first number and dimensions of inputs given are correct.
 
