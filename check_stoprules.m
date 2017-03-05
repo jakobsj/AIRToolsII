@@ -1,15 +1,49 @@
 function [stop, info, rkm1, dk] = check_stoprules(...
     stoprule, rk, relaxpar, taudelta, k, kmax, rkm1, dk, res_dims)
+%CHECK_STOPRULES Aux. function to check specified stopping rule
+%
+%   [stop, info, rkm1, dk] = check_stoprules(...
+%    stoprule, rk, relaxpar, taudelta, k, kmax, rkm1, dk, res_dims)
+%
+% From information available at current iteration of ART, CART or SIRT
+% method (and for some stopping rules previous iterates) determine if the
+% chosen stopping rule is satisfied in order to abort iteration.
+% 
+% Input:
+%    stoprule     Name of stopping rule: 'none', 'DP', 'ME', or 'NCP'.
+%    rk           Current residual vector.
+%    relaxpar     Current relaxation parameter.
+%    taudelta     Parameter for use in DP and ME stopping rules.
+%    k            The current iteration number.
+%    kmax         The maximal number of iterations to run.
+%    rkm1         Residual vector from previous iteration. Used only by ME.
+%    dk           Vector with values to filter/average over from previous 
+%                 iterations. Used only by NCP.
+%    res_dims     Dimensions of residual. Used only by NCP.
+%    
+% Output:
+%    stop         1 if stopping rule met, otherwise 0.
+%    info         Struct with fields 
+%       stoprule = 0 : stopped by maximum number of iterations
+%                  1 : stopped by NCP-rule
+%                  2 : stopped by DP-rule
+%                  3 : stopped by ME-rule.
+%       finaliter    : no. of iterations in total.
+%       relaxpar     : the chosen relaxation parameter.
+%    rkm1         Current residual saved for use as previous in next iter.
+%    dk           Filter vector updated by replacing oldest element by
+%                 the one from current iteration.
+%
+% See also: art.m, cart.m, sirt.m
 
-% Only NCP uses dk: For all other stoprules, dk=nan is given as input 
-% and % returned untouched as output.
-% Only ME uses rkm1: For all other stoprules, rkm1=nan is given as input 
-% and returned untouched as output.
+% Jakob Sauer Jorgensen, Per Christian Hansen, Maria Saxild-Hansen
+% 2017-03-05 DTU Compute
 
+% Defaults
 stop = 0;
-
 info = struct;
 
+% Split by stopping rule chosen
 switch upper(stoprule)
     
     case 'DP'
@@ -18,10 +52,12 @@ switch upper(stoprule)
         if nrk <= taudelta || k >= kmax
             stop = 1;
             if k ~= kmax
+                % Discrepancy principle stopping rule satisfied.
                 info.stoprule = 2;
                 info.finaliter = k;
                 info.relaxpar = relaxpar;
             else
+                % Maximum number of iterations reached.
                 info.stoprule = 0;
                 info.finaliter = k;
                 info.relaxpar = relaxpar;
@@ -34,16 +70,19 @@ switch upper(stoprule)
         dME = rkm1'*(rkm1+rk)/2;
 
         if dME/nrk <= taudelta
+            % Monotone Error stopping rule satisfied.
             stop = 1;
             info.stoprule = 3;
             info.finaliter = k;
             info.relaxpar = relaxpar;
         elseif k >= kmax
+            % Maximum number of iterations reached.
             stop = 1;
             info.stoprule = 0;
             info.finaliter = k;
             info.relaxpar = relaxpar;
         else
+            % No stopping rule satisfied, prepare for next iteration.
             rkm1 = rk;
         end % end the ME-rule.
         
@@ -88,15 +127,18 @@ switch upper(stoprule)
         if  mean(dk) < mean([dk(2:end); ncc]) || k >= kmax
             stop = 1;
             if k ~= kmax
+                % Normalized Cumulative Periodogram stopping rule satisfied
                 info.stoprule = 1;
                 info.finaliter = k;
                 info.relaxpar = relaxpar;
             else
+                % Maximum number of iterations reached.
                 info.stoprule = 0;
                 info.finaliter = k;
                 info.relaxpar = relaxpar;
             end
         else
+            % No stopping rule satisfied, prepare for next iteration:
             % Replace oldest value by shifting all and storing newest.
             dk = [dk(2:end); ncc];
         end % end NCP-rule.
@@ -104,6 +146,7 @@ switch upper(stoprule)
     case 'NONE'
         % No stopping rule.
         if k >= kmax
+            % Maximum number of iterations reached.
             stop = 1;
             info.stoprule = 0;
             info.finaliter = k;
