@@ -117,6 +117,8 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 % Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
 % 2017-03-04 DTU Compute.
 
+% Measure total time taken.
+t_total = tic;
 
 % Set default SIRT method to be sart.
 if isempty(sirt_method)
@@ -125,7 +127,7 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    rho,w,res_dims,rkm1,dk,do_waitbar] = check_inputs(varargin{:});
+    rho,w,res_dims,rkm1,dk,do_waitbar,verbose] = check_inputs(varargin{:});
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
@@ -173,10 +175,13 @@ end
 % Main SIRT loop
 while ~stop
     
+    % Update timer for current iteration
+    t_iter = tic;
+    
     % Update the iteration number k.
     k = k + 1;
     
-    % Update waitbar if selected
+    % Update waitbar if selected.
     if do_waitbar
         waitbar(k/kmax,h_waitbar,...
             sprintf('Running iteration %d of %d...',k, kmax))
@@ -220,6 +225,16 @@ while ~stop
         X(:,l) = xk;
         l = l + 1;
     end
+    
+    % Print info, if selected. If verbose is 0, do not print. If 1, print
+    % at every iteration. If larger than 1, print first, every verbose'th
+    % iteration and final iteration when stopping rule is met, including 
+    % if reaching maximum iterations.
+    if verbose == 1 || (verbose>1 && (k==1 || stop || mod(k,verbose)==1))
+        fprintf(['%*d/%d:  resnorm=%1.2e  relaxpar=%1.2e  ',...
+            'time(iter/total)=%1.2e/%1.2e secs.\n'], ceil(log10(kmax)), ...
+            k,kmax,norm(rk),relaxparcur,toc(t_iter),toc(t_total));
+    end
 end
 
 % Close waitbar if selected.
@@ -238,3 +253,6 @@ info.rho = rho;
 
 % List of iterates saved: all in K smaller than the final, and the final.
 info.itersaved = [K(K<info.finaliter), info.finaliter];
+
+% Save time total time taken
+info.timetaken = toc(t_total);

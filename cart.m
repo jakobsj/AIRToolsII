@@ -101,6 +101,9 @@ function [X,info] = cart(cart_method, varargin)
 %
 % See also: columnaction, art, kaczmarz.
 
+% Measure total time taken.
+t_total = tic;
+
 % Set default CART method to be columnaction.
 if isempty(cart_method)
     cart_method = 'columnaction';
@@ -108,7 +111,7 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    ~,~,res_dims,rkm1,dk,do_waitbar,damp,THR,Kbegin,Nunflag] = ...
+    ~,~,res_dims,rkm1,dk,do_waitbar,damp,THR,Kbegin,Nunflag,verbose] = ...
     check_inputs(varargin{:});
 
 % Faster to access rows of matrix directly if available.
@@ -183,6 +186,9 @@ end
 
 % Main CART loop.
 while ~stop
+            
+    % Update timer for current iteration
+    t_iter = tic;
     
     % Update the iteration number k.
     k = k + 1;
@@ -264,6 +270,16 @@ while ~stop
         X(:,l) = xk;
         l = l + 1;
     end
+    
+    % Print info, if selected. If verbose is 0, do not print. If 1, print
+    % at every iteration. If larger than 1, print first, every verbose'th
+    % iteration and final iteration when stopping rule is met, including 
+    % if reaching maximum iterations.
+    if verbose == 1 || (verbose>1 && (k==1 || stop || mod(k,verbose)==1))
+        fprintf(['%*d/%d:  resnorm=%1.2e  relaxpar=%1.2e  ',...
+            'time(iter/total)=%1.2e/%1.2e secs.\n'], ceil(log10(kmax)), ...
+            k,kmax,norm(rk),relaxpar,toc(t_iter),toc(t_total));
+    end
 end
 
 % Close waitbar if selected.
@@ -277,3 +293,6 @@ X = X(:,1:l-1);
 
 % List of iterates saved: all in K smaller than the final, and the final.
 info.itersaved = [K(K<info.finaliter), info.finaliter];
+
+% Save time total time taken
+info.timetaken = toc(t_total);

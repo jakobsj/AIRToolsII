@@ -91,6 +91,8 @@ function [X,info] = art(art_method, varargin)
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Nov. 8, 2015, DTU Compute.
 
+% Measure total time taken.
+t_total = tic;
 
 % Set default ART method to be kaczmarz.
 if isempty(art_method)
@@ -99,7 +101,8 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-     ~,~,res_dims,rkm1,dk,do_waitbar,damp] = check_inputs(varargin{:});
+     ~,~,res_dims,rkm1,dk,do_waitbar,verbose,...
+     damp] = check_inputs(varargin{:});
 
 % Special check for symkaczmarz: number of iterations must be even
 if ischar(art_method) && strncmpi(art_method,'sym',3)
@@ -200,6 +203,9 @@ end
 
 % Main ART loop.
 while ~stop
+        
+    % Update timer for current iteration
+    t_iter = tic;
     
     % Update the iteration number k.
     k = k + 1;
@@ -262,6 +268,16 @@ while ~stop
         X(:,l) = xk;
         l = l + 1;
     end
+        
+    % Print info, if selected. If verbose is 0, do not print. If 1, print
+    % at every iteration. If larger than 1, print first, every verbose'th
+    % iteration and final iteration when stopping rule is met, including 
+    % if reaching maximum iterations.
+    if verbose == 1 || (verbose>1 && (k==1 || stop || mod(k,verbose)==1))
+        fprintf(['%*d/%d:  resnorm=%1.2e  relaxpar=%1.2e  ',...
+            'time(iter/total)=%1.2e/%1.2e secs.\n'], ceil(log10(kmax)), ...
+            k,kmax,norm(rk),relaxpar,toc(t_iter),toc(t_total));
+    end
 end
 
 % Close waitbar if selected.
@@ -280,3 +296,6 @@ end
 
 % List of iterates saved: all in K smaller than the final, and the final.
 info.itersaved = [K(K<info.finaliter), info.finaliter];
+
+% Save time total time taken
+info.timetaken = toc(t_total);

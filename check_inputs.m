@@ -1,6 +1,6 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    relaxparinput,rho,w,res_dims,rkm1,dk,do_waitbar,damp,THR,Kbegin,...
-    Nunflag] = check_inputs(A,b,K,x0,options)
+    relaxparinput,rho,w,res_dims,rkm1,dk,do_waitbar,verbose,damp,THR,...
+    Kbegin,Nunflag] = check_inputs(A,b,K,x0,options)
 %CHECK_INPUTS Aux. function to check inputs, set defaults for ART,CART,SIRT
 %
 %   [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
@@ -249,5 +249,10 @@ end
 
 do_waitbar = false;
 if isfield(options,'waitbar') && options.waitbar
-    do_waitbar = true;
+    do_waitbar = options.waitbar;
+end
+
+verbose = 0;
+if isfield(options,'verbose') && options.verbose
+    verbose = options.verbose;
 end
