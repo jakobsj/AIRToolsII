@@ -95,6 +95,8 @@ parameter selection strategies.
 
 New demo demo_stoprules to illustrate use of different stopping rules.
 
+New options waitbar and verbose to allow displaying/printing progress.
+
 
 
 

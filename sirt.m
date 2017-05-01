@@ -78,6 +78,12 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %                bound is enforced. +/-Inf can be used.
 %      rho       Scalar containing spectral radius of the iteration matrix.
 %      w         m-dimensional weighting vector.
+%      verbose   Nonnegative integer specifying whether progress is printed
+%                to screen during iterations. Default=0: no info printed.
+%                1: Print in every iteration. Larger than 1: Print every
+%                verbose'th iteration and first and last.
+%      waitbar   Logical specifying whether a graphical waitbar is shown,
+%                default = false.
 %
 % Output:
 %   X        Matrix containing the saved iterations in columns.
@@ -90,6 +96,7 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %            relaxpar     : the chosen relaxation parameter.
 %            rho          : the computed spectral radius.
 %            itersaved    : iteration numbers of iterates saved in X.
+%            timetaken    : Total time taken by algorithm, in secs.
 %   ext_info Extra information struct with 2 fields:
 %            M            : diagonal of the matrix M = diag(1/||a^i||_S^2).
 %            D            : diagonal of the matrix D (all ones for cav)

@@ -23,36 +23,42 @@ function [X,info] = randkaczmarz(varargin)
 %            values in K are saved, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
-%       relaxpar  The relaxation parameter. For this method relaxpar must
-%                 be a scalar < 2; default value is 1.
-%       stoprule  Struct containing the following information about the
-%                 stopping rule:
-%                     type = 'none' : (Default) the only stopping rule
-%                                     is the maximum number of iterations.
-%                            'NCP'  : Normalized Cumulative Perodogram.
-%                            'DP'   : Discrepancy Principle.
-%                     taudelta   = product of tau and delta, required for DP.
-%                     res_dims   = the dimensions that the residual vector
-%                                  should be reshaped to, required for NCP.
-%                                  E.g. for paralleltomo, res_dims should
-%                                  be [p,length(theta)]. For a 1D signal
-%                                  res_dims can be a scalar equal to the
-%                                  number of elements. 
-%                     ncp_smooth = A positive integer specifying the
-%                                  filter length in the NCP criterion.
-%                                  Default: 2.
-%       lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
-%                 this value is enforced on all elements of x in each 
-%                 iteration. If vector, it must have same size as x and 
-%                 then enforces elementwise lower bounds on x. If empty, no
-%                 bound is enforced. +/-Inf can be used.
-%       ubound    Upper bound in box constraint [lbound,ubound]. If scalar,
-%                 this value is enforced on all elements of x in each 
-%                 iteration. If vector, it must have same size as x and 
-%                 then enforces elementwise lower bounds on x. If empty, no
-%                 bound is enforced. +/-Inf can be used.
-%       damping   A parameter P to avoid division by very small row norms
-%                 by adding P*max_i{||a_i||_2^2} to ||a_i||_2^2.
+%      relaxpar  The relaxation parameter. For this method relaxpar must
+%                be a scalar < 2; default value is 1.
+%      stoprule  Struct containing the following information about the
+%                stopping rule:
+%                    type = 'none' : (Default) the only stopping rule
+%                                    is the maximum number of iterations.
+%                           'NCP'  : Normalized Cumulative Perodogram.
+%                           'DP'   : Discrepancy Principle.
+%                    taudelta   = product of tau and delta, required for DP.
+%                    res_dims   = the dimensions that the residual vector
+%                                 should be reshaped to, required for NCP.
+%                                 E.g. for paralleltomo, res_dims should
+%                                 be [p,length(theta)]. For a 1D signal
+%                                 res_dims can be a scalar equal to the
+%                                 number of elements. 
+%                    ncp_smooth = A positive integer specifying the
+%                                 filter length in the NCP criterion.
+%                                 Default: 2.
+%      lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
+%                this value is enforced on all elements of x in each 
+%                iteration. If vector, it must have same size as x and 
+%                then enforces elementwise lower bounds on x. If empty, no
+%                bound is enforced. +/-Inf can be used.
+%      ubound    Upper bound in box constraint [lbound,ubound]. If scalar,
+%                this value is enforced on all elements of x in each 
+%                iteration. If vector, it must have same size as x and 
+%                then enforces elementwise lower bounds on x. If empty, no
+%                bound is enforced. +/-Inf can be used.
+%      damping   A parameter P to avoid division by very small row norms
+%                by adding P*max_i{||a_i||_2^2} to ||a_i||_2^2.
+%      verbose   Nonnegative integer specifying whether progress is printed
+%                to screen during iterations. Default=0: no info printed.
+%                1: Print in every iteration. Larger than 1: Print every
+%                verbose'th iteration and first and last.
+%      waitbar   Logical specifying whether a graphical waitbar is shown,
+%                default = false.
 %
 % Output:
 %   X        Matrix containing the saved iterations in columns.
@@ -63,6 +69,7 @@ function [X,info] = randkaczmarz(varargin)
 %            finaliter    : no. of iterations in total.
 %            relaxpar     : the chosen relaxation parameter.
 %            itersaved    : iteration numbers of iterates saved in X.
+%            timetaken    : Total time taken by algorithm, in secs.
 %
 % How to use a function handle for A.
 % 1) The user must provide a function myfun that implements matrix-vector

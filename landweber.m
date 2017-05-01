@@ -20,50 +20,56 @@ function [X,info,ext_info] = landweber(varargin)
 %            values in K are saved, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
-%       relaxpar  The relaxation parameter. If relaxpar is a scalar then
-%                 the corresponding value is used in each iteration;
-%                 default value is 1.9/norm(A)^2.
-%                 If relaxpar is a string, then it refers to a method to
-%                 determine relaxpar in each iteration. For this method the
-%                 following strings can be specified:
-%                     'line'    : relaxpar is chosen using line search.
-%                     'psi1'    : relaxpar is chosen using the Psi_1-based
-%                                 relaxation method.
-%                     'psi1mod' : relaxpar is chosen using the modified
-%                                 Psi_1-based relaxation method.
-%                     'psi2'    : relaxpar is chosen using the Psi_2-based
-%                                 relaxation method.
-%                     'psi2mod' : relaxpar is chosen using the modified
-%                                 Psi_2-based relaxation method.
-%       stoprule  Struct containing the following information about the
-%                 stopping rule:
-%                     type = 'none' : (Default) the only stopping rule
-%                                     is the maximum number of iterations.
-%                            'NCP'  : Normalized Cumulative Perodogram.
-%                            'DP'   : Discrepancy Principle.
-%                            'ME'   : Monotone Error rule.
-%                     taudelta   = product of tau and delta, required for
-%                                  DP and ME.
-%                     res_dims   = the dimensions that the residual vector
-%                                  should be reshaped to, required for NCP.
-%                                  E.g. for paralleltomo, res_dims should
-%                                  be [p,length(theta)]. For a 1D signal
-%                                  res_dims can be a scalar equal to the
-%                                  number of elements. 
-%                     ncp_smooth = A positive integer specifying the
-%                                  filter length in the NCP criterion.
-%                                  Default: 2.
-%       lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
-%                 this value is enforced on all elements of x in each 
-%                 iteration. If vector, it must have same size as x and 
-%                 then enforces elementwise lower bounds on x. If empty, no
-%                 bound is enforced. +/-Inf can be used.
-%       ubound    Upper bound in box constraint [lbound,ubound]. If scalar,
-%                 this value is enforced on all elements of x in each 
-%                 iteration. If vector, it must have same size as x and 
-%                 then enforces elementwise lower bounds on x. If empty, no
-%                 bound is enforced. +/-Inf can be used.
-%       s1        Scalar containing largest singular value of A.
+%      relaxpar  The relaxation parameter. If relaxpar is a scalar then
+%                the corresponding value is used in each iteration;
+%                default value is 1.9/norm(A)^2.
+%                If relaxpar is a string, then it refers to a method to
+%                determine relaxpar in each iteration. For this method the
+%                following strings can be specified:
+%                    'line'    : relaxpar is chosen using line search.
+%                    'psi1'    : relaxpar is chosen using the Psi_1-based
+%                                relaxation method.
+%                    'psi1mod' : relaxpar is chosen using the modified
+%                                Psi_1-based relaxation method.
+%                    'psi2'    : relaxpar is chosen using the Psi_2-based
+%                                relaxation method.
+%                    'psi2mod' : relaxpar is chosen using the modified
+%                                Psi_2-based relaxation method.
+%      stoprule  Struct containing the following information about the
+%                stopping rule:
+%                    type = 'none' : (Default) the only stopping rule
+%                                    is the maximum number of iterations.
+%                           'NCP'  : Normalized Cumulative Perodogram.
+%                           'DP'   : Discrepancy Principle.
+%                           'ME'   : Monotone Error rule.
+%                    taudelta   = product of tau and delta, required for
+%                                 DP and ME.
+%                    res_dims   = the dimensions that the residual vector
+%                                 should be reshaped to, required for NCP.
+%                                 E.g. for paralleltomo, res_dims should
+%                                 be [p,length(theta)]. For a 1D signal
+%                                 res_dims can be a scalar equal to the
+%                                 number of elements. 
+%                    ncp_smooth = A positive integer specifying the
+%                                 filter length in the NCP criterion.
+%                                 Default: 2.
+%      lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
+%                this value is enforced on all elements of x in each 
+%                iteration. If vector, it must have same size as x and 
+%                then enforces elementwise lower bounds on x. If empty, no
+%                bound is enforced. +/-Inf can be used.
+%      ubound    Upper bound in box constraint [lbound,ubound]. If scalar,
+%                this value is enforced on all elements of x in each 
+%                iteration. If vector, it must have same size as x and 
+%                then enforces elementwise lower bounds on x. If empty, no
+%                bound is enforced. +/-Inf can be used.
+%      s1        Scalar containing largest singular value of A.
+%      verbose   Nonnegative integer specifying whether progress is printed
+%                to screen during iterations. Default=0: no info printed.
+%                1: Print in every iteration. Larger than 1: Print every
+%                verbose'th iteration and first and last.
+%      waitbar   Logical specifying whether a graphical waitbar is shown,
+%                default = false.
 %
 % Output:
 %   X        Matrix containing the saved iterations in columns.
@@ -76,6 +82,7 @@ function [X,info,ext_info] = landweber(varargin)
 %            relaxpar     : the chosen relaxation parameter.
 %            s1           : the computed largest singular value.
 %            itersaved    : iteration numbers of iterates saved in X.
+%            timetaken    : Total time taken by algorithm, in secs.
 %   ext_info Extra information struct with 2 fields:
 %            M            : diagonal of the matrix M (all ones for landweber).
 %            D            : diagonal of the matrix D (all ones for landweber).
