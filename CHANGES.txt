@@ -1,5 +1,5 @@
-**********************************************************************                                                                    
-*          This is Version 2.0 of AIR Tools for Matlab 8.0           *
+**********************************************************************
+*   This is AIR Tools II (Version 2.0 of AIR Tools) for Matlab 8.0   *
 *--------------------------------------------------------------------*
 *    Per Christian Hansen  &  Jakob Sauer Jorgensen - DTU Compute    *
 **********************************************************************
@@ -7,85 +7,81 @@
 Revisions in Version 2.0
 ------------------------
 
-All ART, CART and SIRT functions now accept a function handle as input 
-instead of a sparse matrix. This allows matrix-free versions of the system 
-matrix to be used. This also allows interfacing to external functions 
-implementing forward and backprojection. See the function afun_matrix for 
-an example of the interface used.
+All ART, CART and SIRT functions now accept a function handle as input instead
+of a sparse matrix. This allows matrix-free versions of the matrix to  be used,
+and it also allows interfacing to external functions implementing the matrix
+multiplications. See the function afun_matrix for an example of the interface.
 
-All test problems now can return either the system matrix explicitly as a 
-sparse matrix, or a function handle to allow matrix-free application of 
-forward and backprojection operations, as determined by the boolean input 
-isMatrix.
+All test problems now can return either the matrix explicitly as a  sparse
+matrix, or a function handle to allow matrix-free application of the matrix
+operations, as determined by the boolean input  isMatrix.
 
-New test problem fanbeamtomolinear implementing a linear detector array 
-unlike the curved detector array in the existing fanbeamtomo function.
+New test problem fanlineartomo implementing a linear detector array unlike the
+curved detector array in the existing fancurvedtomo function (previously
+called fanbeamtomo).
 
-The code has been reorganized in a modular fashion to allow more reuse of 
-code, make it more reliable and easier to maintain.
+The code has been reorganized in a modular fashion to allow more reuse of code,
+make it more reliable, and easier to maintain.
 
-The filtered backprojection method fbp.m introduced in version 1.3 has 
-been removed.
+The filtered backprojection method fbp.m introduced in version 1.3 is removed.
 
-New general interfaces art.m, cart.m and sirt.m are introduced, which 
-contain the core functionality of all ART, CART and SIRT methods. This has 
-turned all ART, CART and SIRT files into wrappers of these. In addition to 
-the provided methods also custom methods can be constructed. For art.m and 
-cart.m this is done by passing in vector with the order in which rows/
-columns are to be traversed; for sirt.m by passing in function handles to 
-the matrices M and D identifying the desired SIRT method.
+New general interfaces art.m, cart.m and sirt.m are introduced, which contain
+the core functionality of all ART, CART and SIRT methods. This has turned all
+ART, CART and SIRT files into wrappers of these. In addition to the provided
+methods also custom methods can be constructed. For art.m and cart.m this is
+done by passing in a vector with the order in which rows/columns are to be
+traversed; for sirt.m by passing in function handles to the matrices M and D
+identifying the desired SIRT method.
 
-More general bound constraints can be used. For both lower and upper 
-bounds it is possible to specify either no constraint, a scalar enforced 
-on all entries of x and a vector specifying elementwise constraints.
+More general bound constraints can be used. For both lower and upper bounds it
+is possible to specify either no constraint, a scalar enforced on all entries
+of x and a vector specifying elementwise constraints.
 
-In paralleltomo, the default value of d has been changed to d=p-1. This 
-choice leads for the default p to detector pixels of the same size as the 
-image pixels.
+In paralleltomo, the default value of d has been changed to d=p-1. This choice
+leads for the default p to detector pixels of the same size as the image pixels.
 
-For improved consistency across ART methods, psi1 and psi2 strategies for 
+For improved consistency across ART methods, psi1 and psi2 strategies for
 choosing the relaxation parameter have been removed from symkaczmarz.
 
-PCH TO CHECK: A few changes to implementation of stopping rules. Both ME and NCP 
-rely on detecting when a quantity no longer decreases and previously 
-stored the previous iterate for returning if a decrease at the current 
-iteration was detected. To save the memory instead now the current iterate 
-is returned. Also, as NCP can be prone to oscillatory behavior a filtering 
-or moving average across values at previous iterations has been introduced
-with option for the user to specify the length of the window. Further, NCP 
-was previously implemented assuming the residual is a 1D signal. In many 
-cases, such as all the 2D tomography test problems of AIR Tools, the 
-residual is more naturally described as a collection of 1D residuals (one 
-for each projection). NCP is now implemented separately for each 1D signal 
-and an average is applied to determine whether overall the stopping rule 
-is satisfied.
+A few changes to the implementation of the stopping rules. ME was forward-
+looking and thus requiring one additional iteration; this was changed to a
+bakward-looking strategy. NCP relies on detecting when a quantity no longer
+decreases; hence one or a few additional iterations are needed to detect this.
+Previously we stored some previous iterates in order to return that one that
+corresponds to the minimum. To save the memory we now return the last iterate,
+which is one or a few iterations beyond the minimum. Since NCP can be prone to
+oscillatory behavior a moving filter across previous iterations is introduced
+with an option for the user to specify the length of the window. Moreover, NCP
+was previously implemented assuming the right-hand side is a 1D signal. In some
+cases, such as all our 2D tomography test problems, the right-hand side is more
+naturally described as a collection of 1D signals (one for each projection).
+NCP is now implemented separately for each 1D signal and an average is computed
+to determine whether overall the stopping rule is satisfied.
 
-In symkaczmarz a change of convention has been made. Previously a sweep 
-top->bottom->top was counted as one iteration. Now it is counted as two 
-iterations, and implemented by only allowing even numbers of iterations to 
-be returned. This is in order to make the computational work of an 
-iteration comparable to the other ART methods.
+In symkaczmarz a change of convention has been made. Previously a sweep
+top->bottom->top was counted as one iteration. Now it is counted as two
+iterations, and implemented by only allowing even numbers of iterations to be
+returned. This is in order to make the computational work of an iteration
+comparable to all he other methods.
 
-For SIRT methods, the possibility to give third input restart has been 
-removed due to ambiguities and lack of demand. It is now possible to input 
-a known largest singular value through a field s1 in the options struct.
+For SIRT methods, the possibility to give third input restart has been removed
+due to ambiguities and lack of demand. It is now possible to input a known
+largest singular value through a field s1 in the options struct.
 
-The info output has been changed from a 3-element vector to a struct with 
-more informative field names and more information such as the list of 
-iterates returned.
+The info output has been changed from a 3-element vector to a struct with more
+informative field names and more information, e.g., a list of iterates returned.
 
-artdemo.m now also contains a demonstration of the columnwise Kaczmarz 
-method (CART) together with all ART methods (kaczmarz, symkaczmarz and 
-randkaczmarz).
+artdemo.m now also contains a demonstration of the CART method (columnaction)
+together with all ART methods (kaczmarz, symkaczmarz and randkaczmarz).
 
-New demo demo_matrixfree to illustrate the use of matrix-free versions of 
-test problem operators and reconstruction methods.
+New demo demo_matrixfree to illustrate the use of matrix-free versions of test
+problem operators and reconstruction methods.
 
-New demo demo_custom to illustrate the user of user-specified custom 
-versions of ART and SIRT methods.
+New demo demo_custom to illustrate the user of user-specified custom versions of
+ART and SIRT methods.
 
-New demo demo_constraint to illustrate how general elementwise constraints 
-can be used. This demo replaces the old demo script nonnegdemo.
+New demo demo_constraint to illustrate how general elementwise constraints can
+be used. This demo replaces the old demo script nonnegdemo.
 
 
 

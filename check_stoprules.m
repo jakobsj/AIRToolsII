@@ -124,7 +124,7 @@ switch upper(stoprule)
         ncc = mean(sqrt(sum(bsxfun(@minus,c,c_white).^2)));
         
         % Compare filtered new value with the previous filtered value.
-        if  mean(dk) < mean([dk(2:end); ncc]) || k >= kmax
+        if  max(dk) < max([dk(2:end); ncc]) || k >= kmax
             stop = 1;
             if k ~= kmax
                 % Normalized Cumulative Periodogram stopping rule satisfied

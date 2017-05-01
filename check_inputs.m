@@ -181,7 +181,7 @@ if isfield(options,'stoprule') && isfield(options.stoprule,'res_dims')
 end
 
 % For stopping rule NCP, set filter length from options or to default.
-ncp_smooth = 4;
+ncp_smooth = 2;
 if isfield(options,'stoprule') && isfield(options.stoprule,'ncp_smooth')
     ncp_smooth = options.stoprule.ncp_smooth;
     if ~strcmp(stoprule,'NCP')

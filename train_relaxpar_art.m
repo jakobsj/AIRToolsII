@@ -1,63 +1,57 @@
-function relaxpar = train_relaxpar_art(A,b,x_ex,method,kmax,options)
-%TRAIN_RELAXPAR_ART Training to determine optimal relaxpar for ART methods
+function [relaxpar,meub] = train_relaxpar_art(A,b,x_ex,method,kmax,options)
+%TRAIN_RELAXPAR_SIRT Training to determine optimal relaxpar for SIRT method
 %
-%   relaxpar = train_relaxpar_art(A,b,x_ex,method)
-%   relaxpar = train_relaxpar_art(A,b,x_ex,method,kmax)
-%   relaxpar = train_relaxpar_art(A,b,x_ex,method,kmax,options)
+%   relaxpar = train_relaxpar_sirt(A,b,x_ex,method,kmax)
+%   relaxpar = train_relaxpar_sirt(A,b,x_ex,method,kmax,options)
 %
 % This function determines the optimal value of the relaxation parameter
-% relaxpar for one of the ART methods kaczmarz and symkaczmarz. The optimal 
-% value of relaxpar is defined as the value that gives rise to the fastest 
-% convergence to the smallest relative error in the solution. 
+% relaxpar for one of the SIRT methods cav, cimmino, drop, landweber, and
+% sart. The optimal value of relaxpar is defined as the value that gives
+% rise to the fastest convergence to the smallest error in the solution. 
 %
 % Input:
 %   A           m times n matrix or function handle to matrix-free version.
 %   b           m times 1 vector containing the right-hand side.
 %   x_ex        n times 1 vector containing the exact solution.
-%   method      Function handle to one of the ART methods.
+%   method      Function handle to one of the SIRT methods.
 %   kmax        Scalar that determines the maximum number of iterations
-%               of the used ART-method. Default value is 100.
+%               of the used SIRT-method.
 %   options     Struct used in the call of the method. For this strategy
 %               the fields stoprule and relaxpar cannot be used.
 %
 % Output:   
-%   relaxpar      Scalar containing the found relaxpar value.
+%   relaxpar    Scalar containing the found relaxpar value.
 %
-% See also: train_relaxpar_sirt
+% See also: train_relaxpar_art
 
-% Maria Saxild-Hansen and Per Chr. Hansen, June 6, 2010, DTU Compute.
+% Maria Saxild-Hansen and Per Chr. Hansen, June 10, 2010, DTU Compute.
 
-% Input check for options. Ensure that no stoprule type is chosen.
+DEBUG = false;
+
+% Input check: ensure that no stoprule is chosen.
 if nargin == 6
     options.stoprule.type = 'none';
     if isfield(options,'relaxpar')
         options = rmfield(options,'relaxpar');
     end
+else
+    options = [];
 end 
 
-% Input checks and default values:
-if nargin < 5 || isempty(kmax)
-    % Default maximum number of iterations.
-    kmax = 100;
-end
+% Fudge factor.
+fudge = 0.02;
 
-% Minimum error interval.
-pct = 0.01;
-
-% Initialize the number of iterations.
+% Prepare for step 1.
 stepk = 10;
 K = 1:stepk;
 k = 0;
 stop = 0;
-rEr = [];
+Er = [];
 x0 = [];
 
-% Define the norm of the exact solution.
-normxex = norm(x_ex);
-
-% Step 1: Determine the minimum error at the default value.
+% Step 1: Determine the minimum error for the default relaxpar.
 while ~stop
-    % Ensure only the maximum number of iterations is computed.
+    % Ensure only kmax iterations is performed.
     if k+stepk > kmax
         K = 1:(kmax-k);
         k = kmax;
@@ -68,29 +62,44 @@ while ~stop
     
     % If the first run in the loop.
     if k <= stepk
-
-        % Set relaxpar to 0.25.
-        options.relaxpar = 0.25;
-        Xnew = method(A,b,K,x0,options);
-        relaxparmax = 2;
-
+        switch func2str(method)
+            case {'landweber','cimmino','cav','drop','sart'}
+                
+                % Compute the solutions to the first K values.
+                [Xnew, info] = method(A,b,K,x0,options);
+                
+                % Assign the computed s1 to options, such that s1 does not 
+                % require recalculation in the next call of the method.
+                options.s1 = info.s1;
+                relaxparmax = 2/info.s1^2;
+                rr = {num2str(info.relaxpar)};
+            
+            case {'columnkaczmarz','kaczmarz','randkaczmarz','symkaczmarz'}
+                
+                % Compute the solutions for the first iterations.
+                options.relaxpar = 0.25;
+                Xnew = method(A,b,K,x0,options);
+                relaxparmax = 2;
+                rr = {num2str(options.relaxpar)};
+                
+            otherwise
+                error(['Unknown method ',func2str(method)])
+        end
     else
-        
-        % Determine the solutions to the next K values.
+        % Compute the solutions to the next K values.
         Xnew = method(A,b,K,x0,options);
     end
     
-    % Calculate the relative error for the new solutions and collect all
-    % the relative errors.
+    % Compute the errors for the new solutions and collect all the errors.
     deltax = Xnew - repmat(x_ex,1,size(Xnew,2));
-    rEr = [rEr sqrt(sum(deltax.*deltax,1))/normxex];
+    Er = [Er, sqrt(sum(deltax.*deltax,1))];
     
-    % Find the minimum relative error.
-    [minE, kopt] = min(rEr);
+    % Find the minimum error.
+    [minE, kopt] = min(Er);
     
-    % If the minimum relative error is in the last iteration, then run the
-    % loop again with stepk new iterations.  Else the minimum error is
-    % found and the loop is stopped.
+    % If the minimum error is in the last iteration, then repeat the loop
+    % with stepk additional iterations.  Otherwise the minimum error is
+    % found and the loop is terminated.
     if kopt == k && k < kmax
         x0 = Xnew(:,end);
     else
@@ -98,142 +107,121 @@ while ~stop
     end
 end
 
-% Determine the minimum error interval.
-pinter = [minE-pct*minE minE+pct*minE];
+if DEBUG, figure, plot(Er,'ok'), hold on, end
 
-% Step 2: Find the relaxpar for which the minimum relative error is
-% within pinter and where kopt is the smallest.
+% Minimum error upper bound.
+meub = (1+fudge)*minE;
 
-% Define a relaxpar value near the end of the allowed interval, calculate
-% the relative errors for the solutions, and find the minimum.
-options.relaxpar = relaxparmax-0.01*relaxparmax;
-Xend = method(A,b,1:kopt,[],options);
-deltaxend = Xend - repmat(x_ex,1,kopt);
-rErend = sqrt(sum(deltaxend.*deltaxend,1))/normxex;
+% Step 2: Find the relaxpar for which the minimum error is below meub
+% and kopt is minimum.
 
-[minEend, koptend] = min(rErend);
-
-% If kopt is equal to koptend, then the global minimum error is not reached,
-% hence all the k values are equal.  The best relaxpar value is determined by
-% the minimum relative error.
-
-% Define the search interval.
+% Define the search interval for relaxpar.
 r = (3-sqrt(5))/2;
+alpha = 0;
+beta = relaxparmax;
+alphap = alpha + r*(beta-alpha);
+betap = alpha + (1-r)*(beta-alpha);
 
-i1 = 0;
-i2 = relaxparmax;
-i3 = i1 + r*(i2-i1);
-i4 = i1 + (1-r)*(i2-i1);
-
-% Calculate the function value for i3.
-options.relaxpar = i3;
+% Calculate err_alphap and k_alphap.
+options.relaxpar = alphap;
 xnew = method(A,b,1:kopt,[],options);
+ee = sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1));
+k_alphap = sum(ee(1:end-1)>meub & diff(ee)<0) + 1;
+err_alphap = ee(k_alphap);
 
-if kopt == koptend
-    f3 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-    
-    % Define x3 always to be inside the interval.
-    x3 = pinter(2);
-else
-    [x3, f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-end
-
-% Calculate the function value for i4.
-options.relaxpar = i4;
+% Calculate err_betap and k_betap.
+options.relaxpar = betap;
 xnew = method(A,b,1:kopt,[],options);
-if kopt == koptend
-    f4 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-    
-    % Define x4 always to be inside the interval.
-    x4 = pinter(2);
-else
-    [x4, f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-end
+ee = sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1));
+k_betap = sum(ee(1:end-1)>meub & diff(ee)<0) + 1;
+err_betap = ee(k_betap);
 
-while abs(i3-i4) > relaxparmax*0.01
+% Augmented version of golden section search.  For the ART and CART methods
+% we favor smaller relaxation parameters because they tend to give faster
+% semi-convergence; hence this order of the first two if-elseif blocks.
+if DEBUG
+    disp('Before step 2:')
+    disp(['  ',num2str(alpha),'  ',num2str(alphap),'  ',...
+          num2str(betap),'  ',num2str(beta)])
+    disp(['  ',num2str([k_alphap,k_betap])])
+    iter = 0;
+end
+while abs(alphap-betap) > relaxparmax*0.01
+    if DEBUG, iter = iter+1; end
+        
+    if err_betap > meub
+        if DEBUG, disp(['iter = ',num2str(iter),': A']), end
+
+        % [alpha alphap betap beta] <---- [alpha z alphap betap]
+        z = alpha + r*(abs(betap-alpha));
+        beta = betap;  betap = alphap;  alphap = z;
+        k_betap = k_alphap;  err_betap = err_alphap;
+        
+        options.relaxpar = alphap;
+        xnew = method(A,b,1:kopt,[],options);
+        ee = sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1));
+        k_alphap = sum(ee(1:end-1)>meub & diff(ee)<0) + 1;
+        err_alphap = ee(k_alphap);
     
-    % Ensure that the minimum error is reached in the left part of
-    % the interval.
-    if x4 > pinter(2)
+    elseif err_alphap > meub
+        if DEBUG, disp(['iter = ',num2str(iter),': B']), end
         
-        % i2 is removed from the search interval.
-        z = i1 + r*(abs(i4-i1));
+        % [alpha alphap betap beta] <---- [alphap betap z beta]
+        z = alphap + (1-r)*(abs(beta-alphap));
+        alpha = alphap;  alphap = betap;  betap = z;
+        k_alphap = k_betap;  err_alphap = err_betap;
         
-        % [i1 i3 i4 i2] <---- [i1 z i3 i4]
-        i2 = i4;
-        i4 = i3;
-        f4 = f3;
-        
-        x4 = x3;
-        i3 = z;
-        
-        % Find the new value for f3.
-        options.relaxpar = i3;
+        options.relaxpar = betap;
         xnew = method(A,b,1:kopt,[],options);
-        [x3, f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
+        ee = sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1));
+        k_betap = sum(ee(1:end-1)>meub & diff(ee)<0) + 1;
+        err_betap = ee(k_betap);
         
-    elseif x3 > pinter(2)
+    elseif k_alphap >= k_betap
+        if DEBUG, disp(['iter = ',num2str(iter),': C']), end
         
-        % i1 is removed from the search interval.
-        z = i3 + (1-r)*(abs(i2-i3));
-        
-        % [i1 i3 i4 i2] <---- [i3 i4 z i2]
-        i1 = i3;
-        i3 = i4;
-        f3 = f4;
-        x3 = x4;
-        i4 = z;
-        
-        % Find the new function value for f4.
-        options.relaxpar = i4;
+        % [alpha alphap betap beta] <---- [alphap betap z beta]
+        z = alphap + (1-r)*(abs(beta-alphap));
+        alpha = alphap;  alphap = betap;  betap = z;
+        k_alphap = k_betap;  err_alphap = err_betap;
+
+        options.relaxpar = betap;
         xnew = method(A,b,1:kopt,[],options);
-        [x4, f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-        
-    elseif f3 > f4
-        
-        % If the relative error for f3 is greater than or equal to f4, then
-        % i1 is removed from the interval.
-        z = i3 + (1-r)*(abs(i2-i3));
-        
-        % [i1 i3 i4 i2] <---- [i3 i4 z i2]
-        i1 = i3;
-        i3 = i4;
-        f3 = f4;
-        x3 = x4;
-        i4 = z;
-        
-        % Find the new value for f4.
-        options.relaxpar = i4;
-        xnew = method(A,b,1:kopt,[],options);
-        if kopt == koptend
-            f4 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-        else
-            [x4, f4] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-        end
+        ee = sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1));
+        k_betap = sum(ee(1:end-1)>meub & diff(ee)<0) + 1;
+        err_betap = ee(k_betap);
         
     else
+        if DEBUG, disp(['iter = ',num2str(iter),': D']), end
         
-        % i2 is removed from the search interval.
-        z = i1 + r*(abs(i4-i1));
+        % [alpha alphap betap beta] <---- [alpha z alphap betap]
+        z = alpha + r*(abs(betap-alpha));
+        beta = betap;  betap = alphap;  alphap = z;
+        k_betap = k_alphap;  err_betap = err_alphap;
         
-        % [i1 i3 i4 i2] <---- [i1 z i3 i4]
-        i2 = i4;
-        i4 = i3;
-        f4 = f3;
-        x4 = x3;
-        i3 = z;
-        
-        % Find the new value for f3.
-        options.relaxpar = i3;
+        options.relaxpar = alphap;
         xnew = method(A,b,1:kopt,[],options);
-        if kopt == koptend
-            f3 = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-        else
-            [x3, f3] = min(sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1))/normxex);
-        end
+        ee = sqrt(sum((xnew-repmat(x_ex,1,kopt)).^2,1));
+        k_alphap = sum(ee(1:end-1)>meub & diff(ee)<0) + 1;
+        err_alphap = ee(k_alphap);
         
     end
+    if DEBUG
+        disp(['  ',num2str(alpha),'  ',num2str(alphap),'  ',...
+              num2str(betap),'  ',num2str(beta)])
+        disp(['  ',num2str([k_alphap,k_betap])])
+        options.relaxpar = (alphap+betap)/2;
+        XXX = method(A,b,1:kopt,[],options);
+        ZZZ = sqrt(sum((XXX-repmat(x_ex,1,kopt)).^2,1));
+        plot(ZZZ,'linewidth',2), hold on
+        rr(iter+1) = {num2str(options.relaxpar)};
+    end
+end
+if DEBUG
+    plot([0 kopt],[meub meub],'--')
+    hold off
+    legend(rr)
 end
 
-% Define the optimal relaxpar value.
-relaxpar = (i3+i4)/2;
+% Define the optimal relaxpar.
+relaxpar = (alphap+betap)/2;
