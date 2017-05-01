@@ -163,7 +163,7 @@ if ischar(art_method)
             I = find(normAi>0);
         case 'symkaczmarz'
             I = find(normAi>0);
-            I = [I, I(end-1:-1:2)];
+            I = [I, I(end:-1:1)];
         case 'randkaczmarz'
             is_randkaczmarz = true;
             I = find(normAi>0);
