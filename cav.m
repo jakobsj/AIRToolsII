@@ -9,7 +9,7 @@ function [X,info,ext_info] = cav(varargin)
 %
 %       x^{k+1} = x^k + relaxpar_k*A'*M*(b-A*x^k)
 %
-% where M = diag(w_i/||a^i||_S^2, S = diag(s_j), s_j denotes the number
+% where M = diag(w_i/||a_i||_S^2, S = diag(s_j), s_j denotes the number
 % of nonzero elements in column j, and w_i are weights (default: w_i = 1).
 %
 % Input:
@@ -45,17 +45,17 @@ function [X,info,ext_info] = cav(varargin)
 %                            'NCP'  : Normalized Cumulatice Periodogram.
 %                            'DP'   : Discrepancy Principle.
 %                            'ME'   : Monotone Error rule.
-%                     taudelta   = product of tau and delta, only needed
-%                                  for DP and ME.
+%                     taudelta   = product of tau and delta, required for
+%                                  DP and ME.
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
 %                                  E.g. for paralleltomo, res_dims should
 %                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
-%                     ncp_smooth = An positive integer specifying number of
-%                                  iterations to filter/average NCP
-%                                  criterion over. Default: 4.
+%                     ncp_smooth = A positive integer specifying the
+%                                  filter length in the NCP criterion.
+%                                  Default: 2.
 %       lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
 %                 this value is enforced on all elements of x in each 
 %                 iteration. If vector, it must have same size as x and 
@@ -81,7 +81,7 @@ function [X,info,ext_info] = cav(varargin)
 %            s1           : the computed largest singular value.
 %            itersaved    : iteration numbers of iterates saved in X.
 %   ext_info Extra information struct with 2 fields:
-%            M            : diagonal of the matrix M = diag(1/||a^i||_S^2).
+%            M            : diagonal of the matrix M = diag(1/||a_i||_S^2).
 %            D            : diagonal of the matrix D (all ones for cav)
 %
 % How to use a function handle for A.

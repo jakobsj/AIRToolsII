@@ -203,8 +203,8 @@ for i = 1:size(e,1)
 
 end
 
-% Return as vector and ensure nonnegative elements.
-X = X(:); X(X<0) = 0;
+% Ensure nonnegative elements.
+X(X<0) = 0;
 
 function im = smooth(N,p)
 %SMOOTH Creates a 2D test image of a smooth function
@@ -445,9 +445,6 @@ for j = 5*N13:min(12*N13,N)
     end
     x(vector,j) = 1;
 end
-
-% Reshape the matrix to a vector.
-x = x(:);
 
 % ------ Below here: subfunctions for 'binary' --------------------------
 

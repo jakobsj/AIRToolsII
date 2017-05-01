@@ -1,10 +1,10 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    relaxparinput,s1,w,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
+    relaxparinput,rho,w,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
     check_inputs(A,b,K,x0,options)
 %CHECK_INPUTS Aux. function to check inputs, set defaults for ART,CART,SIRT
 %
 %   [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-%    relaxparinput,s1,w,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
+%    relaxparinput,rho,w,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
 %    check_inputs(A,b,K,x0,options)
 %
 % From inputs given by user to a ART, CART or SIRT method check for
@@ -30,7 +30,7 @@ function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
 %    stoprule       The name of the stopping rule chosen.
 %    taudelta       Stopping rule parameter used by DP and ME.
 %    relaxparinput  Relaxation parameter specified by user or default.
-%    s1             Largest singular value.
+%    rho            Spectral radius of iteration matrix.
 %    w              Weights to apply in SIRT method.
 %    res_dims       Dimensions of residual needed for NCP stopping rule.
 %    rkm1           Initialized variable to hold residual at previous 
@@ -69,12 +69,12 @@ if size(b,1) ~= m || size(b,2) ~= 1
     error('The size of A and b do not match.')
 end
 
-% Check that K is specified and initialize X matrix..
+% Check that K is specified and initialize X matrix.
 if isempty(K)
     error('Max no. of iterations must ALWAYS be specified.')
 end
 
-% Elements of K must appear in strictly increasing order:
+% Elements of K must appear in strictly increasing order.
 if ~all(diff(K)>0)
     error('Elements of K must be strictly increasing.')
 end
@@ -85,19 +85,19 @@ if nargin < 4 || isempty(x0)
     x0 = zeros(n,1);
 end
 
-% Check the size of x0
+% Check the size of x0.
 if size(x0,1) ~= n || size(x0,2) ~= 1
     error('The size of x0 does not match the problem.')
 end
 
 
-%% After here, extract from options or use defaults
+%% After here, extract from options or use defaults.
 if nargin < 5
     options = struct;
 end
 
 
-%% Bound constraints lbound and ubound
+%% Bound constraints lbound and ubound.
 
 % Lower bound(s). Default empty. Can be specified as either scalar or vector
 % of same length as x. If vector, check length/orientation.
@@ -122,7 +122,7 @@ else
 end
 
 
-%% Relaxation parameter
+%% Relaxation parameter.
 
 relaxparinput = nan;
 if isfield(options,'relaxpar')
@@ -130,15 +130,15 @@ if isfield(options,'relaxpar')
 end
 
 
-%% Largest singular value
+%% Largest singular value.
 
-s1 = nan;
-if isfield(options,'s1')
-     s1 = options.s1;
+rho = nan;
+if isfield(options,'rho')
+     rho = options.rho;
 end
 
 
-%% Weights
+%% Weights.
 
 w = nan;
 if isfield(options,'w')
@@ -146,7 +146,7 @@ if isfield(options,'w')
 end
 
 
-%% Stopping rules
+%% Stopping rules.
 
 % Default stopping rule.
 stoprule = 'NONE';
@@ -228,7 +228,7 @@ if isfield(options,'damping')
     if damp<0, error('Damping must be positive'), end
 end
 
-%% CART flagging
+%% CART flagging.
 
 THR = 1e-4;
 if isfield(options,'THR')

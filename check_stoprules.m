@@ -39,11 +39,11 @@ function [stop, info, rkm1, dk] = check_stoprules(...
 % Jakob Sauer Jorgensen, Per Christian Hansen, Maria Saxild-Hansen
 % 2017-03-05 DTU Compute
 
-% Defaults
+% Defaults.
 stop = 0;
 info = struct;
 
-% Split by stopping rule chosen
+% Split by stopping rule chosen.
 switch upper(stoprule)
     
     case 'DP'
@@ -120,7 +120,7 @@ switch upper(stoprule)
         
         % Compute the norm of the difference between columns of c and
         % c_white. The below handles both 2D and 1D and is generalized from
-        % the 1D statement   ncc = norm(c-c_white);
+        % the 1D statement:  ncc = norm(c-c_white).
         ncc = mean(sqrt(sum(bsxfun(@minus,c,c_white).^2)));
         
         % Compare filtered new value with the previous filtered value.
@@ -151,7 +151,7 @@ switch upper(stoprule)
             info.stoprule = 0;
             info.finaliter = k;
             info.relaxpar = relaxpar;
-        end % end stoprule type none
+        end % end stoprule type none.
         
     otherwise
         error('Unknown stopping rule given.');

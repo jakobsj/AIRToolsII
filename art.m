@@ -1,13 +1,13 @@
 function [X,info] = art(art_method, varargin)
-%ART General interface for calling ART methods.
+%ART General interface for calling ART methods
 %
 %   [X,info] = art(art_method,A,b,K)
 %   [X,info] = art(art_method,A,b,K,x0)
 %   [X,info] = art(art_method,A,b,K,x0,options)
 %
-% Implements a general ART method method for the linear system Ax = b:
+% Implements a general ART method for the linear system Ax = b:
 %       
-%       x^{k+1} = x^k + relaxpar*(b_i - a^i'*x^k)/(||a^i||_2^2)*a^i
+%       x^{k+1} = x^k + relaxpar*(b_i - a_i'*x^k)/(||a_i||_2^2)*a_i
 %
 % where a_i' is the i-th row of A, and the order for i is chosen in 
 % different ways by the provided methods (see kaczmarz, symkaczmarz, 
@@ -18,8 +18,8 @@ function [X,info] = art(art_method, varargin)
 %   art_method  Either one of the strings 'kaczmarz', 'symkaczmarz', or 
 %               'randkaczmarz' to specify one of the provided methods.
 %                Default is 'kaczmarz'.
-%                Or a row index vector of length m (for matrix A m times
-%                n) with a desired fixed order in which to step through all 
+%                Or a row index vector of length m (for matrix A m-by-n)
+%                with a desired fixed order in which to step through all 
 %                rows of A. Please see demo_custom for an example.
 %   A            m times n matrix, or a function that implements matrix-
 %                vector multiplication with A and A'; please see 
@@ -27,10 +27,10 @@ function [X,info] = art(art_method, varargin)
 %   b            m times 1 vector containing the right-hand side.
 %   K            Number of iterations. If K is a scalar, then K is the 
 %                maximum number of iterations and only the last iterate is 
-%                saved. If K is a vector, then the largest value in K is 
-%                the maximum number of iterations and only iterates 
-%                corresponding to the values in K are saved, together with 
-%                the last iterate.
+%                returned. If K is a vector, then the largest value in K 
+%                is the maximum number of iterations and only iterates 
+%                corresponding to the values in K are returned, together 
+%                with the last iterate.
 %   x0           n times 1 starting vector. Default: x0 = 0.
 %   options      Struct with the following fields:
 %       relaxpar  The relaxation parameter. For this method relaxpar must
@@ -41,17 +41,16 @@ function [X,info] = art(art_method, varargin)
 %                                     is the maximum number of iterations.
 %                            'NCP'  : Normalized Cumulative Perodogram.
 %                            'DP'   : Discrepancy Principle.
-%                     taudelta   = product of tau and delta, only needed
-%                                  for DP.
+%                     taudelta   = product of tau and delta, required for DP.
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
-%                                  E.g. for paralleltomo, res_dims should
+%                                  E.g., for paralleltomo res_dims should
 %                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
-%                     ncp_smooth = An positive integer specifying number of
-%                                  iterations to filter/average NCP
-%                                  criterion over. Default: 4.
+%                     ncp_smooth = An positive integer specifying the
+%                                  filter length in the NCP criterion.
+%                                  Default: 2.
 %       lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
 %                 this value is enforced on all elements of x in each 
 %                 iteration. If vector, it must have same size as x and 
@@ -62,11 +61,11 @@ function [X,info] = art(art_method, varargin)
 %                 iteration. If vector, it must have same size as x and 
 %                 then enforces elementwise lower bounds on x. If empty, no
 %                 bound is enforced. +/-Inf can be used.
-%       damping   A parameter P to avoid division by very small row norms
-%                 by adding P*max_i{||a^i||_2^2} to ||a^i||_2^2.
+%       damping   A parameter damp to avoid division by very small row norms
+%                 by adding damp*max_i{||a_i||_2^2} to ||a_i||_2^2.
 %
 % Output:
-%   X        Matrix containing the saved iterations in columns.
+%   X        Matrix containing the saved iterations as the columns.
 %   info     Information struct with 4 fields:
 %            stoprule = 0 : stopped by maximum number of iterations
 %                       1 : stopped by NCP-rule
@@ -100,17 +99,17 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    s1,w,res_dims,rkm1,dk,damp] = check_inputs(varargin{:});
+     ~,~,res_dims,rkm1,dk,damp] = check_inputs(varargin{:});
 
 % Special check for symkaczmarz: number of iterations must be even
 if ischar(art_method) && strncmpi(art_method,'sym',3)
     if any(mod(K,2))
         error('For symkaczmarz only even iteration numbers can be requested.');
     else
-        % Since in symkaczmarz a sweep is top->bottom->top it is twice as
-        % expensive as other methods, and one sweep is counted as two
-        % iterations. For code reasons, we do this by running half the
-        % number of iterations, then later doubling iteration numbers
+        % Since in symkaczmarz a sweep is top -> bottom -> top, it is twice
+        % as expensive as other methods, and one sweep is therefore counted
+        % as two iterations. For code reasons, we do this by running half
+        % the number of iterations, then later doubling iteration numbers
         % again.
         K = K/2;
         kmax = kmax/2;
@@ -172,7 +171,7 @@ if ischar(art_method)
             error('Unknown ART method specified')
     end
 else
-    % Custom ART method specified by user giving the row order I as
+    % Custom ART method specified by the user giving the row order I as
     % first input instead of the string with a particular ART method name.
     I = art_method(:)';
     I = I(normAi(I)>0);
@@ -181,7 +180,7 @@ end
 % Apply damping.
 normAi = normAi + damp*max(normAi);
 
-% Special for randkaczmarz - set up random row selection 
+% Special for randkaczmarz - set up random row selection.
 if is_randkaczmarz
     cumul = cumsum(normAi/sum(normAi));
     

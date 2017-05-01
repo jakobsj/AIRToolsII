@@ -7,10 +7,11 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 %   [A,b,x,s,p] = seismictomo(N,s,p,isDisp)
 %   [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 %
-% This function creates a 2D seismic tomography test problem with an
-% N-times-N domain, using s sources located on the right boundary and p
-% receivers (seismographs) scattered along the left and top boundary.
-% The rays are transmitted from each source to each receiver. 
+% This function uses the "line model" to create a 2D seismic travel-time
+% tomography test problem with an N-times-N pixel domain, using s sources
+% located on the right boundary and p receivers (seismographs) scattered
+% along the left and top boundary.  The rays are transmitted from each
+% source to each receiver. 
 %
 % Inupt: 
 %   N        Scalar denoting the number of discretization intervals in 
@@ -22,9 +23,9 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 %   isDisp   If isDisp is nonzero it specifies the time in seconds 
 %            to pause in the display of the rays. If zero (the default), 
 %            no display is shown.
-%   isMatrix If non-zero, a sparse matrix is set up to represent the
-%            forward problem. If zero, instead a function handle to a
-%            matrix-free version is returned.
+%   isMatrix If non-zero (the default), a sparse matrix is set up to
+%            represent the forward problem. If zero, instead a function
+%            handle to a matrix-free version is returned.
 %
 % Output:
 %   A        If input isMatrix is 1 (default): Coefficient matrix with N^2
@@ -49,6 +50,10 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 
 % Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Chr. Hansen,
 % October 1, 2014, DTU Compute.
+
+if nargin < 5 || isempty(isMatrix)
+    isMatrix = 1;
+end
 
 if nargin < 4 || isempty(isDisp)
     isDisp = 0;
@@ -76,6 +81,7 @@ end
 % Create the phantom.
 if nargout > 1
     x = phantomgallery('tectonic',N);
+    x = x(:);
     if isMatrix
         b = A*x;
     else
@@ -111,7 +117,7 @@ yp = [linspace(-N2+Np2,N2-Np2,p2)'; N2*ones(p1,1)];
 
 % Prepare for illustration.
 if isDisp
-    AA = rand(N);
+    AA = phantomgallery('tectonic',N); % rand(N);
     figure
 end
 
@@ -166,7 +172,7 @@ for i = II
 
         clf
         pause(isDisp)
-        imagesc((-N2+.5):(N2-0.5),(-N2+.5):(N2-0.5),AA), colormap gray,
+        imagesc((-N2+.5):(N2-0.5),(-N2+.5):(N2-0.5),flipud(AA)), colormap gray
         hold on
         axis xy
         axis equal
@@ -199,8 +205,7 @@ for i = II
             plot(x,yx,'-','color',[220 0 0]/255,'linewidth',1.5)
             plot(xy,y,'-','color',[220 0 0]/255,'linewidth',1.5)
                                              
-            set(gca,'Xticklabel',{})
-            set(gca,'Yticklabel',{})
+            set(gca,'Xtick',[],'Ytick',[])
             pause(isDisp)
         end
         

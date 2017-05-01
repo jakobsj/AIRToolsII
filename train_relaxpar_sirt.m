@@ -1,4 +1,4 @@
-function [relaxpar,meub] = train_relaxpar_sirt(A,b,x_ex,method,kmax,options)
+function relaxpar = train_relaxpar_sirt(A,b,x_ex,method,kmax,options)
 %TRAIN_RELAXPAR_SIRT Training to determine optimal relaxpar for SIRT method
 %
 %   relaxpar = train_relaxpar_sirt(A,b,x_ex,method,kmax)
@@ -25,8 +25,6 @@ function [relaxpar,meub] = train_relaxpar_sirt(A,b,x_ex,method,kmax,options)
 % See also: train_relaxpar_art
 
 % Maria Saxild-Hansen and Per Chr. Hansen, June 10, 2010, DTU Compute.
-
-DEBUG = false;
 
 % Input check: ensure that no stoprule is chosen.
 if nargin == 6
@@ -72,7 +70,6 @@ while ~stop
                 % require recalculation in the next call of the method.
                 options.s1 = info.s1;
                 relaxparmax = 2/info.s1^2;
-                rr = {num2str(info.relaxpar)};
                 
             otherwise
                 error(['Unknown method ',func2str(method)])
@@ -98,8 +95,6 @@ while ~stop
         stop = 1;
     end
 end
-
-if DEBUG, figure, plot(Er,'ok'), hold on, end
 
 % Minimum error upper bound.
 meub = (1+fudge)*minE;
@@ -131,18 +126,9 @@ err_betap = ee(k_betap);
 % Augmented version of golden section search.  For the SIRT methods we
 % favor larger relaxation parameters because they tend to give faster
 % semi-convergence; hence this order of the first two if-elseif blocks.
-if DEBUG
-    disp('Before step 2:')
-    disp(['  ',num2str(alpha),'  ',num2str(alphap),'  ',...
-          num2str(betap),'  ',num2str(beta)])
-    disp(['  ',num2str([k_alphap,k_betap])])
-    iter = 0;
-end
 while abs(alphap-betap) > relaxparmax*0.01
-    if DEBUG, iter = iter+1; end
     
     if err_alphap > meub
-        if DEBUG, disp(['iter = ',num2str(iter),': A']), end
         
         % [alpha alphap betap beta] <---- [alphap betap z beta]
         z = alphap + (1-r)*(abs(beta-alphap));
@@ -156,7 +142,6 @@ while abs(alphap-betap) > relaxparmax*0.01
         err_betap = ee(k_betap);
         
     elseif err_betap > meub
-        if DEBUG, disp(['iter = ',num2str(iter),': B']), end
 
         % [alpha alphap betap beta] <---- [alpha z alphap betap]
         z = alpha + r*(abs(betap-alpha));
@@ -170,7 +155,6 @@ while abs(alphap-betap) > relaxparmax*0.01
         err_alphap = ee(k_alphap);
         
     elseif k_alphap >= k_betap
-        if DEBUG, disp(['iter = ',num2str(iter),': C']), end
         
         % [alpha alphap betap beta] <---- [alphap betap z beta]
         z = alphap + (1-r)*(abs(beta-alphap));
@@ -184,7 +168,6 @@ while abs(alphap-betap) > relaxparmax*0.01
         err_betap = ee(k_betap);
         
     else
-        if DEBUG, disp(['iter = ',num2str(iter),': D']), end
         
         % [alpha alphap betap beta] <---- [alpha z alphap betap]
         z = alpha + r*(abs(betap-alpha));
@@ -198,21 +181,6 @@ while abs(alphap-betap) > relaxparmax*0.01
         err_alphap = ee(k_alphap);
         
     end
-    if DEBUG
-        disp(['  ',num2str(alpha),'  ',num2str(alphap),'  ',...
-              num2str(betap),'  ',num2str(beta)])
-        disp(['  ',num2str([k_alphap,k_betap])])
-        options.relaxpar = (alphap+betap)/2;
-        XXX = method(A,b,1:kopt,[],options);
-        ZZZ = sqrt(sum((XXX-repmat(x_ex,1,kopt)).^2,1));
-        plot(ZZZ,'linewidth',2), hold on
-        rr(iter+1) = {num2str(options.relaxpar)};
-    end
-end
-if DEBUG
-    plot([0 kopt],[meub meub],'--')
-    hold off
-    legend(rr)
 end
 
 % Define the optimal relaxpar.

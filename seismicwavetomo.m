@@ -8,12 +8,12 @@ function [A,b,x,s,p,omega] = seismicwavetomo(N,s,p,omega,isDisp,isMatrix)
 %   [A,b,x,s,p] = seismicwavetomo(N,s,p,omega,isDisp)
 %   [A,b,x,s,p] = seismicwavetomo(N,s,p,omega,isDisp,isMatrix)
 %
-% This function creates a 2D seismic tomography test problem with an
-% N-times-N domain, using s sources located on the right boundary and p
-% receivers (seismographs) scattered along the left and top boundary.
-% Waves are transmitted from each source to each receiver, and there is
-% no high-frequency approximation, i.e., no assumption about rays. The
-% wave is assumed to travel within the first Fresnel zone.
+% This function creates a 2D seismic travel-time tomography test problem
+% with an N-times-N pixel domain, using s sources located on the right
+% boundary and p receivers (seismographs) scattered along the left and top
+% boundary. Waves are transmitted from each source to each receiver, and
+% there is no high-frequency approximation, i.e., no assumption about rays.
+% The wave is assumed to travel within the first Fresnel zone.
 %
 % In the limit where the wave frequency is infinite, the waves can be
 % described by rays as done in the function seismictomo. But note that
@@ -30,9 +30,9 @@ function [A,b,x,s,p,omega] = seismicwavetomo(N,s,p,omega,isDisp,isMatrix)
 %   isDisp   If isDisp is nonzero it specifies the time in seconds to pause
 %            in the display of the rays. If zero (the default), then no
 %            display is shown.
-%   isMatrix If non-zero, a sparse matrix is set up to represent the
-%            forward problem. If zero, instead a function handle to a
-%            matrix-free version is returned.
+%   isMatrix If non-zero (the default), a sparse matrix is set up to
+%            represent the forward problem. If zero, instead a function
+%            handle to a matrix-free version is returned.
 %
 % Output:
 %   A        If input isMatrix is 1 (default): Coefficient matrix with N^2
@@ -62,7 +62,6 @@ function [A,b,x,s,p,omega] = seismicwavetomo(N,s,p,omega,isDisp,isMatrix)
 % Reference: J. M. Jensen, B. H. Jacobsen, and J. Christensen-Dalsgaard,
 % Sensitivity kernels for time-distance inversion, Solar Physics, 192
 % (2000), pp. 231-239.
-        
 
 % Default number of sources.
 if nargin < 2 || isempty(s)
@@ -83,6 +82,10 @@ if nargin < 5 || isempty(isDisp)
     isDisp = 0;
 end
 
+if nargin < 6 || isempty(isMatrix)
+    isMatrix = 1;
+end
+
 % Construct either matrix or function handle
 if isMatrix
     A = get_or_apply_system_matrix(N,s,p,omega,isDisp);
@@ -94,6 +97,7 @@ end
 % Create the phantom.
 if nargout > 1
     x = phantomgallery('tectonic',N);
+    x = x(:);
     if isMatrix
         b = A*x;
     else
@@ -206,7 +210,7 @@ for i = II
         % Illustration of the sensitivity kernels.
         if isDisp
             imagesc(xrange,yrange,sens);
-            set(gca,'Xticklabel',{},'Yticklabel',{})
+            set(gca,'Xtick',[],'Ytick',[])
             pause(isDisp)
         end
 

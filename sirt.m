@@ -1,5 +1,5 @@
 function [X,info,ext_info] = sirt(sirt_method, varargin)
-%SIRT General interface for calling SIRT methods.
+%SIRT General interface for calling SIRT methods
 %
 %   [X,info,ext_info] = sirt(sirt_method,A,b,K)
 %   [X,info,ext_info] = sirt(sirt_method,A,b,K,x0)
@@ -55,17 +55,17 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %                            'NCP'  : Normalized Cumulatice Periodogram.
 %                            'DP'   : Discrepancy Principle.
 %                            'ME'   : Monotone Error rule.
-%                     taudelta   = product of tau and delta, only needed
-%                                  for DP and ME.
+%                     taudelta   = product of tau and delta, required for
+%                                  DP and ME.
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
 %                                  E.g. for paralleltomo, res_dims should
 %                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
-%                     ncp_smooth = An positive integer specifying number of
-%                                  iterations to filter/average NCP
-%                                  criterion over. Default: 4.
+%                     ncp_smooth = A positive integer specifying the
+%                                  filter length in the NCP criterion.
+%                                  Default: 2.
 %      lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
 %                this value is enforced on all elements of x in each 
 %                iteration. If vector, it must have same size as x and 
@@ -76,7 +76,7 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %                iteration. If vector, it must have same size as x and 
 %                then enforces elementwise lower bounds on x. If empty, no
 %                bound is enforced. +/-Inf can be used.
-%      s1        Scalar containing largest singular value of sqrt(M)*A.
+%      rho       Scalar containing spectral radius of the iteration matrix.
 %      w         m-dimensional weighting vector.
 %
 % Output:
@@ -88,7 +88,7 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %                       3 : stopped by ME-rule.
 %            finaliter    : no. of iterations in total.
 %            relaxpar     : the chosen relaxation parameter.
-%            s1           : the computed largest singular value.
+%            rho          : the computed spectral radius.
 %            itersaved    : iteration numbers of iterates saved in X.
 %   ext_info Extra information struct with 2 fields:
 %            M            : diagonal of the matrix M = diag(1/||a^i||_S^2).
@@ -125,7 +125,7 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    s1,w,res_dims,rkm1,dk] = check_inputs(varargin{:});
+    rho,w,res_dims,rkm1,dk] = check_inputs(varargin{:});
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
@@ -155,9 +155,9 @@ l = 1;   % Pointing to the next iterate number in K to be saved.
 % Calculate relaxpar. Special case for SART largest singval is 1.
 atma = @(x) Dfun( Afun( Mfun(Afun(x,'notransp')) , 'transp' ));
 if strcmpi(sirt_method,'sart')
-    s1 = 1;
+    rho = 1;
 end
-[relaxpar,casel,sigma1tilde] = calc_relaxpar(relaxparinput,s1,kmax,atma,n);
+[relaxpar,casel,rho] = calc_relaxpar(relaxparinput,rho,kmax,atma,n);
 
 % Store M and D in third output struct if asked for.
 if nargout > 2
@@ -218,7 +218,7 @@ X = X(:,1:l-1);
 % Save further to info:
 
 % Largest singular value determined
-info.s1 = sigma1tilde;
+info.rho = rho;
 
 % List of iterates saved: all in K smaller than the final, and the final.
 info.itersaved = [K(K<info.finaliter), info.finaliter];

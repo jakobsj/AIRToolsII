@@ -7,10 +7,10 @@ function [X,info] = cart(cart_method, varargin)
 %
 % Implements a general CART method for the system Ax = b:
 %
-%       x_j^{k+1} = x_j^k + relaxpar*a^j'(b - A x^k)/(||a^j||_2^2)
+%       x_j^{k+1} = x_j^k + relaxpar*a_j'(b - A x^k)/(||a_j||_2^2)
 %
-% where a^j is the j-th column of A, and the order for j can be chosen in 
-% different ways. The provided method columnkaczmarz uses the natural order
+% where a_j is the j-th column of A, and the order for j can be chosen in 
+% different ways. The provided method columnaction uses the natural order
 % from first to last column, while other orders can be specified by the
 % user. 
 %
@@ -20,8 +20,8 @@ function [X,info] = cart(cart_method, varargin)
 % happens after a random number of iterations chosen as rand*Nunflag.
 %
 % Input:
-%   cart_method  Either the string 'columnkaczmarz' to specify the provided 
-%                method. Default is 'columnkaczmarz'.
+%   cart_method  Either the string 'columnaction' to specify the provided 
+%                method. Default is 'columnaction'.
 %                Or a column index vector of length n (for matrix A m times
 %                n) with a desired fixed order in which to step through all 
 %                columns of A. Please see demo_custom for an example.
@@ -45,17 +45,16 @@ function [X,info] = cart(cart_method, varargin)
 %                                     is the maximum number of iterations.
 %                            'NCP'  : Normalized Cumulative Perodogram.
 %                            'DP'   : Discrepancy Principle.
-%                     taudelta   = product of tau and delta, only needed
-%                                  for DP.
+%                     taudelta   = product of tau and delta, required for DP.
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
 %                                  E.g. for paralleltomo, res_dims should
 %                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
-%                     ncp_smooth = An positive integer specifying number of
-%                                  iterations to filter/average NCP
-%                                  criterion over. Default: 4.
+%                     ncp_smooth = An positive integer specifying the
+%                                  filter length in the NCP criterion.
+%                                  Default: 2.
 %       lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
 %                 this value is enforced on all elements of x in each 
 %                 iteration. If vector, it must have same size as x and 
@@ -67,7 +66,7 @@ function [X,info] = cart(cart_method, varargin)
 %                 then enforces elementwise lower bounds on x. If empty, no
 %                 bound is enforced. +/-Inf can be used.
 %       damping   A parameter P to avoid division by very small row norms
-%                 by adding P*max_i{||a^i||_2^2} to ||a^i||_2^2.
+%                 by adding P*max_i{||a_i||_2^2} to ||a_i||_2^2.
 %       THR       A component is "flagged" if its update is smaller than
 %                 THR*max(abs(x)) where x is the previous iteration vector.
 %                 Default THR = 1e-4.
@@ -100,20 +99,16 @@ function [X,info] = cart(cart_method, varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then cart is called with this A.
 %
-% See also: columnkaczmarz, art, kaczmarz.
+% See also: columnaction, art, kaczmarz.
 
-% Jacob Froesig, Nicolai Riis, Per Chr. Hansen, Nov. 7, 2015, DTU Compute.
-% With inspiration from Tommy Elfving and Touraj Nikazad.
-
-
-% Set default CART method to be columnkaczmarz.
+% Set default CART method to be columnaction.
 if isempty(cart_method)
-    cart_method = 'columnkaczmarz';
+    cart_method = 'columnaction';
 end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    s1,w,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
+    ~,~,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
     check_inputs(varargin{:});
 
 % Faster to access rows of matrix directly if available.
@@ -155,7 +150,7 @@ end
 % Depending on CART method, set the column order.
 if ischar(cart_method)
     switch lower(cart_method)
-        case 'columnkaczmarz'
+        case 'columnaction'
             % Only loop over nonzero columns.
             J = find(normAj>0);
         otherwise
@@ -187,7 +182,7 @@ while ~stop
     % Update the iteration number k.
     k = k + 1;
     
-    % The columnwise Kaczmarz sweep.
+    % The columnwise sweep.
     for j = J
         mm = max(abs(xk)); % Max abs element of previous iteration.
         if F(j)

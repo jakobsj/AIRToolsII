@@ -11,11 +11,11 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 %   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R,dw,sd,isDisp)
 %   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta,p,R,dw,sd,isDisp,isMatrix)
 %
-% This function creates a 2D tomography test problem with an N-times-N
-% domain, using p rays in fan-formation for each angle in the vector theta.
-% Unlike fancurvedtomo, in which the detector is curved, in fanlineartomo 
-% the detector is linear, corresponding to the central slice of a
-% flat-panel detector.
+% This function uses the "line model" to create a 2D X-ray tomography test 
+% problem with an N-times-N pixel domain, using p rays in fan formation for 
+% each angle in the vector theta. Unlike fancurvedtomo, in which the detector 
+% is curved, in fanlineartomo the detector is linear, corresponding to the 
+% central slice of a flat-panel detector.
 %
 % Input:
 %   N           Scalar denoting the number of discretization intervals in 
@@ -59,11 +59,8 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 %
 % See also: paralleltomo, fancurvedtomo, seismictomo, seismicwavetomo.
 
-% Modified to do linear detector array, from fanbeamtomo in AIRtools 1.0.
-% Jakob Sauer Jorgensen, 2012-04-04, DTU Compute, jakj@dtu.dk.
-
 % Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Christian Hansen,
-% June 21, 2011, DTU Informatics.
+% June 21, 2011, DTU Compute.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
 % Tomographic Imaging, SIAM, Philadelphia, 2001.
@@ -225,7 +222,6 @@ else
     end
 end
 
-
 % Loop over the chosen angles of the source.
 for i = II
     
@@ -238,7 +234,6 @@ for i = II
         clf
         pause(isDisp)
         imagesc((-N/2+.5):(N/2-0.5),(-N/2+.5):(N/2-0.5),AA), colormap gray,
-        axis xy
         hold on
         axis(1.1*R*[-1,1,-1,1])
         axis equal
@@ -284,10 +279,9 @@ for i = II
         yxy = [yx; y];
         
         % Sort the coordinates according to intersection time.
-        [t, I] = sort(t);
+        [~,I] = sort(t);
         xxy = xxy(I);
         yxy = yxy(I);
-        
         
         % Skip the points outside the box.
         I = (xxy >= -N/2 & xxy <= N/2 & yxy >= -N/2 & yxy <= N/2);
@@ -299,28 +293,26 @@ for i = II
         xxy(I) = [];
         yxy(I) = [];
         
-        % Illustration of the rays
+        % Illustration of the rays.
         if isDisp
-            set(gca,'Xticklabel',{})
-            set(gca,'Yticklabel',{})
+            set(gca,'Xtick',[],'Ytick',[])
             pause(isDisp)
         end
         
         % Calculate the length within cell and determines the number of
         % cells which is hit.
         aval = sqrt(diff(xxy).^2 + diff(yxy).^2);
-        %numvals = numel(aval);
         col = [];
         
         % Store the values inside the box.
         if numel(aval) > 0
             
             % Calculates the midpoints of the line within the cells.
-            xm = 0.5*(xxy(1:end-1)+xxy(2:end));
-            ym = 0.5*(yxy(1:end-1)+yxy(2:end));
+            xm = 0.5*(xxy(1:end-1)+xxy(2:end)) + N/2;
+            ym = 0.5*(yxy(1:end-1)+yxy(2:end)) + N/2;
             
             % Translate the midpoint coordinates to index.
-            col = (floor(xm)+N/2)*N + (N - (floor(ym)+N/2));
+            col = floor(xm)*N + (N - floor(ym));
 
         end
         
@@ -337,7 +329,7 @@ for i = II
                 cols(idx) = col;
                 vals(idx) = aval;
             else
-                % If any nonzero elements, apply forward or back operator
+                % If any nonzero elements, apply forward or back operator.
                 
                 if strcmp(transp_flag,'notransp')
                     % Insert inner product with u into w.
@@ -347,8 +339,10 @@ for i = II
                 end
             end
         end
+        
     end % end j
-end %end i
+    
+end % end i
 
 if isMatrix
     % Truncate excess zeros.

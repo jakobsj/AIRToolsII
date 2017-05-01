@@ -8,8 +8,9 @@ function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 %   [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp)
 %   [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 %
-% This function creates a 2D tomography test problem with an N-times-N
-% domain, using p parallel rays for each angle in the vector theta.
+% This function uses the "line model" to create a 2D X-ray tomography test
+% problem with an N-times-N pixel domain, using p parallel rays for each
+% angle in the vector theta.
 %
 % Input:
 %   N           Scalar denoting the number of discretization intervals in
@@ -120,7 +121,7 @@ y = x;
 
 % Prepare for illustration
 if isDisp
-    AA = rand(N);
+    AA = phantomgallery('smooth',N);
     figure
 end
 
@@ -130,8 +131,8 @@ isMatrix = (nargin < 6);
 
 if isMatrix
     
-    % Initialize vectors that contains the row numbers, the column numbers and
-    % the values for creating the matrix A effiecently.
+    % Initialize vectors that contains the row numbers, the column numbers
+    % and the values for creating the matrix A effiecently.
     rows = zeros(2*N*nA*p,1);
     cols = rows;
     vals = rows;
@@ -147,10 +148,14 @@ else
             A = [p*nA,N^2];
             return
         case 'notransp' % Forward project.
-            if length(u) ~= N^2, error('Incorrect length of input vector'), end
+            if length(u) ~= N^2
+                error('Incorrect length of input vector')
+            end
             A = zeros(p*nA,1);
         case 'transp' % Backproject
-            if length(u) ~= p*nA, error('Incorrect length of input vector'), end
+            if length(u) ~= p*nA
+                error('Incorrect length of input vector')
+            end
             A = zeros(N^2,1);
     end
     
@@ -175,19 +180,17 @@ for i = II
     if isDisp
         clf
         pause(isDisp)
-        imagesc((-N/2+.5):(N/2-0.5),(-N/2+.5):(N/2-0.5),AA), colormap gray,
+        imagesc((-N/2+.5):(N/2-0.5),(-N/2+.5):(N/2-0.5),AA), colormap gray
         hold on
-        axis xy
         axis equal
-        axis([-N/2-1 N/2+1 -N/2-1 N/2+1])
+        axis(0.7*[-N N -N N])
     end
     
     % All the starting points for the current angle.
     x0theta = cosd(theta(i))*x0-sind(theta(i))*y0;
     y0theta = sind(theta(i))*x0+cosd(theta(i))*y0;
     
-    % The direction vector for all the rays corresponding to the current
-    % angle.
+    % The direction vector for all rays corresponding to the current angle.
     a = -sind(theta(i));
     b = cosd(theta(i));
     
@@ -210,8 +213,7 @@ for i = II
             plot(x,yx,'-','color',[220 0 0]/255,'linewidth',1.5)
             plot(xy,y,'-','color',[220 0 0]/255,'linewidth',1.5)
             
-            set(gca,'Xticklabel',{})
-            set(gca,'Yticklabel',{})
+            set(gca,'Xtick',[],'Ytick',[])
             pause(isDisp)
         end
         
@@ -238,7 +240,6 @@ for i = II
         % Calculate the length within cell and determines the number of
         % cells which is hit.
         aval = sqrt(diff(xxy).^2 + diff(yxy).^2);
-        %numvals = numel(aval);
         col = [];
         
         % Store the values inside the box.

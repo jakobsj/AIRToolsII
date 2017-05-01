@@ -1,27 +1,27 @@
-%DEMO_CONSTRAINTS (script) Demonstrates the use of nonnegativity and more
-%general upper and lower bound constraints.
+%DEMO_CONSTRAINTS (script) Demonstrates the use of various constraints
 %
-% This script illustrates the use of the cimmino and kaczmarz methods
-% with the lbound and ubound options.
+% This script illustrates the use of Cimmino's method with the lbound
+% and ubound options.
 %
 % The script creates a parallel-beam test problem, adds noise and solves
 % the problem without and with the constraints.  The exact solution and
-% the results from the methods are shown. 
+% the results from the methods are shown. The script shows that we obtain
+% better reconstructions when we are able to impose bounds.
 %
 % See also: demo_art, demo_custom, demo_matrixfree, demo_sirt, 
 % demo_training.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Oct. 21, 2010, DTU Compute.
 
-close all
-clear options
-fprintf(1,'\nStarting demo_constraints:\n\n');
+clear, clc
+fprintf(1,'Starting demo_constraints:\n\n');
 
 % Set the parameters for the test problem.
-N = 50;           % The discretization points.
-theta = 0:5:179;  % No. of used angles.
+N = 50;           % The image is N-by-N.
+theta = 0:2:178;  % No. of used angles.
 p = 75;           % No. of parallel rays.
-eta = 0.05;       % Relative noise level.
+eta = 0.02;       % Relative noise level.
+k = 5000;         % Number of iterations.
 
 fprintf(1,'Creating a parallel-beam tomography test problem\n');
 fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f, and p = %2.0f.',...
@@ -30,128 +30,85 @@ fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f, and p = %2.0f.',...
 % Create the test problem.
 [A,b_ex,x_ex] = paralleltomo(N,theta,p);
 
-% Noise level.
-delta = eta*norm(b_ex);
-
-% Add noise to the rhs.
+% Add noise to the data.
 rng(0);
 e = randn(size(b_ex));
-e = delta*e/norm(e);
-b = b_ex + e;
+b = b_ex + eta*norm(b_ex)*e/norm(e);
 
 % Show the exact solution
-figure
-imagesc(reshape(x_ex,N,N)), colormap gray,
-axis image off
+figure(1), clf
+subplot(2,3,1)
+imagesc(reshape(x_ex,N,N)), colormap gray, axis image off
 c = caxis;
 title('Exact phantom')
 
-% No. of iterations; set nonnegativity off. This is also the default
-% behavior obtained if not specifying an lbound field of options.
-k = 50;
-options.lbound = -inf;
-
+% Perform Cimmino without constraints.
 fprintf(1,'\n\n');
-fprintf(1,'Perform k = %2.0f iterations with Cimmino''s method.',k);
-fprintf(1,'\nThis takes a moment ...\n');
+fprintf(1,'Perform k = %2.0f iterations with Cimmino''s method.\n',k);
+Xcim = cimmino(A,b,k);
 
-% Perform the cimmino iterations.
-Xcimp = cimmino(A,b,k,[],options);
+% Show the Cimmino solution.
+subplot(2,3,2)
+imagesc(reshape(Xcim,N,N)), colormap gray, axis image off
+caxis(c)
+title('Cimmino')
 
-% Show the cimmino solution.
-figure
-imagesc(reshape(Xcimp,N,N)), colormap gray,
-axis image off
-caxis(c);
-title('Cimmino reconstruction')
-
-% Set nonnegativity on.
+% Perform Cimmino iterations with nonnegativity constraints.
+fprintf(1,'Perform k = %2.0f iterations with nonnegativity constraints.\n',k);
 options.lbound = 0;
+Xcimn = cimmino(A,b,k,[],options);
 
-fprintf(1,'\n');
-fprintf(1,'Repeat with nonnegativity constraints.\n');
-fprintf(1,'This takes a moment ...\n');
+% Show the solution.
+subplot(2,3,4)
+imagesc(reshape(Xcimn,N,N)), colormap gray, axis image off
+caxis(c)
+title('Cimmino w/ nonneg.')
 
-% Perform the cimmino iterations.
-Xcimp = cimmino(A,b,k,[],options);
-
-% Show the cimmino solution.
-figure
-imagesc(reshape(Xcimp,N,N)), colormap gray,
-axis image off
-caxis(c);
-title('Cimmino reconstruction w. nonnegativity')
-
-% Set nonnegativity off.
-options.lbound = -inf;
-
-fprintf(1,'\n');
-fprintf(1,'Perform k = %2.0f iterations with Kaczmarz''s method.',k);
-fprintf(1,'\nThis takes a while ...\n');
-
-% Perform the kaczmarz iterations.
-Xkacp = kaczmarz(A,b,k,[],options);
-
-% Show the kaczmarz solution.
-figure
-imagesc(reshape(Xkacp,N,N)), colormap gray,
-axis image off
-caxis(c);
-title('Kaczmarz reconstruction')
-
-% Set nonnegativity on.
+% Perform Cimmino iterations with box constraints.
+fprintf(1,'Perform k = %2.0f iterations with box constraints.\n',k);
 options.lbound = 0;
+options.ubound = 1;
+Xcimb = cimmino(A,b,k,[],options);
 
-fprintf(1,'\n');
-fprintf(1,'Repeat with nonnegativity constraints.\n');
-fprintf(1,'This takes a while ...\n');
-
-% Perform the kaczmarz iterations.
-Xkacp = kaczmarz(A,b,k,[],options);
-
-% Show the kaczmarz solution.
-figure
-imagesc(reshape(Xkacp,N,N)), colormap gray,
+% Show the solution.
+subplot(2,3,5)
+imagesc(reshape(Xcimb,N,N)), colormap gray,
 axis image off
-caxis(c);
-title('Kaczmarz reconstruction w. nonnegativity')
+caxis(c)
+title('Cimmino w/ box')
 
-% Set scalar lower and upper bounds (too tight to demonstrate effect).
-options.lbound = 0.1;
-options.ubound = 0.7;
-
-fprintf(1,'\n');
-fprintf(1,'Repeat Cimmino with too tight lower and upper scalar bounds.\n');
-fprintf(1,'This takes a moment ...\n');
+% Determine the indices to those regions in the image that are known to
+% have exact pixel values equal to 0.3, and enforce very tight bounds
+% (simulation equality constraints) on these elements.
+I = find(abs(x_ex-0.3)<1e-10);
+L = zeros(N^2,1);
+L(I) = 0.299;
+U = ones(N^2,1);
+U(I) = 0.301;
+options.lbound = L;
+options.ubound = U;
 
 % Perform the cimmino iterations.
-Xcimp = cimmino(A,b,k,[],options);
+fprintf(1,'Repeat Cimmino with tight lower and upper bounds in certain pixels.\n\n');
+Xcime = cimmino(A,b,k,[],options);
 
-% Show the cimmino solution.
-figure
-imagesc(reshape(Xcimp,N,N)), colormap gray,
-axis image off
-caxis(c);
-title('Cimmino reconstruction w. bounds 0.1 and 0.7')
+% Show the solution.
+subplot(2,3,6)
+imagesc(reshape(Xcime,N,N)), colormap gray, axis image off
+caxis(c)
+title('Cimmino w. box & eq.')
 
-% Set vector lower and upper bounds: Different bounds in left and right
-% half of image (all too tight to demonstrate effect). If non-scalar,
-% vector input must have the same length as image to be reconstructed to
-% enforce elementwise bounds.
-ov = ones(N^2/2,1);
-options.lbound = [0.1*ov; 0.15*ov];
-options.ubound = [0.6*ov; 0.5*ov];
-
-fprintf(1,'\n');
-fprintf(1,'Repeat Cimmino with too tight lower and upper scalar bounds.\n');
-fprintf(1,'This takes a moment ...\n');
-
-% Perform the cimmino iterations.
-Xcimp = cimmino(A,b,k,[],options);
-
-% Show the cimmino solution.
-figure
-imagesc(reshape(Xcimp,N,N)), colormap gray,
-axis image off
-caxis(c);
-title('Cimmino reconstruction w. vector bounds.')
+% Show that enforcing constraints improves the reconstruction, by
+% computing the errors in those pixels where the equality constraint
+% is not active
+z_ex = x_ex; z_ex(I) = [];
+Zcim = Xcim; Zcim(I) = [];
+Zcimn = Xcimn; Zcimn(I) = [];
+Zcimb = Xcimb; Zcimb(I) = [];
+Zcime = Xcime; Zcime(I) = [];
+fprintf(1,'Errors in the reconstructions.\n')
+fprintf(1,'First line over all pixels.\n')
+fprintf(1,'Second line over those pixels where eq. constr. is not active\n')
+fprintf(1,'No constraints, nonnegativity, box, and box + equality:\n');
+disp([norm(x_ex-Xcim),norm(x_ex-Xcimn),norm(x_ex-Xcimb),norm(x_ex-Xcime)])
+disp([norm(z_ex-Zcim),norm(z_ex-Zcimn),norm(z_ex-Zcimb),norm(z_ex-Zcime)])

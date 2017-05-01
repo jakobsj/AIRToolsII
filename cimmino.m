@@ -9,7 +9,7 @@ function [X,info,ext_info] = cimmino(varargin)
 %
 %       x^{k+1} = x^k + relaxpar_k*A'*M*(b-A*x^k) ,
 %
-% where M = (1/m)*diag(w_i/||a^i||_2^2) and w_i are weights (default w_i = 1).
+% where M = (1/m)*diag(w_i/||a_i||_2^2) and w_i are weights (default w_i = 1).
 %
 % Input:
 %   A        m times n matrix, or a function that implements matrix-vector
@@ -44,17 +44,17 @@ function [X,info,ext_info] = cimmino(varargin)
 %                            'NCP'  : Normalized Cumulative Perodogram.
 %                            'DP'   : Discrepancy Principle.
 %                            'ME'   : Monotone Error rule.
-%                     taudelta   = product of tau and delta, only needed
-%                                  for DP and ME.
+%                     taudelta   = product of tau and delta, required for
+%                                  DP and ME.
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
 %                                  E.g. for paralleltomo, res_dims should
 %                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
-%                     ncp_smooth = An positive integer specifying number of
-%                                  iterations to filter/average NCP
-%                                  criterion over. Default: 4.
+%                     ncp_smooth = A positive integer specifying the
+%                                  filter length in the NCP criterion.
+%                                  Default: 2.
 %       lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
 %                 this value is enforced on all elements of x in each 
 %                 iteration. If vector, it must have same size as x and 

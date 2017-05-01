@@ -9,8 +9,10 @@ function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
 %   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp)
 %   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
 %
-% This function creates a 2D tomography test problem with an N-times-N
-% domain, using p rays in fan-formation for each angle in the vector theta.
+% This function uses the "line model" to create a 2D X-ray tomography test 
+% problem with an N-times-N pixel domain, using p rays in fan formation for 
+% each angle in the vector theta. The detector is curved such that the angular 
+% increments between rays in each projection is constant.
 %
 % Input:
 %   N           Scalar denoting the number of discretization intervals in 
@@ -157,7 +159,7 @@ y = x;
 
 % Prepare for illustration
 if isDisp
-    AA = rand(N);
+    AA = phantomgallery('smooth',N);
     figure
 end
 
@@ -217,7 +219,6 @@ for i = II
         clf
         pause(isDisp)
         imagesc((-N/2+.5):(N/2-0.5),(-N/2+.5):(N/2-0.5),AA), colormap gray,
-        axis xy
         hold on
         axis(1.1*R*[-1,1,-1,1])
         axis equal
@@ -274,17 +275,15 @@ for i = II
         xxy(I) = [];
         yxy(I) = [];
         
-        % Illustration of the rays
+        % Illustration of the rays.
         if isDisp
-            set(gca,'Xticklabel',{})
-            set(gca,'Yticklabel',{})
+            set(gca,'Xtick',[],'Ytick',[])
             pause(isDisp)
         end
         
         % Calculate the length within cell and determines the number of
         % cells which is hit.
         aval = sqrt(diff(xxy).^2 + diff(yxy).^2);
-        %numvals = numel(aval);
         col = [];
         
         % Store the values inside the box.
@@ -312,7 +311,7 @@ for i = II
                 cols(idx) = col;
                 vals(idx) = aval;
             else
-                % If any nonzero elements, apply forward or back operator
+                % If any nonzero elements, apply forward or back operator.
                 
                 if strcmp(transp_flag,'notransp')
                     % Insert inner product with u into w.

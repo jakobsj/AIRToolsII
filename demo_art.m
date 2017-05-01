@@ -1,90 +1,69 @@
-%DEMO_ART (script) Demonstrates the use of, and the results from, the ART methods.
+%DEMO_ART (script) Demonstrates the use of, and results from, the ART methods
 %
-% This script illustrates the use of the ART methods kaczmarz, symmetric
-% kaczmarz and randomized kaczmarz.
+% This script illustrates the use of the ART methods Kaczmarz, symmetric
+% Kaczmarz, and randomized Kaczmarz.
 %
-% The script creates a parallel-beam test problem, adds noise, and solves
-% the problems with the ART methods.  The exact solution and the results
-% from the methods are shown.
+% The script creates a parallel-beam CT test problem and solves it with the
+% ART methods.  The exact image and the results from the methods are shown.
 %
 % See also: demo_constraints, demo_custom, demo_matrixfree, demo_sirt, 
 % demo_training.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Mar 11, 2011, DTU Compute.
 
-close all
-fprintf(1,'\nStarting demo_art:\n\n');
+clear, clc
+fprintf(1,'Starting demo_art:\n\n');
 
 % Set the parameters for the test problem.
-N = 50;           % The discretization points.
-theta = 0:5:179;  % No. of used angles.
+N = 50;           % The image is N-times-N..
+theta = 0:2:178;  % No. of used angles.
 p = 75;           % No. of parallel rays.
-eta = 0.05;       % Relative noise level.
+k = 10;           % Number of iterations.
 
 fprintf(1,'Creating a parallel-beam tomography test problem\n');
 fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f, and p = %2.0f.',...
     [N,theta(1),theta(2)-theta(1),theta(end),p]);
 
 % Create the test problem.
-[A,b_ex,x_ex] = paralleltomo(N,theta,p);
-
-% Noise level.
-delta = eta*norm(b_ex);
-
-% Add noise to the rhs.
-rng(0);
-e = randn(size(b_ex));
-e = delta*e/norm(e);
-b = b_ex + e;
+[A,b,x] = paralleltomo(N,theta,p);
 
 % Show the exact solution.
-figure
-imagesc(reshape(x_ex,N,N)), colormap gray,
-axis image off
+figure(1), clf
+subplot(2,2,1)
+imagesc(reshape(x,N,N)), colormap gray, axis image off
 c = caxis;
 title('Exact phantom')
 
-% No. of iterations.
-k = 10;
-
 fprintf(1,'\n\n');
-fprintf(1,'Perform k = %2.0f iterations with Kaczmarz''s method.',k);
-fprintf(1,'\nThis takes a moment ...');
+fprintf(1,'Perform k = %2.0f iterations with Kaczmarz''s method.\n',k);
 
-% Perform the kaczmarz iterations.
+% Perform the Kaczmarz iterations.
 Xkacz = kaczmarz(A,b,k);
 
-% Show the kaczmarz solution.
-figure
-imagesc(reshape(Xkacz,N,N)), colormap gray,
-axis image off
-caxis(c);
-title('Kaczmarz reconstruction')
+% Show the Kaczmarz solution.
+subplot(2,2,2)
+imagesc(reshape(Xkacz,N,N)), colormap gray, axis image off
+caxis(c)
+title('Kaczmarz')
 
-fprintf(1,'\n\n');
-fprintf(1,'Perform k = %2.0f iterations with the symmetric Kaczmarz method.',k);
-fprintf(1,'\nThis takes a moment ...');
+fprintf(1,'Perform k = %2.0f iterations with the symmetric Kaczmarz method.\n',k);
 
-% Perform the symmetric kaczmarz iterations.
+% Perform the symmetric Kaczmarz iterations.
 Xsymk = symkaczmarz(A,b,k);
 
 % Show the symmetric kaczmarz solution.
-figure
-imagesc(reshape(Xsymk,N,N)), colormap gray,
-axis image off
-caxis(c);
-title('Symmetric Kaczmarz reconstruction')
+subplot(2,2,3)
+imagesc(reshape(Xsymk,N,N)), colormap gray, axis image off
+caxis(c)
+title('Symmetric Kaczmarz')
 
-fprintf(1,'\n\n');
-fprintf(1,'Perform k = %2.0f iterations with the randomized Kaczmarz method.',k);
-fprintf(1,'\nThis takes a moment ...');
+fprintf(1,'Perform k = %2.0f iterations with the randomized Kaczmarz method.\n',k);
 
-% Perform the randomized kaczmarz iterations.
+% Perform the randomized Kaczmarz iterations.
 Xrand = randkaczmarz(A,b,k);
 
-% Show the randomized kaczmarz solution.
-figure
-imagesc(reshape(Xrand,N,N)), colormap gray,
-axis image off
-caxis(c);
-title('Randomized Kaczmarz reconstruction')
+% Show the randomized Kaczmarz solution.
+subplot(2,2,4)
+imagesc(reshape(Xrand,N,N)), colormap gray, axis image off
+caxis(c)
+title('Randomized Kaczmarz')

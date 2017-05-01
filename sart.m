@@ -46,17 +46,17 @@ function [X,info,ext_info] = sart(varargin)
 %                            'NCP'  : Normalized Cumulative Periodogram.
 %                            'DP'   : Discrepancy Principle.
 %                            'ME'   : Monotone Error rule.
-%                     taudelta = product of tau and delta, only needed
-%                                for DP and ME.
+%                     taudelta = product of tau and delta, required for
+%                                DP and ME.
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
 %                                  E.g. for paralleltomo, res_dims should
 %                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
-%                     ncp_smooth = An positive integer specifying number of
-%                                  iterations to filter/average NCP
-%                                  criterion over. Default: 4.
+%                     ncp_smooth = A positive integer specifying the
+%                                  filter length in the NCP criterion.
+%                                  Default: 2.
 %       lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
 %                 this value is enforced on all elements of x in each 
 %                 iteration. If vector, it must have same size as x and 

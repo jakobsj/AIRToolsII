@@ -7,7 +7,7 @@ function [X,info] = kaczmarz(varargin)
 %
 % Implements Kaczmarz's method for the system Ax = b:
 %       
-%       x^{k+1} = x^k + relaxpar*(b_i - a^i'*x^k)/(||a^i||_2^2)*a^i
+%       x^{k+1} = x^k + relaxpar*(b_i - a_i'*x^k)/(||a_i||_2^2)*a_i
 %
 % where a_i' is the i-th row of A, and i = (k mod m) + 1.
 %
@@ -30,17 +30,16 @@ function [X,info] = kaczmarz(varargin)
 %                                     is the maximum number of iterations.
 %                            'NCP'  : Normalized Cumulative Perodogram.
 %                            'DP'   : Discrepancy Principle.
-%                     taudelta   = product of tau and delta, only needed
-%                                  for DP.
+%                     taudelta   = product of tau and delta, required for DP.
 %                     res_dims   = the dimensions that the residual vector
 %                                  should be reshaped to, required for NCP.
 %                                  E.g. for paralleltomo, res_dims should
 %                                  be [p,length(theta)]. For a 1D signal
 %                                  res_dims can be a scalar equal to the
 %                                  number of elements. 
-%                     ncp_smooth = An positive integer specifying number of
-%                                  iterations to filter/average NCP
-%                                  criterion over. Default: 4.
+%                     ncp_smooth = A positive integer specifying the
+%                                  filter length in the NCP criterion.
+%                                  Default: 2.
 %       lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
 %                 this value is enforced on all elements of x in each 
 %                 iteration. If vector, it must have same size as x and 
@@ -52,7 +51,7 @@ function [X,info] = kaczmarz(varargin)
 %                 then enforces elementwise lower bounds on x. If empty, no
 %                 bound is enforced. +/-Inf can be used.
 %       damping   A parameter P to avoid division by very small row norms
-%                 by adding P*max_i{||a^i||_2^2} to ||a^i||_2^2.
+%                 by adding P*max_i{||a_i||_2^2} to ||a_i||_2^2.
 %
 % Output:
 %   X        Matrix containing the saved iterations in columns.

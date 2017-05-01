@@ -4,27 +4,25 @@ function y = afun_matrix(x,transp_flag,A)
 %   y = afun_matrix(x,transp_flag,A)
 %
 % This function takes a matrix and wraps it into a function, which can be
-% used to apply the matrix in a "pseudo" matrix-free way. Dependent on the 
-% second input, either A or A^T is multiplied onto the first input vector 
-% (forward or backward operation), or the size of A is returned.
+% used to apply the matrix in a "pseudo" matrix-free way. Dependening on
+% the  second input, either A or A' is multiplied onto the first input
+% vector, or the size of A is returned.
 %
-% Typical usage is given a matrix A to wrap it in an anonymous function
-% myfun = @(XX,TT) afun(XX,TT,A);
-% after which myfun implicitly can apply A or A^T or return size of A by
-%
-% y = myfun(x,'notransp');
-% z = myfun(y,'transp');
-% s = myfun([],'size');
+% Given a matrix A, the typical use of this function is  to wrap A in an
+% anonymous function
+%    myfun = @(XX,TT) afun(XX,TT,A);
+% after which myfun implicitly can apply A or A^T or return the size of A:
+%    y = myfun(x,'notransp');
+%    z = myfun(y,'transp');
+%    s = myfun([],'size');
 %
 % Input:
 %   x           Vector on which to apply matrix multiplication from the
-%               left by either A or A^T. x must be a column vector with
+%               left by either A or A'; x must be a column vector with
 %               length matching the relevant dimension of A.
-%   transp_flag String to indicate whether to apply forward
-%               operation/multiplication by A ('notransp'), backward
-%               operation/multiplication by A^T ('transp') or return the
-%               size of A ('size'). If set to 'size', the first input is
-%               ignored.
+%   transp_flag String to indicate whether to apply multiplication by A
+%               ('notransp') or A' ('transp'), or return the size of A
+%               ('size'). If set to 'size', the first input is ignored.
 %   A           The matrix to be wrapped inside the function.
 %
 % Output:

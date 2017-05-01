@@ -1,21 +1,24 @@
-function [relaxpar, casel, sigma1tilde] = calc_relaxpar(relaxparinput, s1, kmax, atma, n)
-%CALC_RELAXPAR Aux. function to compute relaxation parameter from input.
+function [relaxpar, casel, rho] = ...
+    calc_relaxpar(relaxparinput, rho, kmax, atma, n)
+%CALC_RELAXPAR Aux. function to compute relaxation parameter from input
 %
 %   relaxpar = calc_relaxpar(relaxparinput)
-%   [relaxpar, casel, sigma1tilde] = calc_relaxpar(relaxparinput, s1, kmax, atma, n)
+%   [relaxpar, casel, rho] = ...
+%              calc_relaxpar(relaxparinput, rhoinput, kmax, atma, n)
 %
-% Short form is used by art and cart and sets the relaxpar to be used
-% either to default values of 1 or 0.25, respectively, or assigns a value
-% given by the user. If the value given by the user is outside the
-% required interval a warning is given.
+% Short form is used by art and cart and sets the relaxpar either to default
+% values of 1 or 0.25, respectively, or assigns a value given by the user.
+% If the value given by the user is outside the allowed interval, a warning
+% is given.
 % 
-% Long form is used by sirt and inputs and outputs are explained below.
+% Long form is used by sirt, and inputs and outputs are explained below.
 % 
 % Input:
 %    relaxparinput     Any relaxation parameter or flag determining method 
 %                      to use for determinin relaxpar as specified by user.
-%    s1                The largest singular value if given by user.
-%    kmax              The maximum number of SIRT iterations to run.
+%    rho               The spectral radius of the iteration matrix, if
+%                      given by user.
+%    kmax              The maximum number of SIRT iterations.
 %    atma              A function handle to the iteration matrix
 %                      characterizing the SIRT method, for which to compute
 %                      the largest singular value.
@@ -28,7 +31,7 @@ function [relaxpar, casel, sigma1tilde] = calc_relaxpar(relaxparinput, s1, kmax,
 %                      returned (casel=1), line search is to be used
 %                      (casel=2) or the psi1/psi2 strategies to be used
 %                      (casel=3).
-%    sigma1tilde       The computed largest singular value.
+%    rho               The computed spectral radius of the iteration matrix.
 %
 % See also: art.m, cart.m, sirt.m
 
@@ -56,8 +59,8 @@ switch stack(2).name
         end
         
     case 'cart'
-        % Default choice 1. If user gave as input, use that value and throw
-        % warning if outside [0,2], but proceed.
+        % Default choice 0.25. If user gave as input, use that value and
+        % throw warning if outside [0,2], but proceed.
         if isnan(relaxparinput)
             relaxpar = 0.25;
         else
@@ -69,14 +72,12 @@ switch stack(2).name
         end
         
     case 'sirt'
-        % Check if the largest singular value is given.
-        if isnan(s1)
+        % Check if the spectral radius is given.
+        if isnan(rho)
             % If not, calculate the largest singular value.
             optionsEIGS.disp = 0;
-            sigma1tilde = sqrt( eigs(atma,n,1,'lm',optionsEIGS) );
-        else
-            % Otherwise, use the given value.
-            sigma1tilde = s1;
+            optionsEIGS.tol = 1e-4;
+            rho = eigs(atma,n,1,'lm',optionsEIGS);
         end
         
         % Determine the relaxation parameter relaxpar.
@@ -84,16 +85,16 @@ switch stack(2).name
         if isnan(relaxparinput)
             
             % Define a default constant relaxpar value.
-            relaxpar = 1.9/sigma1tilde^2;
+            relaxpar = 1.9/rho;
             casel = 1;
             
             % If relaxpar is a scalar.
         elseif ~ischar(relaxparinput)
             
             % Checks if the given constant lambde value is unstable.
-            if relaxparinput <= 0 || relaxparinput >= 2/sigma1tilde^2
+            if relaxparinput <= 0 || relaxparinput >= 2/rho
                 warning('MATLAB:UnstableRelaxParam',['The relaxpar value '...
-                    'is outside the interval (0,%f)'],2/sigma1tilde^2)
+                    'is outside the interval (0,%f)'],2/rho)
             end
             relaxpar = relaxparinput;
             casel = 1;
@@ -103,6 +104,7 @@ switch stack(2).name
             if strncmpi(relaxparinput,'line',4)
                 % Method: Line search
                 casel = 2;
+                relaxpar = [];
                 
             elseif strncmpi(relaxparinput,'psi1',4)
                 % Method: ENH psi1.
@@ -115,9 +117,9 @@ switch stack(2).name
                 % strategy modified or not.
                 if strncmpi(relaxparinput,'psi1mod',7)
                     nu = 2;
-                    relaxpar = [sqrt(2); sqrt(2); nu*2*(1-z)]/sigma1tilde^2;
+                    relaxpar = [sqrt(2); sqrt(2); nu*2*(1-z)]/rho;
                 else
-                    relaxpar = [sqrt(2); sqrt(2); 2*(1-z)]/sigma1tilde^2;
+                    relaxpar = [sqrt(2); sqrt(2); 2*(1-z)]/rho;
                 end
                 
             elseif strncmpi(relaxparinput,'psi2',4)
@@ -133,10 +135,10 @@ switch stack(2).name
                 if strncmpi(relaxparinput,'psi2Mod',7)
                     nu = 1.5;
                     relaxpar = [sqrt(2); sqrt(2);
-                        nu*2*(1-z)./((1-z.^(kk')).^2)]/sigma1tilde^2;
+                        nu*2*(1-z)./((1-z.^(kk')).^2)]/rho;
                 else
                     relaxpar = [sqrt(2); sqrt(2);
-                        2*(1-z)./((1-z.^(kk')).^2)]/sigma1tilde^2;
+                        2*(1-z)./((1-z.^(kk')).^2)]/rho;
                 end
                 
             else

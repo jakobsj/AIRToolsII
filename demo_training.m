@@ -1,4 +1,4 @@
-%DEMO_TRAINING (script) Demonstrates the use of the training methods.
+%DEMO_TRAINING (script) Demonstrates the use of the training methods
 %
 % This script demonstrates the use of the functions train_relaxpar_sirt,
 % train_relaxpar_art, and train_dpme.  We train the SIRT method cimmino
@@ -18,8 +18,8 @@ N = 50;           % Discretization points.
 theta = 0:5:179;  % No. of angles.
 p = 75;           % No. of parallel rays.
 eta = 0.03;       % Relative noise level.
-kmaxSIRT = 100;  % Max number of SIRT iterations.
-kmaxART = 50;    % Max number of ART iterations.
+kmaxSIRT = 100;   % Max number of SIRT iterations.
+kmaxART = 50;     % Max number of ART iterations.
 
 fprintf(1,'Creating a test problem with parallel tomography\n');
 fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f and p = %2.0f.\n\n',...
@@ -27,11 +27,11 @@ fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f and p = %2.0f.\n\n',...
 
 % Create the test problem and add noise.
 [A,b_ex,x_ex] = paralleltomo(N,theta,p);
-delta = eta*norm(b_ex);
 rng(0);
 e = randn(size(b_ex));
-e = delta*e/norm(e);
+e = eta*norm(b_ex)*e/norm(e);
 b = b_ex + e;
+delta = norm(e);
 
 % Define the SIRT and ART methods.
 SIRTmethod = @cimmino;
@@ -85,16 +85,17 @@ fprintf(1,'Use the ART method with the found parameters.\n');
 
 % Show the results.
 figure(1), clf
+subplot(2,2,1)
 imagesc(reshape(x_ex,N,N)), colormap gray, axis image off
 c = caxis;
 title('Exact phantom')
 
-figure(2), clf
+subplot(2,2,3)
 imagesc(reshape(XSIRT,N,N)), colormap gray, axis image off
 caxis(c);
 title(['SIRT: k = ',num2str(infoSIRT.finaliter)])
 
-figure(3), clf
+subplot(2,2,4)
 imagesc(reshape(XART,N,N)), colormap gray, axis image off
 caxis(c);
 title(['ART: k = ',num2str(infoART.finaliter)])
