@@ -60,19 +60,22 @@
 %                         the CART method.
 %   demo_constraints    - Demonstrates the use of nonnegativity and other
 %                         constraints.
-%   demo_custom         - Demonstrates how to specify custom ART and SIRT
+%   demo_custom_all     - Demonstrates how to specify custom ART and SIRT
 %                         methods.
+%   demo_custom_sirt    - Demonstrates how the custom SIRT interface can be
+%                         used to implement the symmetric Kaczmarz method.
 %   demo_matrixfree     - Demonstrates the matrix-free mode for test problems
 %                         and reconstruction methods.
+%   demo_relaxpar       - Demonstrates how to use various relaxation 
+%                         parameter selection strategies.
 %   demo_sirt           - Demonstrates the use of, and the results from,
 %                         the SIRT methods.
+%   demo_stoprules      - Demonstrates how to use different stopping rules.
 %   demo_training       - Demonstrates the use of the training methods.
 %
 % Auxiliary Routines:
 %   afun_matrix         - Wrap a matrix into a "matrix-free" function handle.
-%   calc_relaxpar_art   - Computes the relaxation parameter for ART methods.
-%   calc_relaxpar_cart  - Computes the relaxation parameter for CART methods.
-%   calc_relaxpar_sirt  - Computes the relaxation parameter for SIRT methods.
+%   calc_relaxpar       - Computes the relaxation parameter for all methods.
 %   check_inputs        - Checks inputs and sets default values.
 %   check_stoprules     - Checks if stopping rule criteria are met.
 %   get_mfun_dfun       - Computes matrices M and D for SIRT methods.

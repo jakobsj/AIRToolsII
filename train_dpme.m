@@ -27,7 +27,7 @@ function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax,options)
 %   tau         Scalar containing the trained parameter.
 %
 % See also: cav, cimmino, drop, kaczmarz, landweber, randkaczmarz, sart,
-% symkaczmarz, columnkaczmarz.
+% symkaczmarz, columnaction.
 
 % Maria Saxild-Hansen and Per Chr. Hansen, June 23, 2010, DTU Compute.
 
@@ -40,10 +40,10 @@ if nargin == 9
     end
 end
 
-% PCH: jeg ved ikke om dette er strengt nødvendigt.
+% PCH: jeg ved ikke om dette er strengt nï¿½dvendigt.
 switch func2str(method)
     case {'landweber','cimmino','cav','drop','sart',...
-          'kaczmarz','symkaczmarz','randkaczmarz','columnkaczmarz'}
+          'kaczmarz','symkaczmarz','randkaczmarz','columnaction'}
         options.stoprule.type = 'none';
     otherwise
         error('Unknown method.')

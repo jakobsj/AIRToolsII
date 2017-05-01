@@ -41,7 +41,7 @@ b = b_ex + e;                   % Add the noise to the pure data.
 % training.
 fprintf(1,'Compute the largest allowed relaxation parameter\n');
 [~,info] = cimmino(A,b,1);
-relaxpar_max = 2/info.s1^2;   % NB skal ændres til rho !!!
+relaxpar_max = 2/info.rho;
 fprintf(1,'   relaxpar_max = %2.0f\n\n',relaxpar_max);
 fprintf(1,'Compute the relaxation parameter via training\n');
 relaxpar_train = train_relaxpar_sirt(A,b,x_ex,@cimmino,kmax);
@@ -85,7 +85,7 @@ kmax = 50;
 fprintf(1,'\n\nRepeat experiment with 10 times lareger noise\n');
 fprintf(1,'Compute the largest allowed relaxation parameter\n');
 [~,info] = cimmino(A,b,1);
-relaxpar_max = 2/info.s1^2;   % NB skal ændres til rho !!!
+relaxpar_max = 2/info.rho;
 fprintf(1,'   relaxpar_max = %2.0f\n\n',relaxpar_max);
 fprintf(1,'Compute the relaxation parameter via training\n');
 relaxpar_train = train_relaxpar_sirt(A,b,x_ex,@cimmino,kmax);

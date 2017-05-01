@@ -68,8 +68,8 @@ while ~stop
                 
                 % Assign the computed s1 to options, such that s1 does not 
                 % require recalculation in the next call of the method.
-                options.s1 = info.s1;
-                relaxparmax = 2/info.s1^2;
+                options.rho = info.rho;
+                relaxparmax = 2/info.rho;
                 
             otherwise
                 error(['Unknown method ',func2str(method)])

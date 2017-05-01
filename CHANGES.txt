@@ -71,17 +71,30 @@ largest singular value through a field s1 in the options struct.
 The info output has been changed from a 3-element vector to a struct with more
 informative field names and more information, e.g., a list of iterates returned.
 
-artdemo.m now also contains a demonstration of the CART method (columnaction)
-together with all ART methods (kaczmarz, symkaczmarz and randkaczmarz).
+Default values for the relaxation parameter has been made consistent within 
+ART, CART and SIRT classes to the values 1, 0.25, and 1.9/norm(T*A'*M*A), 
+respectively.
+
+New demo demo_cart now to illustrate the use of the CART method 
+columnaction.
+
+New demo demo_constraints to illustrate how general elementwise constraints can
+be used. This demo replaces the old demo script nonnegdemo.
+
+New demo demo_custom_all to illustrate the user of user-specified custom versions of
+ART and SIRT methods.
+
+New demo demo_custom_sirt to illustrate how the symmetric Kaczmarz method 
+can be implemented as a custom SIRT method.
 
 New demo demo_matrixfree to illustrate the use of matrix-free versions of test
 problem operators and reconstruction methods.
 
-New demo demo_custom to illustrate the user of user-specified custom versions of
-ART and SIRT methods.
+New demo demo_relaxpar to illustrate the use of different relaxation 
+parameter selection strategies.
 
-New demo demo_constraint to illustrate how general elementwise constraints can
-be used. This demo replaces the old demo script nonnegdemo.
+New demo demo_stoprules to illustrate use of different stopping rules.
+
 
 
 
