@@ -99,7 +99,7 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-     ~,~,res_dims,rkm1,dk,damp] = check_inputs(varargin{:});
+     ~,~,res_dims,rkm1,dk,do_waitbar,damp] = check_inputs(varargin{:});
 
 % Special check for symkaczmarz: number of iterations must be even
 if ischar(art_method) && strncmpi(art_method,'sym',3)
@@ -191,13 +191,24 @@ if is_randkaczmarz
     else
         fast = false;
     end
-end    
+end
+
+% Initalize waitbar if selected.
+if do_waitbar
+    h_waitbar = waitbar(0);
+end
 
 % Main ART loop.
 while ~stop
     
     % Update the iteration number k.
     k = k + 1;
+    
+    % Update waitbar if selected
+    if do_waitbar
+        waitbar(k/kmax,h_waitbar,...
+            sprintf('Running iteration %d of %d...',k, kmax))
+    end
     
     % Special for randkaczmarz - need random permutation or rows.
     if is_randkaczmarz
@@ -251,6 +262,11 @@ while ~stop
         X(:,l) = xk;
         l = l + 1;
     end
+end
+
+% Close waitbar if selected.
+if do_waitbar
+    close(h_waitbar);
 end
 
 % Return only the saved iterations: Only to "l-1" because "l" now points to

@@ -108,7 +108,7 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    ~,~,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
+    ~,~,res_dims,rkm1,dk,do_waitbar,damp,THR,Kbegin,Nunflag] = ...
     check_inputs(varargin{:});
 
 % Faster to access rows of matrix directly if available.
@@ -176,11 +176,22 @@ is_lbound_scalar = isscalar(lbound);
 is_ubound_empty  = isempty(ubound);
 is_ubound_scalar = isscalar(ubound);
 
+% Initalize waitbar if selected.
+if do_waitbar
+    h_waitbar = waitbar(0);
+end
+
 % Main CART loop.
 while ~stop
     
     % Update the iteration number k.
     k = k + 1;
+    
+    % Update waitbar if selected
+    if do_waitbar
+        waitbar(k/kmax,h_waitbar,...
+            sprintf('Running iteration %d of %d...',k, kmax))
+    end
     
     % The columnwise sweep.
     for j = J
@@ -253,6 +264,11 @@ while ~stop
         X(:,l) = xk;
         l = l + 1;
     end
+end
+
+% Close waitbar if selected.
+if do_waitbar
+    close(h_waitbar);
 end
 
 % Return only the saved iterations: Only to "l-1" because "l" now points to

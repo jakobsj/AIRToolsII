@@ -125,7 +125,7 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    rho,w,res_dims,rkm1,dk] = check_inputs(varargin{:});
+    rho,w,res_dims,rkm1,dk,do_waitbar] = check_inputs(varargin{:});
 
 % Extract the Mfun and sfun characterizing each SIRT-type method.
 if ischar(sirt_method)
@@ -165,11 +165,22 @@ if nargout > 2
     ext_info.D = Dfun(ones(n,1));
 end
 
+% Initalize waitbar if selected.
+if do_waitbar
+    h_waitbar = waitbar(0);
+end
+
 % Main SIRT loop
 while ~stop
     
     % Update the iteration number k.
     k = k + 1;
+    
+    % Update waitbar if selected
+    if do_waitbar
+        waitbar(k/kmax,h_waitbar,...
+            sprintf('Running iteration %d of %d...',k, kmax))
+    end
 
     % Compute the current iteration depending on relaxpar strategy.
     Mrk = Mfun(rk);
@@ -209,6 +220,11 @@ while ~stop
         X(:,l) = xk;
         l = l + 1;
     end
+end
+
+% Close waitbar if selected.
+if do_waitbar
+    close(h_waitbar);
 end
 
 % Return only the saved iterations: Only to "l-1" because "l" now points to
