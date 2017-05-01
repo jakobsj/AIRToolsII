@@ -122,6 +122,7 @@ end
 if nargout > 1
     % Create phantom head as a reshaped vector.
     x = phantomgallery('shepplogan',N);
+    x = x(:);
     % Create rhs.
     if isMatrix
         b = A*x;
