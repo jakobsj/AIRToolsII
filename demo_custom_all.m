@@ -16,7 +16,7 @@
 %% Set up test problem.
 
 clear, clc
-fprintf(1,'Starting demo_custom:\n\n');
+fprintf(1,'Starting demo_custom_all:\n\n');
 
 % Set the parameters for the test problem.
 N = 50;           % The image is N-times-N..
@@ -115,12 +115,12 @@ title('Landweber')
 
 fprintf(1,'Perform k = %2.0f iterations of custom (= Landweber) SIRT method.\n',k_sirt);
 
-% Set M and D function handles to identities.
-Mfun = @(XX) XX;
-Dfun = @(XX) XX;
+% Set M and D function handles to their defaults i.e. identities by
+% specifying sirt_method as struct with no fields.
+sirt_method = struct;
 
 % Perform the standard Landweber iteration using the general interface.
-Xland_c = sirt({Mfun,Dfun},A,b,k_sirt);
+Xland_c = sirt(sirt_method,A,b,k_sirt);
 
 % Show the custom Landweber solution.
 subplot(2,4,7)
@@ -146,12 +146,10 @@ title('Cimmino')
 fprintf(1,'Perform k = %2.0f iterations of custom (scaled Landweber) SIRT method.\n\n',k_sirt);
 
 % Set M and D function handles to achieve Cimmino's method.
-M = 1./full(sum(A.^2,2));
-Mfun = @(XX) M.*XX;
-Dfun = @(XX) XX;
+sirt_method.M = spdiags(1./full(sum(A.^2,2)),0,size(A,1),size(A,1));
 
 % Use the general interface.
-Xland_s = sirt({Mfun,Dfun},A,b,k_sirt);
+Xland_s = sirt(sirt_method,A,b,k_sirt);
 
 % Show the custom solution.
 subplot(2,4,8)

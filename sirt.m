@@ -18,10 +18,10 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %   sirt_method  Either one of the strings 'landweber', 'cimmino', 'cav',
 %                'drop' or 'sart' to specify one of the provided methods.
 %                Default is 'sart'.
-%                Or a 2-element cell array {Mfun, Dfun} holding two 
+%                Or a struct with fields Mfun and Dfun holding two 
 %                function handles Mfun and Dfun which implement the
 %                multiplication of M and D, respectively. Please see
-%                demo_custom for an example.
+%                demo_custom_all for an example.
 %   A            m times n matrix, or a function implementing matrix-vector
 %                multiplication with A and A'; please see explanation below.
 %   b            m times 1 vector containing the right-hand side.
@@ -136,14 +136,33 @@ end
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
     rho,w,res_dims,rkm1,dk,do_waitbar,verbose] = check_inputs(varargin{:});
 
-% Extract the Mfun and sfun characterizing each SIRT-type method.
+% Extract the Mfun and Dfun characterizing each SIRT-type method.
 if ischar(sirt_method)
     [Mfun,Dfun] = get_mfun_dfun(sirt_method,varargin{1},m,n,w);
+elseif isstruct(sirt_method)
+    % Possible to pass in custom SIRT method given by struct with fields M
+    % and D holding matrices or function handles instead of string input.
+    if isfield(sirt_method,'M')
+        if isnumeric(sirt_method.M)
+            Mfun = @(in) sirt_method.M*in;
+        else
+            Mfun = sirt_method.M;
+        end
+    else % If no M, use identity.
+        Mfun = @(in) in;
+    end
+    if isfield(sirt_method,'D')
+        if isnumeric(sirt_method.D)
+            Dfun = @(in) sirt_method.D*in;
+        else
+            Dfun = sirt_method.D;
+        end
+    else % If no D, use identity.
+        Dfun = @(in) in;
+    end
 else
-    % Possible to pass in custom SIRT method given by 2-element cell array
-    % holding function handles to Mfun and Dfun instead of string input.
-    Mfun = sirt_method{1};
-    Dfun = sirt_method{2};
+    error(['First input must be a string with the SIRT method name or ',...
+        'a struct with fields M and D characterizing a custom method.']);
 end
 
 % Initialize array to hold requested iterates.
@@ -168,10 +187,10 @@ if strcmpi(sirt_method,'sart')
 end
 [relaxpar,casel,rho] = calc_relaxpar(relaxparinput,rho,kmax,atma,n);
 
-% Store M and D in third output struct if asked for.
+% Store Mfun and Dfun in third output struct if asked for.
 if nargout > 2
-    ext_info.M = Mfun(ones(m,1));
-    ext_info.D = Dfun(ones(n,1));
+    ext_info.M = Mfun;
+    ext_info.D = Dfun;
 end
 
 % Initalize waitbar if selected.
