@@ -298,7 +298,8 @@ X = X(:,1:l-1);
 
 % Special for symkaczmarz: double finaliter
 if ischar(art_method) && strncmpi(art_method,'sym',3)
-    info.finaliter = info.finaliter*2;
+    info.finaliter = 2*info.finaliter;
+    K = 2*K;
 end
 
 % List of iterates saved: all in K smaller than the final, and the final.
