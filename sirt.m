@@ -9,8 +9,8 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %
 %       x^{k+1} = x^k + relaxpar_k*D*A'*M*(b-A*x^k)
 %
-% where D and M are diagonal matrices and w_i are weights (default: 
-% w_i = 1). All five specific SIRT methods of AIR Tools are special cases
+% where D and M are matrices, typically diagonal, but non-diagonal also
+% allowed. All five specific SIRT methods of AIR Tools are special cases
 % for specific choices of D and M and computed using this function. In
 % addition custom SIRT methods can be specified by other D and M.
 %
@@ -77,7 +77,6 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %                then enforces elementwise lower bounds on x. If empty, no
 %                bound is enforced. +/-Inf can be used.
 %      rho       Scalar containing spectral radius of the iteration matrix.
-%      w         m-dimensional weighting vector.
 %      verbose   Nonnegative integer specifying whether progress is printed
 %                to screen during iterations. Default=0: no info printed.
 %                1: Print in every iteration. Larger than 1: Print every
@@ -134,10 +133,10 @@ end
 
 % Parse inputs.
 [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
-    rho,w,res_dims,rkm1,dk,do_waitbar,verbose] = check_inputs(varargin{:});
+    rho,res_dims,rkm1,dk,do_waitbar,verbose] = check_inputs(varargin{:});
 
 % Extract the Mfun and Dfun characterizing each SIRT-type method.
-[Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method,varargin{1},m,n,w);
+[Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method,varargin{1},m,n);
 
 % Initialize array to hold requested iterates.
 X = zeros(n,length(K));

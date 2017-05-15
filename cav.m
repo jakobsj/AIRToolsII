@@ -9,8 +9,8 @@ function [X,info,ext_info] = cav(varargin)
 %
 %       x^{k+1} = x^k + relaxpar_k*A'*M*(b-A*x^k)
 %
-% where M = diag(w_i/||a_i||_S^2, S = diag(s_j), s_j denotes the number
-% of nonzero elements in column j, and w_i are weights (default: w_i = 1).
+% where M = diag(1/||a_i||_S^2, S = diag(s_j), and s_j denotes the number
+% of nonzero elements in column j.
 %
 % Input:
 %   A        m times n matrix, or a function that implements matrix-vector
@@ -67,7 +67,6 @@ function [X,info,ext_info] = cav(varargin)
 %                then enforces elementwise lower bounds on x. If empty, no
 %                bound is enforced. +/-Inf can be used.
 %      rho       Scalar containing spectral radius of the iteration matrix.
-%      w         m-dimensional weighting vector.
 %      verbose   Nonnegative integer specifying whether progress is printed
 %                to screen during iterations. Default=0: no info printed.
 %                1: Print in every iteration. Larger than 1: Print every

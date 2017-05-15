@@ -1,5 +1,5 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
-    relaxparinput,rho,w,res_dims,rkm1,dk,do_waitbar,verbose,damp,THR,...
+    relaxparinput,rho,res_dims,rkm1,dk,do_waitbar,verbose,damp,THR,...
     Kbegin,Nunflag] = check_inputs(A,b,K,x0,options)
 %CHECK_INPUTS Aux. function to check inputs, set defaults for ART,CART,SIRT
 %
@@ -31,7 +31,6 @@ function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
 %    taudelta       Stopping rule parameter used by DP and ME.
 %    relaxparinput  Relaxation parameter specified by user or default.
 %    rho            Spectral radius of iteration matrix.
-%    w              Weights to apply in SIRT method.
 %    res_dims       Dimensions of residual needed for NCP stopping rule.
 %    rkm1           Initialized variable to hold residual at previous 
 %                   iteration.
@@ -135,14 +134,6 @@ end
 rho = nan;
 if isfield(options,'rho')
      rho = options.rho;
-end
-
-
-%% Weights.
-
-w = nan;
-if isfield(options,'w')
-    w = options.w;
 end
 
 

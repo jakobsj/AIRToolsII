@@ -1,7 +1,7 @@
-function [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n, w)
+function [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n)
 %GET_MFUN_DFUN Aux. function to set up M and D matrices for SIRT methods
 %
-%   [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n, w)
+%   [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n)
 %
 % Set up the matrices M and D characterizing a SIRT method.
 % 
@@ -11,7 +11,6 @@ function [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n, w)
 %    A            The forward operator A, either as matrix or function.
 %    m            Number of rows in A.
 %    n            Number of columns in A.
-%    w            Weights to be used in SIRT method.
 %    
 % Output:
 %    Mfun         Function handle which applies the matrix-vector
@@ -63,12 +62,8 @@ if ischar(sirt_method)
                 end
             end
             
-            % If the method is weigthed.
-            if isnan(w)
-                M = 1/m*(1./normAi);
-            else
-                M = 1/m*(w./normAi);
-            end
+            % Generate diagonal entries.
+            M = 1/m*(1./normAi);
             
             % Fix any divisions be zero.
             I = (M == Inf);
@@ -102,12 +97,8 @@ if ischar(sirt_method)
                 end
             end
             
-            % If the method is weighted.
-            if isnan(w)
-                M = 1./normAs;
-            else
-                M = w./normAs;
-            end
+            % Generate diagonal entries.
+            M = 1./normAs;
             
             % Fix divisions by zero.
             I = (M == Inf);
@@ -132,12 +123,8 @@ if ischar(sirt_method)
                 end
             end
             
-            % If the method is weighted.
-            if isnan(w)
-                M = 1./normAi;
-            else
-                M = w./normAi;
-            end
+            % Generate diagonal entries.
+            M = 1./normAi;
             
             % Fix divisions by zero.
             I = (M == Inf);
@@ -174,6 +161,8 @@ if ischar(sirt_method)
             else
                 Aip = abs(A(ones(n,1),'notransp'));
             end
+            
+            % Generate diagonal entries.
             M = 1./Aip;
             
             % Fix divisions by zero.
@@ -198,13 +187,6 @@ if ischar(sirt_method)
             
             % Store D as function handle.
             Dfun = @(XX) s.*XX;
-            
-            % Note on purpose weights not implemented for SART, as would modify
-            % special property causing largest singular value to equal 1.
-            if ~isnan(w)
-                warning(['Weights detected in input, but ignored, ',...
-                    'since SART does not support weights.']);
-            end
             
         otherwise
             error('SIRT method not defined.')
