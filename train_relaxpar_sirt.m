@@ -66,8 +66,8 @@ while ~stop
                 % Compute the solutions to the first K values.
                 [Xnew, info] = method(A,b,K,x0,options);
                 
-                % Assign the computed s1 to options, such that s1 does not 
-                % require recalculation in the next call of the method.
+                % Assign the computed rho to options, such that rho does
+                % not require recalculation in the next call of the method.
                 options.rho = info.rho;
                 relaxparmax = 2/info.rho;
                 

@@ -1,28 +1,29 @@
 function relaxpar = train_relaxpar_art(A,b,x_ex,method,kmax,options)
-%TRAIN_RELAXPAR_SIRT Training to determine optimal relaxpar for ART method
+%TRAIN_RELAXPAR_ART Training to determine optimal relaxpar for ART method
 %
-%   relaxpar = train_relaxpar_sirt(A,b,x_ex,method,kmax)
-%   relaxpar = train_relaxpar_sirt(A,b,x_ex,method,kmax,options)
+%   relaxpar = train_relaxpar_art(A,b,x_ex,method,kmax)
+%   relaxpar = train_relaxpar_art(A,b,x_ex,method,kmax,options)
 %
 % This function determines the optimal value of the relaxation parameter
-% relaxpar for one of the SIRT methods cav, cimmino, drop, landweber, and
-% sart. The optimal value of relaxpar is defined as the value that gives
-% rise to the fastest convergence to the smallest error in the solution. 
+% relaxpar for one of the ART methods kaczmarz, symkaczmarz and
+% randkaczmarz. The optimal value of relaxpar is defined as the value that
+% gives rise to the fastest convergence to the smallest error in the
+% solution.
 %
 % Input:
 %   A           m times n matrix or function handle to matrix-free version.
 %   b           m times 1 vector containing the right-hand side.
 %   x_ex        n times 1 vector containing the exact solution.
-%   method      Function handle to one of the SIRT methods.
+%   method      Function handle to one of the ART methods.
 %   kmax        Scalar that determines the maximum number of iterations
-%               of the used SIRT-method.
+%               of the used ART-method.
 %   options     Struct used in the call of the method. For this strategy
 %               the fields stoprule and relaxpar cannot be used.
 %
 % Output:   
 %   relaxpar    Scalar containing the found relaxpar value.
 %
-% See also: train_relaxpar_art
+% See also: train_relaxpar_sirt
 
 % Maria Saxild-Hansen and Per Chr. Hansen, June 10, 2010, DTU Compute.
 
@@ -66,10 +67,10 @@ while ~stop
                 % Compute the solutions to the first K values.
                 [Xnew, info] = method(A,b,K,x0,options);
                 
-                % Assign the computed s1 to options, such that s1 does not 
-                % require recalculation in the next call of the method.
-                options.s1 = info.s1;
-                relaxparmax = 2/info.s1^2;
+                % Assign the computed rho to options, such that rho does
+                % not require recalculation in the next call of the method.
+                options.rho = info.rho;
+                relaxparmax = 2/info.rho;
             
             case {'columnaction','kaczmarz','randkaczmarz','symkaczmarz'}
                 
