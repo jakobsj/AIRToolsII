@@ -84,8 +84,8 @@ function [X,info,ext_info] = landweber(varargin)
 %            itersaved    : iteration numbers of iterates saved in X.
 %            timetaken    : Total time taken by algorithm, in secs.
 %   ext_info Extra information struct with 2 fields:
-%            M            : diagonal of the matrix M (all ones for landweber).
-%            D            : diagonal of the matrix D (all ones for landweber).
+%            M            : diagonal of matrix M (all ones for landweber).
+%            D            : diagonal of matrix D (all ones for landweber).
 %
 % How to use a function handle for A.
 % 1) The user must provide a function myfun that implements matrix-vector
