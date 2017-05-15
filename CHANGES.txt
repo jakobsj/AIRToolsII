@@ -66,7 +66,7 @@ comparable to all he other methods.
 
 For SIRT methods, the possibility to give third input restart has been removed
 due to ambiguities and lack of demand. It is now possible to input a known
-largest singular value through a field s1 in the options struct.
+iteration matrix spectral radius rho in the options struct.
 
 The info output has been changed from a 3-element vector to a struct with more
 informative field names and more information, e.g., a list of iterates returned.

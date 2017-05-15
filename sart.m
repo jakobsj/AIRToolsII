@@ -83,7 +83,7 @@ function [X,info,ext_info] = sart(varargin)
 %                       3 : stopped by ME-rule.
 %            finaliter    : no. of iterations in total.
 %            relaxpar     : the chosen relaxation parameter.
-%            s1           : the computed largest singular value.
+%            rho          : the computed spectral radius.
 %            itersaved    : iteration numbers of iterates saved in X.
 %            timetaken    : Total time taken by algorithm, in secs.
 %   ext_info Extra information struct with 2 fields:
@@ -104,7 +104,7 @@ function [X,info,ext_info] = sart(varargin)
 % 3) Then sart is called with this A.
 %
 % Notes on SART: Unlike the other SIRT methods, SART does not accept inputs
-% s1 and w, since the special structure of SART causing the largest
+% rho and w, since the special structure of SART causing the largest
 % singular value to always be 1, would potentially be lost. Any such input
 % is ignored.
 % 
@@ -121,7 +121,7 @@ function [X,info,ext_info] = sart(varargin)
 
 
 
-% Note that any s1 input given to SART is ignored as the value 1 is used.
+% Note that any rho input given to SART is ignored as the value 1 is used.
 %
 % Note that it is not possible to use weights with SART, as this would
 % potentially change the largest singular value away from the known value

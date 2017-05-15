@@ -66,7 +66,7 @@ function [X,info,ext_info] = cav(varargin)
 %                iteration. If vector, it must have same size as x and 
 %                then enforces elementwise lower bounds on x. If empty, no
 %                bound is enforced. +/-Inf can be used.
-%      s1        Scalar containing largest singular value of sqrt(M)*A.
+%      rho       Scalar containing spectral radius of the iteration matrix.
 %      w         m-dimensional weighting vector.
 %      verbose   Nonnegative integer specifying whether progress is printed
 %                to screen during iterations. Default=0: no info printed.
@@ -84,7 +84,7 @@ function [X,info,ext_info] = cav(varargin)
 %                       3 : stopped by ME-rule.
 %            finaliter    : no. of iterations in total.
 %            relaxpar     : the chosen relaxation parameter.
-%            s1           : the computed largest singular value.
+%            rho          : the computed spectral radius.
 %            itersaved    : iteration numbers of iterates saved in X.
 %            timetaken    : Total time taken by algorithm, in secs.
 %   ext_info Extra information struct with 2 fields:
