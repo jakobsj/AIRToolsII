@@ -98,8 +98,8 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %            itersaved    : iteration numbers of iterates saved in X.
 %            timetaken    : Total time taken by algorithm, in secs.
 %   ext_info Extra information struct with 2 fields:
-%            M            : diagonal of the matrix M = diag(1/||a^i||_S^2).
-%            D            : diagonal of the matrix D (all ones for cav)
+%            M            : Diagonal of matrix M (if diagonal) or matrix.
+%            D            : Diagonal of matrix D (if diagonal) or matrix.
 %
 % How to use a function handle for A.
 % 1) The user must provide a function myfun that implements matrix-vector
@@ -137,33 +137,7 @@ end
     rho,w,res_dims,rkm1,dk,do_waitbar,verbose] = check_inputs(varargin{:});
 
 % Extract the Mfun and Dfun characterizing each SIRT-type method.
-if ischar(sirt_method)
-    [Mfun,Dfun] = get_mfun_dfun(sirt_method,varargin{1},m,n,w);
-elseif isstruct(sirt_method)
-    % Possible to pass in custom SIRT method given by struct with fields M
-    % and D holding matrices or function handles instead of string input.
-    if isfield(sirt_method,'M')
-        if isnumeric(sirt_method.M)
-            Mfun = @(in) sirt_method.M*in;
-        else
-            Mfun = sirt_method.M;
-        end
-    else % If no M, use identity.
-        Mfun = @(in) in;
-    end
-    if isfield(sirt_method,'D')
-        if isnumeric(sirt_method.D)
-            Dfun = @(in) sirt_method.D*in;
-        else
-            Dfun = sirt_method.D;
-        end
-    else % If no D, use identity.
-        Dfun = @(in) in;
-    end
-else
-    error(['First input must be a string with the SIRT method name or ',...
-        'a struct with fields M and D characterizing a custom method.']);
-end
+[Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method,varargin{1},m,n,w);
 
 % Initialize array to hold requested iterates.
 X = zeros(n,length(K));
@@ -189,8 +163,24 @@ end
 
 % Store Mfun and Dfun in third output struct if asked for.
 if nargout > 2
-    ext_info.M = Mfun;
-    ext_info.D = Dfun;
+    if Mflag == 0
+        % M is identity matrix implemented matrix-free. Create vector
+        % holding 1-values from diagonal.
+        ext_info.M = ones(m,1);
+    else
+        % M is a vector or matrix and can be extracted from function handle
+        % by scalar multiplication by 1.
+        ext_info.M = Mfun(1);
+    end
+    if Dflag == 0
+        % D is identity matrix implemented matrix-free. Create vector
+        % holding 1-values from diagonal.
+        ext_info.D = ones(n,1);
+    else
+        % D is a vector or matrix and can be extracted from function handle
+        % by scalar multiplication by 1.
+        ext_info.D = Dfun(1);
+    end
 end
 
 % Initalize waitbar if selected.

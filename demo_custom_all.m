@@ -145,8 +145,9 @@ title('Cimmino')
 
 fprintf(1,'Perform k = %2.0f iterations of custom (scaled Landweber) SIRT method.\n\n',k_sirt);
 
-% Set M and D function handles to achieve Cimmino's method.
-sirt_method.M = spdiags(1./full(sum(A.^2,2)),0,size(A,1),size(A,1));
+% Set M and D to achieve Cimmino's method: M vector of diagonal elements of
+% the diagonal matrix; D will be set to the identity matrix by default.
+sirt_method.M = 1./full(sum(A.^2,2));
 
 % Use the general interface.
 Xland_s = sirt(sirt_method,A,b,k_sirt);
