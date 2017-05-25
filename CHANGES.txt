@@ -97,6 +97,12 @@ New demo demo_stoprules to illustrate use of different stopping rules.
 
 New options waitbar and verbose to allow displaying/printing progress.
 
+Made computation of upper bound for relaxation parameter in SIRT methods 
+deterministic by using fixed random number generating settings (and 
+restoring previous settings afterwards) in call to builtin function eigs, 
+which by default uses a random starting vector, thus causing (very minor)
+random variations in the computed rho.
+
 
 
 
