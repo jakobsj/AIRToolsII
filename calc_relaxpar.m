@@ -77,7 +77,14 @@ switch stack(2).name
             % If not, calculate the largest singular value.
             optionsEIGS.disp = 0;
             optionsEIGS.tol = 1e-4;
+            
+            % Save existing random number generator settings to restore
+            % after having specified a fixed random seed to allow
+            % deterministic result (eigs without this is non-deterministic
+            % due to starting vector chosen using rand)
+            scurr = rng(0);
             rho = eigs(atma,n,1,'lm',optionsEIGS);
+            rng(scurr);
         end
         
         % Determine the relaxation parameter relaxpar.
