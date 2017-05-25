@@ -34,7 +34,7 @@ function [A,b,x,angles,numCircles] = sphericaltomo(N,angles,numCircles)
 % See also: xxx
 
 % Per Christian Hansen, DTU Compute, May 15, 2017.
-% Inspired by Matlab code written by Jürgen Frikel.
+% Based on Matlab code written by Juergen Frikel, OTH Regensburg.
 
 % Default value of the angles to the circle centers.
 if nargin < 2 || isempty(angles)
