@@ -20,6 +20,8 @@ New test problem fanlineartomo implementing a linear detector array unlike the
 curved detector array in the existing fancurvedtomo function (previously
 called fanbeamtomo).
 
+New test problem sphericaltomo implementing the spherical Radon transform.
+
 The code has been reorganized in a modular fashion to allow more reuse of code,
 make it more reliable, and easier to maintain.
 
