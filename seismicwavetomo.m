@@ -54,7 +54,8 @@ function [A,b,x,s,p,omega] = seismicwavetomo(N,s,p,omega,isDisp,isMatrix)
 %   p        The number of receivers (seismographs).
 %   omega    The frequency.
 %
-% See also: paralleltomo, fancurvedtomo, fanlineartomo, seismictomo.
+% See also: paralleltomo, fancurvedtomo, fanlineartomo, seismictomo,
+%           sphericaltomo.
 
 % Mikkel Brettschneider and Per Chr. Hansen, December 15, 2012.
 % Based on seismictomo from AIR Tools.

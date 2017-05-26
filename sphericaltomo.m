@@ -1,10 +1,13 @@
 function [A,b,x,theta,numCircles] = ...
     sphericaltomo(N,theta,numCircles,isDisp,isMatrix)
-%STtomo Creates a 2D spherical Radon tomography test problem
+%SPHERICALTOMO Creates a 2D spherical Radon tomography test problem
 %
 %   [A,b,x,angles,numCircles] = sphericaltomo(N)
 %   [A,b,x,angles,numCircles] = sphericaltomo(N,angles)
 %   [A,b,x,angles,numCircles] = sphericaltomo(N,angles,numCircles)
+%   [A,b,x,angles,numCircles] = sphericaltomo(N,angles,numCircles,isDisp)
+%   [A,b,x,angles,numCircles] = sphericaltomo(N,angles,numCircles,...
+%                                             isDisp,isMatrix)
 %
 % This function genetates a tomography test problem based on the spherical
 % Radon tranform where data consists of integrals along circles.  This type
@@ -18,8 +21,8 @@ function [A,b,x,theta,numCircles] = ...
 % Input:
 %   N           Scalar denoting the number of pixels in each dimesion, such
 %               that the image domain consists of N^2 cells.
-%   theta       Vector containing the angles to the circle centers in degrees.
-%               Default: angles = 0:2:358.
+%   theta       Vector containing the angles to the circle centers in
+%               degrees. Default: angles = 0:2:358.
 %   numCircles  Number of concentric integration circles for each center.
 %               Default: numCircles = round(sqrt(2)*N).
 %   isDisp      If isDisp is non-zero it specifies the time in seconds
@@ -38,9 +41,10 @@ function [A,b,x,theta,numCircles] = ...
 %   theta       Similar to input.
 %   numCircles  Similar to input.
 %
-% See also: xxx
+% See also: paralleltomo, fancurvedtomo, fanlineartomo, seismictomo,
+%           seismicwavetomo.
 
-% Per Christian Hansen, DTU Compute, May 15, 2017.
+% Per Christian Hansen and Jakob S. Jorgensen, DTU Compute, May 15, 2017.
 % Based on Matlab code written by Juergen Frikel, OTH Regensburg.
 
 % Default value of the angles to the circle centers.

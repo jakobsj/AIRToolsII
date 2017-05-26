@@ -56,7 +56,8 @@ function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
 %   R           The radius in side lengths. 
 %   d           The span of the rays.
 %
-% See also: paralleltomo, fanlineartomo, seismictomo, seismicwavetomo.
+% See also: paralleltomo, fanlineartomo, seismictomo, seismicwavetomo,
+%           sphericaltomo.
 
 % Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Christian Hansen,
 % Nov. 5, 2015, DTU Compute.

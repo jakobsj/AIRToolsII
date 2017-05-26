@@ -46,7 +46,8 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 %   s        The number of sources.
 %   p        The number of receivers (seismographs).
 %
-% See also: paralleltomo, fancurvedtomo, fanlineartomo, seismicwavetomo.
+% See also: paralleltomo, fancurvedtomo, fanlineartomo, seismicwavetomo,
+%           sphericaltomo.
 
 % Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Chr. Hansen,
 % October 1, 2014, DTU Compute.

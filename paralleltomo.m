@@ -49,7 +49,8 @@ function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 %   p           The number of used rays for each angle.
 %   d           The distance between the first and the last ray.
 %
-% See also: fancurvedtomo, fanlineartomo, seismictomo, seismicwavetomo.
+% See also: fancurvedtomo, fanlineartomo, seismictomo, seismicwavetomo,
+%           sphericaltomo.
 
 % Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Christian Hansen,
 % Nov. 5, 2015, DTU Compute.

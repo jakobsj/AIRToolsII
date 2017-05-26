@@ -57,7 +57,8 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 %   R           The radius in side lengths. 
 %   d           The span of the rays.
 %
-% See also: paralleltomo, fancurvedtomo, seismictomo, seismicwavetomo.
+% See also: paralleltomo, fancurvedtomo, seismictomo, seismicwavetomo,
+%           sphericaltomo.
 
 % Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Christian Hansen,
 % June 21, 2011, DTU Compute.
