@@ -171,7 +171,9 @@ for m = II
     if isDisp
         clf
         pause(isDisp)
-        imagesc(0.5:N-0.5,0.5:N-0.5,AA), colormap gray
+        imagesc(0.5:N-0.5,0.5:N-0.5,flipud(AA))
+        colormap gray
+        axis xy
         hold on
         axis equal
         axis([-0.3*N 1.3*N -0.3*N 1.3*N])
@@ -206,7 +208,7 @@ for m = II
         IInew = find(col>0 & col<=N & row>0 & row<=N);
         row = row(IInew);
         col = col(IInew);
-        J = row + (col-1)*N;
+        J = (N-row+1) + (col-1)*N;
         
         % Convert to linear index and bin
         Ju = unique(J);

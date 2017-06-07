@@ -235,7 +235,9 @@ for i = II
     if isDisp % illustration of source
         clf
         pause(isDisp)
-        imagesc((-N/2+.5):(N/2-0.5),(-N/2+.5):(N/2-0.5),AA), colormap gray,
+        imagesc((-N/2+.5):(N/2-0.5),(-N/2+.5):(N/2-0.5),flipud(AA))
+        colormap gray
+        axis xy
         hold on
         axis(1.1*R*[-1,1,-1,1])
         axis equal

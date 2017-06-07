@@ -173,7 +173,8 @@ for i = II
 
         clf
         pause(isDisp)
-        imagesc((-N2+.5):(N2-0.5),(-N2+.5):(N2-0.5),flipud(AA)), colormap gray
+        imagesc((-N2+.5):(N2-0.5),(-N2+.5):(N2-0.5),flipud(AA))
+        colormap gray
         hold on
         axis xy
         axis equal
