@@ -38,8 +38,8 @@
 %
 % Training Routines:
 %   train_dpme          - Training method for the stopping rules DP and ME.
-%   train_relaxpar_art  - Training to determine optimal relaxation parameter
-%                         for ART and CART methods.
+%   train_relaxpar      - Training to find optimal relaxation parameter
+%                         for SIRT/ART/CART methods.
 %   train_relaxpar_sirt - Training to determine optimal relaxation parameter
 %                         for SIRT method.
 %

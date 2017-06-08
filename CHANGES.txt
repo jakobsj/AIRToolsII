@@ -105,6 +105,10 @@ restoring previous settings afterwards) in call to builtin function eigs,
 which by default uses a random starting vector, thus causing (very minor)
 random variations in the computed rho.
 
+Previous functions trainLambdaART and trainLambdaSIRT have been simplified 
+and merged into new function train_relaxpar, which also supports training 
+of relaxation parameter for the the CART method columnaction.
+
 
 
 
