@@ -40,18 +40,18 @@
 %   train_dpme          - Training method for the stopping rules DP and ME.
 %   train_relaxpar      - Training to find optimal relaxation parameter
 %                         for SIRT/ART/CART methods.
-%   train_relaxpar_sirt - Training to determine optimal relaxation parameter
-%                         for SIRT method.
 %
 % Test Problems:
-%   paralleltomo        - 2D tomography test problem, parallel beam.
 %   fancurvedtomo       - 2D tomography test problem, fan beam, arc detector.
 %   fanlineartomo       - 2D tomography test problem, fan beam, linear detector.
+%   paralleltomo        - 2D tomography test problem, parallel beam.
 %   phantomgallery      - A collection of different 2D phantoms.
 %   purge_rows          - Remove empty or very sparse rows of A and the
 %                         corresponding elements of b.
 %   seismictomo         - 2D seismic travel-time tomography test problem.
 %   seismicwavetomo     - Similar to seismictomo but without a ray assumption.
+%   show_tomo           - Illustrate tomographic test problems from matrix.
+%   sphericaltomo       - 2D spherical Radon tomography test problem.
 %
 % Demonstration Scripts:
 %   demo_art            - Demonstrates the use of, and the results from,
@@ -68,6 +68,7 @@
 %                         and reconstruction methods.
 %   demo_relaxpar       - Demonstrates how to use various relaxation 
 %                         parameter selection strategies.
+%   demo_show_tomo      - Demonstrates tomography test problems.
 %   demo_sirt           - Demonstrates the use of, and the results from,
 %                         the SIRT methods.
 %   demo_stoprules      - Demonstrates how to use different stopping rules.
