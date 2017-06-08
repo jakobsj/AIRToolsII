@@ -39,14 +39,14 @@ ARTmethod = @kaczmarz;
 
 % Train the SIRT relaxation parameter.
 fprintf(1,'Training the relaxation parameter for the SIRT method.\n');
-relaxparSIRT = train_relaxpar_sirt(A,b,x_ex,SIRTmethod,kmaxSIRT);
-fprintf(1,['  Found relaxpar = ',num2str(relaxparSIRT),'\n'])
+relaxparSIRT = train_relaxpar(A,b,x_ex,SIRTmethod,kmaxSIRT);
+fprintf(1,['  Found relaxpar = ',num2str(relaxparSIRT),'\n']);
 optionsSIRT.relaxpar = relaxparSIRT;
 
 % Train the ART relaxation parameter.
 fprintf(1,'Training the relaxation parameter for the ART method.\n');
-relaxparART = train_relaxpar_art(A,b,x_ex,ARTmethod,kmaxART);
-fprintf(1,['  Found relaxpar = ',num2str(relaxparART),'\n\n'])
+relaxparART = train_relaxpar(A,b,x_ex,ARTmethod,kmaxART);
+fprintf(1,['  Found relaxpar = ',num2str(relaxparART),'\n\n']);
 optionsART.relaxpar = relaxparART;
 
 % Stopping rule for the SIRT and ART methods.
@@ -59,11 +59,11 @@ s = 5;
 fprintf(1,'Training the stopping parameter for the SIRT method.\n');
 tauSIRT = ...
   train_dpme(A,b_ex,x_ex,SIRTmethod,typeSIRT,delta,s,kmaxSIRT,optionsSIRT);
-fprintf(1,['  Found tau = ',num2str(tauSIRT),'\n'])
+fprintf(1,['  Found tau = ',num2str(tauSIRT),'\n']);
 fprintf(1,'Training the stopping parameter for the ART method.\n');
 tauART = ...
   train_dpme(A,b_ex,x_ex,ARTmethod,typeART,delta,s,kmaxART,optionsART);
-fprintf(1,['  Found tau = ',num2str(tauART),'\n\n'])
+fprintf(1,['  Found tau = ',num2str(tauART),'\n\n']);
 
 % Set the stopping rules for the SIRT and ART methods.
 optionsSIRT.stoprule.type = typeSIRT;
