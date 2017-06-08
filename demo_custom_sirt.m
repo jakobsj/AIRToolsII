@@ -35,7 +35,7 @@ title('Exact phantom','fontsize',14)
 
 % No. of iterations.
 kmax = 20;
-omega = 1;
+omega = 1.3;
 
 %% Symmetric Kaczmarz.
 
@@ -55,7 +55,7 @@ title('Symmetric Kaczmarz','fontsize',14)
 AAT = full(A*A');
 L = tril(AAT,-1);
 Delta = diag(diag(AAT));
-M = (omega*Delta+L')\((2*omega-1)*Delta)/(omega*Delta+L);
+M = ((1/omega)*Delta+L')\((2/omega-1)*Delta)/((1/omega)*Delta+L);
 
 % Set M and D function handles (if unset, as D here, they are set to the
 % default which is the identity matrix, implemented efficiently).
@@ -63,6 +63,7 @@ sirt_method.M = M;
 
 % Perform custom SIRT iterations using the general interface.  Note that
 % one iteration here corresponds to a pair of iterations in sym. Kaczmarz.
+options.relaxpar = 1;
 Xsirt = sirt(sirt_method,A,b,1:1:kmax/2,[],options);
 
 % Show the custom Landweber solution.
