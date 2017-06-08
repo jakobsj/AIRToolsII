@@ -13,7 +13,7 @@ function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax,options)
 %   A           m times n matrix or function handle to matrix-free version.
 %   b_exact     m times 1 vector containing the exact rhs.
 %   x_exact     n times 1 vectir containing the exact solution.
-%   method      Function handle to a SIRT or ART method.
+%   method      Function handle to a SIRT, ART or CART method.
 %   type        String that should be either 'DP' for Discrepancy Principle
 %               or 'ME' for the Monotone Error rule.  ME can only be chosen
 %               if method is a SIRT-method.
@@ -34,20 +34,13 @@ function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax,options)
 % Reference: T. Elfving and T. Nikazad, Stopping rules for Landweber-type
 % iteration, Inverse Problems, 23 (2007), pp. 1417-1432.
 
+% Remove any stopping rule given and make sure is set to none.
 if nargin == 9
     if isfield(options,'stoprule')
         options = rmfield(options,'stoprule');
     end
 end
-
-% PCH: jeg ved ikke om dette er strengt n�dvendigt.
-switch func2str(method)
-    case {'landweber','cimmino','cav','drop','sart',...
-          'kaczmarz','symkaczmarz','randkaczmarz','columnaction'}
-        options.stoprule.type = 'none';
-    otherwise
-        error('Unknown method.')
-end
+options.stoprule.type = 'none';
 
 % If A is not a function (i.e., A is a matrix or an object), convert A
 % to a function.
