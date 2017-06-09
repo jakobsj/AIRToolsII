@@ -1,4 +1,4 @@
-%DEMO_RELAXPAR (script) Demonstrates the influence of the rexal. param.
+%DEMO_RELAXPAR (script) Demonstrates influence of relaxation parameter
 %
 % This script illustrates the use of different relaxation parameter
 % strategies in Cimmino's method, including the one found by training.
@@ -11,7 +11,7 @@
 % leads to some oscillations in the error history.  These oscillations
 % increase with the noise levels.
 %
-% See also: xxx.
+% See also: train_relaxpar.
 
 clear, clc
 fprintf(1,'Starting demo_relaxpar:\n\n');
@@ -44,7 +44,7 @@ fprintf(1,'Compute the largest allowed relaxation parameter\n');
 relaxpar_max = 2/info.rho;
 fprintf(1,'   relaxpar_max = %2.0f\n\n',relaxpar_max);
 fprintf(1,'Compute the relaxation parameter via training\n');
-relaxpar_train = train_relaxpar_sirt(A,b,x_ex,@cimmino,kmax);
+relaxpar_train = train_relaxpar(A,b,x_ex,@cimmino,kmax);
 fprintf(1,'   relaxpar_train = %2.0f\n\n',relaxpar_train);
 
 % Try different strategies.
@@ -88,7 +88,7 @@ fprintf(1,'Compute the largest allowed relaxation parameter\n');
 relaxpar_max = 2/info.rho;
 fprintf(1,'   relaxpar_max = %2.0f\n\n',relaxpar_max);
 fprintf(1,'Compute the relaxation parameter via training\n');
-relaxpar_train = train_relaxpar_sirt(A,b,x_ex,@cimmino,kmax);
+relaxpar_train = train_relaxpar(A,b,x_ex,@cimmino,kmax);
 fprintf(1,'   relaxpar_train = %2.0f\n\n',relaxpar_train);
 
 % Try different strategies.
