@@ -1,4 +1,4 @@
-function [X,info,ext_info] = sart(varargin)
+function varargout = sart(varargin)
 %SART Simultaneous Algebraic Reconstruction Technique (SART) method
 %
 %   [X,info,ext_info] = sart(A,b,K)
@@ -103,10 +103,15 @@ function [X,info,ext_info] = sart(varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then sart is called with this A.
 %
-% Notes on SART: Unlike the other SIRT methods, SART does not accept inputs
-% rho and w, since the special structure of SART causing the largest
-% singular value to always be 1, would potentially be lost. Any such input
-% is ignored.
+% Notes on SART: 
+% Unlike the other SIRT methods, SART does not accept inputs rho and w, 
+% since the special structure of SART causing the largest singular value 
+% to always be 1, would potentially be lost. Any such input is ignored.
+% Also note that the matrix-free version of SART assumes that all entries 
+% in the system matrix are nonnegative. Using a system matrix with negative
+% entries leads to undefined behavior. In the case of providing the matrix
+% explicitly, negative entries are allowed and handled, but this is not
+% possible without explicit access to system matrix entries.
 % 
 % See also: sirt, landweber, cimmino, cav, drop.
 
@@ -117,16 +122,4 @@ function [X,info,ext_info] = sart(varargin)
 % reconstruction technique (SART): A superior implementation of the ART 
 % algorithm, Ultrasonic Imaging, 6 (1984), pp. 81-94.
 
-
-
-
-
-% Note that any rho input given to SART is ignored as the value 1 is used.
-%
-% Note that the matrix-free version of SART assumes that all entries in the
-% system matrix are nonnegative. Using a system matrix with negative
-% entries leads to undefined behavior. In the case of providing the matrix
-% explicitly, negative entries are allowed and handled, but this is not
-% possible without explicit access to system matrix entries.
-
-[X,info,ext_info] = sirt('sart',varargin{:});
+[varargout{1:nargout}] = sirt('sart',varargin{:});

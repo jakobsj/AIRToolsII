@@ -1,4 +1,4 @@
-function [X,info,ext_info] = cimmino(varargin)
+function varargout = cimmino(varargin)
 %CIMMINO Cimmino's method
 %
 %   [X,info,ext_info] = cimmino(A,b,K)
@@ -111,4 +111,4 @@ function [X,info,ext_info] = cimmino(varargin)
 % Philadelphia, 2000 (this reference uses reflections - instead of projec-
 % tions and therefore includes a redundant factor of 2).
 
-[X,info,ext_info] = sirt('cimmino',varargin{:});
+[varargout{1:nargout}] = sirt('cimmino',varargin{:});

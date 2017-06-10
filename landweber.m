@@ -1,4 +1,4 @@
-function [X,info,ext_info] = landweber(varargin)
+function varargout = landweber(varargin)
 %LANDWEBER The classical Landweber method
 %
 %   [X,info,ext_info] = landweber(A,b,K)
@@ -109,4 +109,4 @@ function [X,info,ext_info] = landweber(varargin)
 % equations of the first kind, American Journal of Mathematics, 73 (1951),
 % pp. 615-624.
 
-[X,info,ext_info] = sirt('landweber',varargin{:});
+[varargout{1:nargout}] = sirt('landweber',varargin{:});

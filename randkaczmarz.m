@@ -1,4 +1,4 @@
-function [X,info] = randkaczmarz(varargin)
+function varargout = randkaczmarz(varargin)
 %RANDKACZMARZ Randomized Kaczmarz method
 %
 %   [X,info] = randkaczmarz(A,b,K)
@@ -92,4 +92,4 @@ function [X,info] = randkaczmarz(varargin)
 % for linear systems with exponential convergence, J. Fourier Analysis and
 % Applications, 15 (2009), pp. 262-278.
 
-[X,info] = art('randkaczmarz',varargin{:});
+[varargout{1:nargout}] = art('randkaczmarz',varargin{:});

@@ -1,4 +1,4 @@
-function [X,info,ext_info] = drop(varargin)
+function varargout = drop(varargin)
 %DROP Diagonally Relaxed Orthogonal Projections (DROP) method
 %
 %   [X,info,ext_info] = drop(A,b,K)
@@ -112,4 +112,4 @@ function [X,info,ext_info] = drop(varargin)
 % diagonally relaxed orthogonal projection methods, SIAM J. Sci. Comp.,
 % 30 (2007), pp. 473-504.
 
-[X,info,ext_info] = sirt('drop',varargin{:});
+[varargout{1:nargout}] = sirt('drop',varargin{:});

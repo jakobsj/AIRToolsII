@@ -1,4 +1,4 @@
-function [X,info,ext_info] = cav(varargin)
+function varargout = cav(varargin)
 %CAV Component Averaging (CAV) method
 %
 %   [X,info,ext_info] = cav(A,b,K)
@@ -112,4 +112,4 @@ function [X,info,ext_info] = cav(varargin)
 % efficient iterative parallel algorithm for large sparse unstructured 
 % problems, Parallel Computing, 27 (2001), pp. 777-808.
 
-[X,info,ext_info] = sirt('cav',varargin{:});
+[varargout{1:nargout}] = sirt('cav',varargin{:});

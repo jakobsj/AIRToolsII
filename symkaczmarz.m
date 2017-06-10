@@ -1,4 +1,4 @@
-function [X,info] = symkaczmarz(varargin)
+function varargout = symkaczmarz(varargin)
 %SYMKACZMARZ Symmetric Kaczmarz method
 %
 %   [X,info] = symkaczmarz(A,b,K)
@@ -97,4 +97,4 @@ function [X,info] = symkaczmarz(varargin)
 % 19 (1979), pp. 145-163.
 
 
-[X,info] = art('symkaczmarz',varargin{:});
+[varargout{1:nargout}] = art('symkaczmarz',varargin{:});

@@ -1,4 +1,4 @@
-function [X,info] = columnaction(varargin)
+function varargout = columnaction(varargin)
 %COLUMNACTION Column-action method (coordinate descent)
 %
 %   [X,info] = columnaction(A,b,K)
@@ -99,4 +99,4 @@ function [X,info] = columnaction(varargin)
 % See also: cart, art, kaczmarz.
 
 
-[X,info] = cart('columnaction',varargin{:});
+[varargout{1:nargout}] = cart('columnaction',varargin{:});

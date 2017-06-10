@@ -1,4 +1,4 @@
-function [X,info] = kaczmarz(varargin)
+function varargout = kaczmarz(varargin)
 %KACZMARZ Kaczmarz's method (often referred to as ART)
 %
 %   [X,info] = kaczmarz(A,b,K)
@@ -90,4 +90,4 @@ function [X,info] = kaczmarz(varargin)
 % Reference: G. T. Herman, Fundamentals of Computerized Tomography,
 % Image Reconstruction from Projections, Springer, New York, 2009. 
 
-[X,info] = art('kaczmarz',varargin{:});
+[varargout{1:nargout}] = art('kaczmarz',varargin{:});
