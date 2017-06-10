@@ -11,7 +11,8 @@
 % See also: paralleltomo, fancurvedtomo, fanlineartomo, sphericaltomo, 
 % seismictomo, seismicwavetomo.
 
-% Jakob Sauer Jorgensen, 2017, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 

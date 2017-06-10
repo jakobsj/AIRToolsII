@@ -102,8 +102,8 @@ function varargout = landweber(varargin)
 %
 % See also: sirt, cimmino, cav, drop, sart.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
-% November 8, 2015, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: L. Landweber, An iteration formula for Fredholm integral
 % equations of the first kind, American Journal of Mathematics, 73 (1951),

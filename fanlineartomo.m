@@ -60,8 +60,8 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 % See also: paralleltomo, fancurvedtomo, seismictomo, seismicwavetomo,
 %           sphericaltomo.
 
-% Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Christian Hansen,
-% June 21, 2011, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
 % Tomographic Imaging, SIAM, Philadelphia, 2001.

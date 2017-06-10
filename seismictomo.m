@@ -49,8 +49,8 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 % See also: paralleltomo, fancurvedtomo, fanlineartomo, seismicwavetomo,
 %           sphericaltomo.
 
-% Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Chr. Hansen,
-% October 1, 2014, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 

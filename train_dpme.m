@@ -29,7 +29,8 @@ function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax,options)
 % See also: cav, cimmino, drop, kaczmarz, landweber, randkaczmarz, sart,
 % symkaczmarz, columnaction.
 
-% Maria Saxild-Hansen and Per Chr. Hansen, June 23, 2010, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: T. Elfving and T. Nikazad, Stopping rules for Landweber-type
 % iteration, Inverse Problems, 23 (2007), pp. 1417-1432.

@@ -120,8 +120,8 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %
 % See also: landweber, cimmino, cav, drop, sart.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
-% 2017-03-04 DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 

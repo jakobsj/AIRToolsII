@@ -86,7 +86,8 @@ function varargout = randkaczmarz(varargin)
 %
 % See also: kaczmarz, symkaczmarz, art.
 
-% Maria Saxild-Hansen and Per Chr. Hansen, Nov. 8, 2015, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: T. Strohmer and R. Vershynin, A randomized Kaczmarz algorithm
 % for linear systems with exponential convergence, J. Fourier Analysis and

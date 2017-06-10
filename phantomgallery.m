@@ -63,9 +63,10 @@ function im = phantomgallery(name,N,P1,P2,P3)
 %   A = matrix generated, e.g., by paralleltomo;
 %   b = A*x;
 
-% Per Christian Hansen, July 6, 2015, DTU Compute.
-% With contibutions by Jakob Sauer Jorgensen and Mikhail Romanov, DTU
-% Compute and Knud Cordua, Univ. of Copenhagen.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
+% With contibutions by Mikhail Romanov, DTU Compute and Knud Cordua, 
+% Univ. of Copenhagen.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 

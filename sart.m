@@ -115,8 +115,8 @@ function varargout = sart(varargin)
 % 
 % See also: sirt, landweber, cimmino, cav, drop.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
-% November 8, 2015, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: A. H. Andersen and A. C. Kak, Simultaneous algebraic
 % reconstruction technique (SART): A superior implementation of the ART 

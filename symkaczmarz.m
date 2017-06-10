@@ -90,7 +90,8 @@ function varargout = symkaczmarz(varargin)
 %
 % See also: kaczmarz, randkaczmarz, art.
 
-% Maria Saxild-Hansen and Per Chr. Hansen, Nov. 8, 2015, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: Aa. Bjoerck and T. Elfving, Accelerated projection methods for 
 % computiong pseudoinverse solutions of systems of linear equations, BIT 

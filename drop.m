@@ -105,8 +105,8 @@ function varargout = drop(varargin)
 %
 % See also: sirt, landweber, cimmino, cav, sart.
 
-% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
-% November 8, 2015, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: Y. Censor, T. Elfving, G. T. Herman, and T. Nikazad, On
 % diagonally relaxed orthogonal projection methods, SIAM J. Sci. Comp.,

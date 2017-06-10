@@ -108,8 +108,9 @@ function [X,info] = cart(cart_method, varargin)
 %
 % See also: columnaction, art, kaczmarz.
 
-% Jakob Sauer Jorgensen, Per Christian Hansen, Maria Saxild-Hansen
-% 2017-03-03 DTU Compute
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
+% With contribution from Jacob Frosig and Nicolai Riis.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 

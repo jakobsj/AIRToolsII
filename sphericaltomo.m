@@ -44,7 +44,8 @@ function [A,b,x,theta,numCircles] = ...
 % See also: paralleltomo, fancurvedtomo, fanlineartomo, seismictomo,
 %           seismicwavetomo.
 
-% Per Christian Hansen and Jakob S. Jorgensen, DTU Compute, May 15, 2017.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 % Based on Matlab code written by Juergen Frikel, OTH Regensburg.
 
 % This file is part of the AIR Tools package and is distributed under the 

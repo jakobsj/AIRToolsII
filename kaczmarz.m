@@ -85,7 +85,8 @@ function varargout = kaczmarz(varargin)
 %
 % See also: randkaczmarz, symkaczmarz, art.
 
-% Maria Saxild-Hansen and Per Chr. Hansen, Nov. 8, 2015, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: G. T. Herman, Fundamentals of Computerized Tomography,
 % Image Reconstruction from Projections, Springer, New York, 2009. 

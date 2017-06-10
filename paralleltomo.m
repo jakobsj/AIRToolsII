@@ -52,8 +52,8 @@ function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 % See also: fancurvedtomo, fanlineartomo, seismictomo, seismicwavetomo,
 %           sphericaltomo.
 
-% Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Christian Hansen,
-% Nov. 5, 2015, DTU Compute.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
 % Tomographic Imaging, SIAM, Philadelphia, 2001.
