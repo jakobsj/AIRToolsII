@@ -46,6 +46,13 @@ function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
 % Jakob Sauer Jorgensen, Per Christian Hansen, Maria Saxild-Hansen
 % 2017-03-05 DTU Compute
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
+
 %% Check first number and dimensions of inputs given are correct.
 
 % Check that at least 3 inputs are given.

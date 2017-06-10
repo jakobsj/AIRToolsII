@@ -58,6 +58,12 @@ function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
 % Tomographic Imaging, SIAM, Philadelphia, 2001.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 % Default value of the projection angles theta.
 if nargin < 2 || isempty(theta)
     theta = 0:179;

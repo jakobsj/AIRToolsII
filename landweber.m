@@ -109,4 +109,10 @@ function varargout = landweber(varargin)
 % equations of the first kind, American Journal of Mathematics, 73 (1951),
 % pp. 615-624.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 [varargout{1:nargout}] = sirt('landweber',varargin{:});

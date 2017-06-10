@@ -9,12 +9,17 @@
 %
 % Contact: pcha@dtu.dk
 % 
-% COPYRIGHT NOTICE HERE
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Info:
 %   CONTENTS.m          - This file with overview of available files.
 %   CHANGES.txt         - List of changes made in code since last version.
+%   LICENSE.txt         - License file.
 %
 % Iterative ART Methods:
 %   art                 - General interface for all Kaczmarz/ART methods.

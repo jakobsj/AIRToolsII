@@ -98,5 +98,14 @@ function varargout = columnaction(varargin)
 %
 % See also: cart, art, kaczmarz.
 
+% Maria Saxild-Hansen, Per Chr. Hansen and Jakob Sauer Jorgensen,
+% November 8, 2015, DTU Compute.
+
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 
 [varargout{1:nargout}] = cart('columnaction',varargin{:});

@@ -52,6 +52,12 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 % Jakob Sauer Jorgensen, Maria Saxild-Hansen and Per Chr. Hansen,
 % October 1, 2014, DTU Compute.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 if nargin < 5 || isempty(isMatrix)
     isMatrix = 1;
 end

@@ -67,6 +67,12 @@ function im = phantomgallery(name,N,P1,P2,P3)
 % With contibutions by Jakob Sauer Jorgensen and Mikhail Romanov, DTU
 % Compute and Knud Cordua, Univ. of Copenhagen.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 if nargin < 2, error('Not enought input arguments'), end
 
 switch name

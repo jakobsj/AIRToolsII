@@ -64,6 +64,12 @@ function [A,b,x,s,p,omega] = seismicwavetomo(N,s,p,omega,isDisp,isMatrix)
 % Sensitivity kernels for time-distance inversion, Solar Physics, 192
 % (2000), pp. 231-239.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 % Default number of sources.
 if nargin < 2 || isempty(s)
     s = N;

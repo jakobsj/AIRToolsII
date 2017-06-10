@@ -34,6 +34,12 @@ function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax,options)
 % Reference: T. Elfving and T. Nikazad, Stopping rules for Landweber-type
 % iteration, Inverse Problems, 23 (2007), pp. 1417-1432.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 % Remove any stopping rule given and make sure is set to none.
 if nargin == 9
     if isfield(options,'stoprule')

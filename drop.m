@@ -112,4 +112,10 @@ function varargout = drop(varargin)
 % diagonally relaxed orthogonal projection methods, SIAM J. Sci. Comp.,
 % 30 (2007), pp. 473-504.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 [varargout{1:nargout}] = sirt('drop',varargin{:});

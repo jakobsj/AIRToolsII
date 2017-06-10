@@ -19,6 +19,12 @@ function [A,b] = purge_rows(A,b,Nthr)
 
 % Per Chr. Hansen, October 1, 2014, DTU Compute.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 if nargin<3, Nthr = 0; end
 
 s = sum(A~=0,2);

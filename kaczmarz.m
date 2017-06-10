@@ -90,4 +90,10 @@ function varargout = kaczmarz(varargin)
 % Reference: G. T. Herman, Fundamentals of Computerized Tomography,
 % Image Reconstruction from Projections, Springer, New York, 2009. 
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 [varargout{1:nargout}] = art('kaczmarz',varargin{:});

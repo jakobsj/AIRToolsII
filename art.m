@@ -98,6 +98,12 @@ function [X,info] = art(art_method, varargin)
 
 % Maria Saxild-Hansen and Per Chr. Hansen, Nov. 8, 2015, DTU Compute.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 % Measure total time taken.
 t_total = tic;
 

@@ -33,6 +33,13 @@ function [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n)
 % Jakob Sauer Jorgensen, Per Christian Hansen, Maria Saxild-Hansen
 % 2017-03-05 DTU Compute
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
+
 % Split between builtin and custom methods depending on type of sirt_method
 if ischar(sirt_method)
     switch sirt_method

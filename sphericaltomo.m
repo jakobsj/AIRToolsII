@@ -47,6 +47,12 @@ function [A,b,x,theta,numCircles] = ...
 % Per Christian Hansen and Jakob S. Jorgensen, DTU Compute, May 15, 2017.
 % Based on Matlab code written by Juergen Frikel, OTH Regensburg.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 % Default value of the angles to the circle centers.
 if nargin < 2 || isempty(theta)
     theta = 0:2:358;

@@ -96,5 +96,10 @@ function varargout = symkaczmarz(varargin)
 % computiong pseudoinverse solutions of systems of linear equations, BIT 
 % 19 (1979), pp. 145-163.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
 
 [varargout{1:nargout}] = art('symkaczmarz',varargin{:});

@@ -28,6 +28,12 @@ function relaxpar = train_relaxpar(A,b,x_ex,method,kmax,options)
 
 % Maria Saxild-Hansen and Per Chr. Hansen, June 10, 2010, DTU Compute.
 
+% This file is part of the AIR Tools package and is distributed under the 
+% 3-Clause BSD Licence. A separate license file should be provided as part 
+% of the package. 
+% 
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 % Input check: ensure that no stoprule is chosen.
 if nargin == 6
     options.stoprule.type = 'none';
