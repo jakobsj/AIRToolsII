@@ -7,7 +7,8 @@
 % the problem without two different stopping rules.  Then the error
 % history is plotted together with the found number of iterations.
 %
-% See also: xxx.
+% See also: demo_art, demo_constraints, demo_custom, demo_matrixfree, 
+% demo_training.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.

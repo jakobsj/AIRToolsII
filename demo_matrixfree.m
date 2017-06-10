@@ -18,7 +18,7 @@
 % backprojected images are shown.
 %
 % See also: demo_art, demo_constraints, demo_custom, demo_sirt, 
-% demo_training.
+% demo_training, demo_astra_2d.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.

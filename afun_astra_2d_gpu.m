@@ -11,13 +11,13 @@ function y = afun_astra_2d_gpu(x,transp_flag,proj_geom,vol_geom)
 % documentation for further details, http://www.astra-toolbox.com/.
 % Tested using ASTRA 1.8 on Linux.
 % 
-% Dependening on the  second input, either the system matrix or its
+% Depending on the second input, either the system matrix or its
 % transpose is multiplied onto the first input vector, or the size of the
 % system matrix is returned.
 %
 % Given ASTRA proj_geom and vol_geom, the typical use of this function is
 % to wrap in an anonymous function
-%    myfun = @(XX,TT) afun(XX,TT,proj_geom,vol_geom);
+%    myfun = @(XX,TT) afun_astra_2d_gpu(XX,TT,proj_geom,vol_geom);
 % after which myfun implicitly can apply A or A^T or return the size of A,
 % implemented using ASTRA on the GPU, by calling:
 %    y = myfun(x,'notransp');
@@ -38,7 +38,7 @@ function y = afun_astra_2d_gpu(x,transp_flag,proj_geom,vol_geom)
 %   y           If transp_flag is 'notransp', y is A*x. If 'transp', y is 
 %               A'*x. If 'size', y will be size(A).
 %
-% See also: demo_interfact_astra_2d.
+% See also: demo_astra_2d.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.

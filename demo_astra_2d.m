@@ -12,6 +12,8 @@
 % interfacing from AIR Tools to ASTRA for application of system matrix and
 % transpose as well as the built-in SIRT algorithm of ASTRA, which is
 % equivalent to AIR Tools' SART.
+%
+% See also: afun_astra_2d, demo_show_tomo, demo_sirt.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.

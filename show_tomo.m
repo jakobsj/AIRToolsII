@@ -12,6 +12,9 @@ function [] = show_tomo(A,idx,timedelay)
 % by default all rows will be used. If a third input timedelay is given, it
 % specifies the time (in secs) to wait between display of rows; default is
 % 0.1 second.
+%
+% See also: demo_show_tomo, paralleltomo, fancurvedtomo, fanlineartomo, 
+%           seismictomo, seismicwavetomo, sphericaltomo.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.

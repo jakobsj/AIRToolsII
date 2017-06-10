@@ -35,6 +35,8 @@ function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
 %    rkm1           Initialized variable to hold residual at previous 
 %                   iteration.
 %    dk             Initizlized vector for averaging in NCP.
+%    do_waitbar     Whether to display progress using waitbar.
+%    verbose        Scalar stating frequency of printing progress.
 %    damp           Scalar stating level of damping in ART and CART 
 %                   methods.
 %    THR            Threshold for use in CART.

@@ -10,7 +10,7 @@ function y = afun_matrix(x,transp_flag,A)
 %
 % Given a matrix A, the typical use of this function is  to wrap A in an
 % anonymous function
-%    myfun = @(XX,TT) afun(XX,TT,A);
+%    myfun = @(XX,TT) afun_matrix(XX,TT,A);
 % after which myfun implicitly can apply A or A^T or return the size of A:
 %    y = myfun(x,'notransp');
 %    z = myfun(y,'transp');

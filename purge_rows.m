@@ -16,6 +16,8 @@ function [A,b] = purge_rows(A,b,Nthr)
 % Zero rows do not contribute to the reconstruction.
 % Rows with few nonzero elements correspond to pixels near the corners of
 % the image, whose reconstructions are highly sensitive to noise.
+%
+% See also: demo_custom_sirt.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.

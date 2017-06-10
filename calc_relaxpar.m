@@ -6,10 +6,10 @@ function [relaxpar, casel, rho] = ...
 %   [relaxpar, casel, rho] = ...
 %              calc_relaxpar(relaxparinput, rhoinput, kmax, atma, n)
 %
-% Short form is used by art and cart and sets the relaxpar either to default
-% values of 1 or 0.25, respectively, or assigns a value given by the user.
-% If the value given by the user is outside the allowed interval, a warning
-% is given.
+% Short form is used by art and cart and sets the relaxpar either to
+% default values of 1 or 0.25, respectively, or assigns a value given by
+% the user. If the value given by the user is outside the allowed interval,
+% a warning is given.
 % 
 % Long form is used by sirt, and inputs and outputs are explained below.
 % 
@@ -31,7 +31,7 @@ function [relaxpar, casel, rho] = ...
 %                      returned (casel=1), line search is to be used
 %                      (casel=2) or the psi1/psi2 strategies to be used
 %                      (casel=3).
-%    rho               The computed spectral radius of the iteration matrix.
+%    rho               Computed spectral radius of the iteration matrix.
 %
 % See also: art.m, cart.m, sirt.m
 
@@ -107,7 +107,8 @@ switch stack(2).name
             
             % Checks if the given constant lambde value is unstable.
             if relaxparinput <= 0 || relaxparinput >= 2/rho
-                warning('MATLAB:UnstableRelaxParam',['The relaxpar value '...
+                warning('MATLAB:UnstableRelaxParam',...
+                    ['The relaxpar value '...
                     'is outside the interval (0,%f)'],2/rho)
             end
             relaxpar = relaxparinput;
