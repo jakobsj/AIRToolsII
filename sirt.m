@@ -18,9 +18,12 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %   sirt_method  Either one of the strings 'landweber', 'cimmino', 'cav',
 %                'drop' or 'sart' to specify one of the provided methods.
 %                Default is 'sart'.
-%                Or a struct with fields Mfun and Dfun holding two 
-%                function handles Mfun and Dfun which implement the
-%                multiplication of M and D, respectively. Please see
+%                Or a struct with fields M and D, each holding either a
+%                matrix or a vector representing the diagonal elements of a
+%                diagonal matrix of appropriate size. In this way, new, 
+%                completely general sirt methods can be specified by
+%                choices of M and D matrices. If either is omitted, an
+%                identity matrix is used be default. Please see
 %                demo_custom_all for an example.
 %   A            m times n matrix, or a function implementing matrix-vector
 %                multiplication with A and A'; please see explanation below.
