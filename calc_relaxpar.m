@@ -164,7 +164,8 @@ switch stack(2).name
         end % end check of relaxpar strategies.
         
     otherwise
-        error('This aux. function is only to be called from within art, cart or sirt.')
+        error(['This aux. function is only to be called ',...
+            'from within art, cart or sirt.'])
 end
 
 function z = calczeta(k)

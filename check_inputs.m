@@ -107,23 +107,25 @@ end
 
 %% Bound constraints lbound and ubound.
 
-% Lower bound(s). Default empty. Can be specified as either scalar or vector
-% of same length as x. If vector, check length/orientation.
+% Lower bound(s). Default empty. Can be specified as either scalar or
+% vector of same length as x. If vector, check length/orientation.
 if isfield(options,'lbound')
     lbound = options.lbound(:);
     if length(lbound) ~= n && length(lbound) ~= 1
-        error('lbound (lower bound) must either be scalar or same length as vector of unknowns x.')
+        error(['lbound (lower bound) must either be scalar or ',...
+            'same length as vector of unknowns x.'])
     end
 else
     lbound = [];
 end
 
-% Upper bound(s). Default empty. Can be specified as either scalar or vector
-% of same length as x. If vector, check length/orientation.
+% Upper bound(s). Default empty. Can be specified as either scalar or
+% vector of same length as x. If vector, check length/orientation.
 if isfield(options,'ubound')
     ubound = options.ubound(:);
     if length(ubound) ~= n && length(ubound) ~= 1
-        error('ubound (upper bound) must either be scalar or same length as vector of unknowns x.')
+        error(['ubound (upper bound) must either be scalar ',...
+            'or same length as vector of unknowns x.'])
     end
 else
     ubound = [];
@@ -163,13 +165,15 @@ if strcmpi(stoprule,'DP') || strcmpi(stoprule,'ME')
        isnumeric(options.stoprule.taudelta)
         taudelta = options.stoprule.taudelta;
     else
-        error('For stopping rules DP and ME a scalar taudelta must be given in options.')
+        error(['For stopping rules DP and ME a scalar ',...
+            'taudelta must be given in options.'])
     end
 end
 
 % For stopping rule NCP, res_dims must be given in options.
 if strcmp(stoprule,'NCP') && ~isfield(options.stoprule,'res_dims')
-    error('options.stoprule.res_dims must be specified for NCP stopping rule.')
+    error(['options.stoprule.res_dims must be specified for ',...
+        'NCP stopping rule.'])
 end
 res_dims = []; 
 if isfield(options,'stoprule') && isfield(options.stoprule,'res_dims')
@@ -216,7 +220,8 @@ end
 % ME is only available for SIRT. If specified for ART or CART, throw error.
 stack = dbstack;
 if strcmpi(stoprule,'ME') && ~strcmp(stack(2).name,'sirt')
-    error('Stopping rule ME is only available for SIRT methods, not ART and CART.')
+    error(['Stopping rule ME is only available for SIRT methods, ',...
+        'not ART and CART.'])
 end
 
 
