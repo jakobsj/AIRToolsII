@@ -228,8 +228,8 @@ end
 %% Damping in ART and CART methods.
 
 damp = 0;
-if isfield(options,'damping')
-    damp = options.damping;
+if isfield(options,'damp')
+    damp = options.damp;
     if damp<0, error('Damping must be positive'), end
 end
 

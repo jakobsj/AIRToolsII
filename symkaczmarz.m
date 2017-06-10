@@ -55,7 +55,7 @@ function varargout = symkaczmarz(varargin)
 %                iteration. If vector, it must have same size as x and 
 %                then enforces elementwise lower bounds on x. If empty, no
 %                bound is enforced. +/-Inf can be used.
-%      damping   A parameter P to avoid division by very small row norms
+%      damp      A parameter P to avoid division by very small row norms
 %                by adding P*max_i{||a_i||_2^2} to ||a_i||_2^2.
 %      verbose   Nonnegative integer specifying whether progress is printed
 %                to screen during iterations. Default=0: no info printed.

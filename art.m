@@ -61,7 +61,7 @@ function [X,info] = art(art_method, varargin)
 %                iteration. If vector, it must have same size as x and 
 %                then enforces elementwise lower bounds on x. If empty, no
 %                bound is enforced. +/-Inf can be used.
-%      damping   A parameter damp to avoid division by very small row norms
+%      damp      A parameter damp to avoid division by very small row norms
 %                by adding damp*max_i{||a_i||_2^2} to ||a_i||_2^2.
 %      verbose   Nonnegative integer specifying whether progress is printed
 %                to screen during iterations. Default=0: no info printed.
