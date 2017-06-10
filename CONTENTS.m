@@ -56,6 +56,7 @@
 % Demonstration Scripts:
 %   demo_art            - Demonstrates the use of, and the results from,
 %                         the ART methods.
+%   demo_astra_2d       - Demonstrates interfacing to ASTRA Toolbox.
 %   demo_cart           - Demonstrates the use of, and the results from,
 %                         the CART method.
 %   demo_constraints    - Demonstrates the use of nonnegativity and other
@@ -76,6 +77,8 @@
 %
 % Auxiliary Routines:
 %   afun_matrix         - Wrap a matrix into a "matrix-free" function handle.
+%   afun_astra_2d_gpu   - Wraps ASTRA projectors for calling using function 
+%                         handle.
 %   calc_relaxpar       - Computes the relaxation parameter for all methods.
 %   check_inputs        - Checks inputs and sets default values.
 %   check_stoprules     - Checks if stopping rule criteria are met.

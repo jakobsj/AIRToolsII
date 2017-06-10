@@ -97,6 +97,11 @@ parameter selection strategies.
 
 New demo demo_stoprules to illustrate use of different stopping rules.
 
+New demo demo_astra_2d and auxilliary function afun_astra_2d_gpu to 
+demonstrate how to interface from AIR Tools to the ASTRA Tomography Toolbox
+for using GPU-accelerated matrix-free computation of application of the 
+system matrix and its transpose.
+
 New function show_tomo to illustrate tomography test problem by displaying 
 rows of matrix as images. Also new demo demo_show_tomo to illustrate all 
 tomography test problems using both the isDisp input of tomography test 
