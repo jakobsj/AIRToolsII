@@ -1,6 +1,6 @@
 function [A,b,x,theta,p,R,dw,sd] = ...
     fanlineartomo(N,theta,p,R,dw,sd,isDisp,isMatrix)
-%FANLINEARTOMO Creates 2D fan-beam linear-detector tomography test problem
+%FANLINEARTOMO  Creates 2D fan-beam linear-detector tomography test problem
 %
 %   [A,b,x,theta,p,R,d] = fanlineartomo(N)
 %   [A,b,x,theta,p,R,d] = fanlineartomo(N,theta)
@@ -18,49 +18,42 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 % central slice of a flat-panel detector.
 %
 % Input:
-%   N           Scalar denoting the number of discretization intervals in 
-%               each dimesion, such that the domain consists of N^2 cells.
-%   theta       Vector containing the angles in degrees. Default: theta =
-%               0:2:358.
-%   p           Number of rays for each angle. Default: p =
-%               round(sqrt(2)*N).
-%   R           The distance from the source to the center of the domain
-%               is R*N. Default: R = 2.
-%   dw          Total width of linear detector. Same units as R.
-%   sd          Source to detector distance. Same units as R.
-%   isDisp      If isDisp is non-zero it specifies the time in seconds 
-%               to pause in the display of the rays. If zero (the default), 
-%               no display is shown.
-%   isMatrix    If non-zero, a sparse matrix is set up to represent the
-%               forward problem. If zero, instead a function handle to a
-%               matrix-free version is returned.
+%   N         Scalar denoting the number of discretization intervals in 
+%             each dimesion, such that the domain consists of N^2 cells.
+%   theta     Vector containing the angles in degrees. Default: theta =
+%             0:2:358.
+%   p         Number of rays for each angle. Default: p = round(sqrt(2)*N).
+%   R         The distance from the source to the center of the domain
+%             is R*N. Default: R = 2.
+%   dw        Total width of linear detector. Same units as R.
+%   sd        Source to detector distance. Same units as R.
+%   isDisp    If isDisp is non-zero it specifies the time in seconds 
+%             to pause in the display of the rays. If zero (the default), 
+%             no display is shown.
+%   isMatrix  If non-zero, a sparse matrix is returned in A (default).
+%             If zero, instead a function handle is returned.
 %
 % Output:
-%   A           If input isMatrix is 1 (default): Coefficient matrix with
-%               N^2 columns and nA*p rows, where nA is the number of
-%               angles, i.e., length(theta). 
-%               If isMatrix is 0: A function handle representing a
-%               matrix-free version of A in which the forward and backward
-%               operations can be called as A(x,'notransp') and
-%               A(y,'transp'), respectively, for column vectors x and y of
-%               appropriate size. The size of A can be retrieved using
-%               A([],'size'). The matrix is never formed explicitly, thus
-%               saving memory, which for large problems can be essential.
-%               Instead output elements are computed on the fly as
-%               required, so each call to A requires full computation of
-%               elements in A.
-%   b           Vector containing the rhs of the test problem.
-%   x           Vector containing the exact solution, with elements
-%               between 0 and 1.
-%   theta       Vector containing the used angles in degrees.
-%   p           The number of used rays for each angle.
-%   R           The radius in side lengths. 
-%   d           The span of the rays.
+%   A         If input isMatrix is 1 (default): coefficient matrix with
+%             N^2 columns and length(theta)*p rows.
+%             If input isMatrix is 0: A function handle representing a
+%             matrix-free version of A in which the forward and backward
+%             operations are computed as A(x,'notransp') and A(y,'transp'),
+%             respectively, for column vectors x and y of appropriate size.
+%             The size of A can be retrieved using A([],'size'). The matrix
+%             is never formed explicitly, thus saving memory.
+%   b         Vector containing the rhs of the test problem.
+%   x         Vector containing the exact solution, with elements
+%             between 0 and 1.
+%   theta     Vector containing the used angles in degrees.
+%   p         The number of used rays for each angle.
+%   R         The radius in side lengths. 
+%   d         The span of the rays.
 %
 % See also: paralleltomo, fancurvedtomo, seismictomo, seismicwavetomo,
 %           sphericaltomo.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
@@ -70,7 +63,7 @@ function [A,b,x,theta,p,R,dw,sd] = ...
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 % Default illustration:
 if nargin < 7 || isempty(isDisp)
@@ -144,7 +137,6 @@ if nargout > 5
 end
 
 
-
 function A = get_or_apply_system_matrix(N,theta,p,R,dw,sd,isDisp,...
     u,transp_flag)
 
@@ -186,14 +178,14 @@ if isDisp
     figure
 end
 
-% Deduce whether to set up matrix or apply to input from whether input u is
-% given.
+% Deduce whether to set up matrix or apply to input, depending on whether
+% input u is given.
 isMatrix = (nargin < 8);
 
 if isMatrix
     
-    % Initialize vectors that contains the row numbers, the column numbers and
-    % the values for creating the matrix A effiecently.
+    % Initialize vectors that contains the row numbers, the column numbers
+    % and the values for creating the matrix A efficiently.
     rows = zeros(2*N*nA*p,1);
     cols = rows;
     vals = rows;
@@ -274,12 +266,12 @@ for i = II
         end
         
         % Use the parametrisation of line to get the y-coordinates of
-        % intersections with x = k, i.e. x constant.
+        % intersections with x = k, i.e., x constant.
         tx = (x - x0theta)/a;
         yx = b*tx + y0theta;
         
         % Use the parametrisation of line to get the x-coordinates of
-        % intersections with y = k, i.e. y constant.
+        % intersections with y = k, i.e., y constant.
         ty = (y - y0theta)/b;
         xy = a*ty + x0theta;
         

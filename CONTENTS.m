@@ -1,19 +1,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % AIR Tools II
 % Version 2.0 of AIR Tools
-% 2017-03-08
+% June 2017
 % 
-% Per Christian Hansen and Jakob Sauer Jorgensen
+% Per Christian Hansen and Jakob Sauer Jørgensen
 % Dept. Applied Mathematics and Computer Science (DTU Compute)
 % Technical University of Denmark
 %
 % Contact: pcha@dtu.dk
 % 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% This file is part of the AIR Tools package and is distributed under
+% the 3-Clause BSD Licence.  A separate license file should be provided
+% as part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Info:
@@ -23,45 +23,50 @@
 %
 % Iterative ART Methods:
 %   art                 - General interface for all Kaczmarz/ART methods.
-%   kaczmarz            - Kaczmarz's method (often referred to as ART).
-%   randkaczmarz        - Randomized Kaczmarz method.
-%   symkaczmarz         - Symmetric Kaczmarz method.
+%   kaczmarz            - Kaczmarz's method with cyclic row sweep
+%                         (often referred to as ART).
+%   randkaczmarz        - Kaczmarz's method with random row selection.
+%   symkaczmarz         - Kaczmarz's method with ``symmetric'' (top to
+%                         bottom to top) row sweep.
 %
 % Iterative CART Methods:
-%   cart                - General interface for all column-action methods.
+%   cart                - General interface for the CART methods.
 %   columnaction        - Column-action method with cyclic column sweeps.
 %
 % Iterative SIRT Methods:
 %   sirt                - General interface for all SIRT methods.
-%   cav                 - Component Averaging (CAV) method.
+%   cav                 - Component averaging (CAV) method.
 %   cimmino             - Cimmino's method.
-%   drop                - Diagonally Relaxed Orthogonal Projections (DROP)
+%   drop                - Diagonally relaxed orthogonal projections (DROP)
 %                         method.
-%   landweber           - The classical Landweber method.
-%   sart                - Simultaneous Algebraic Reconstruction Technique
+%   landweber           - Landweber's method.
+%   sart                - Simultaneous algebraic reconstruction technique
 %                         (SART) method.
 %
 % Training Routines:
-%   train_dpme          - Training method for the stopping rules DP and ME.
-%   train_relaxpar      - Training to find optimal relaxation parameter
-%                         for SIRT/ART/CART methods.
+%   train_dpme          - Use training to compute a good multiplicative
+%                         factor in the DP and ME stopping rules.
+%   train_relaxpar      - Use training to compute a good relaxation
+%                         parameter for the ART/CART/SIRT methods.
 %
 % Test Problems:
-%   fancurvedtomo       - 2D tomography test problem, fan beam, arc detector.
-%   fanlineartomo       - 2D tomography test problem, fan beam, linear detector.
-%   paralleltomo        - 2D tomography test problem, parallel beam.
+%   fancurvedtomo       - 2D fan-beam CT with a curved detector (equal
+%                         angles between rays).
+%   fanlineartomo       - 2D fan-beam CT with a linear detector.
+%   paralleltomo        - 2D parallel-beam CT.
 %   phantomgallery      - A collection of different 2D phantoms.
 %   purge_rows          - Remove empty or very sparse rows of A and the
 %                         corresponding elements of b.
 %   seismictomo         - 2D seismic travel-time tomography test problem.
 %   seismicwavetomo     - Similar to seismictomo but without a ray assumption.
-%   show_tomo           - Illustrate tomographic test problems from matrix.
-%   sphericaltomo       - 2D spherical Radon tomography test problem.
+%   show_tomo           - Illustrate the geometry of a tomographic test
+%                         problem using the rows of the matrix A.
+%   sphericaltomo       - 2D spherical Radon transform tomography problem.
 %
 % Demonstration Scripts:
 %   demo_art            - Demonstrates the use of, and the results from,
 %                         the ART methods.
-%   demo_astra_2d       - Demonstrates interfacing to ASTRA Toolbox.
+%   demo_astra_2d       - Demonstrates interfacing to the ASTRA Toolbox.
 %   demo_cart           - Demonstrates the use of, and the results from,
 %                         the CART method.
 %   demo_constraints    - Demonstrates the use of nonnegativity and other
@@ -81,10 +86,9 @@
 %   demo_training       - Demonstrates the use of the training methods.
 %
 % Auxiliary Routines:
-%   afun_matrix         - Wrap a matrix into a "matrix-free" function handle.
-%   afun_astra_2d_gpu   - Wraps ASTRA projectors for calling using function 
-%                         handle.
-%   calc_relaxpar       - Computes the relaxation parameter for all methods.
-%   check_inputs        - Checks inputs and sets default values.
-%   check_stoprules     - Checks if stopping rule criteria are met.
+%   afun_astra_2d_gpu   - Wrap ASTRA projectors into a function handle.
+%   afun_matrix         - Wrap a matrix into a function handle.
+%   calc_relaxpar       - Compute the relaxation parameter for all methods.
+%   check_inputs        - Check inputs and set default values.
+%   check_stoprules     - Check if stopping rule criteria are met.
 %   get_mfun_dfun       - Computes matrices M and D for SIRT methods.

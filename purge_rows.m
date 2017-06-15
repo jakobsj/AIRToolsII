@@ -1,13 +1,13 @@
 function [A,b] = purge_rows(A,b,Nthr)
-%PURGE_ROWS  Remove zero/"small" rows of A and corresponding elements of b
+%PURGE_ROWS  Remove zero or very sparse rows of A and corresp. entries in b
 %
-% [A,b] = purge_rows(A,b)
-% [A,b] = purge_rows(A,b,Nthr)
+%   [A,b] = purge_rows(A,b)
+%   [A,b] = purge_rows(A,b,Nthr)
 %
 % Identifies zero rows of the coefficient matrix A and removes them.
 % If a right-hand side b is present, the corresponding elements of b are
 % also removed (b can be a matrix of several right hand sides). A must be
-% matrix, i.e., cannot be a function handle.
+% matrix, i.e., it cannot be a function handle.
 %
 % If a positive Nthr is given as the third argument, then all rows for
 % which the number of nonzeros is less than or equal to Nthr are removed.
@@ -19,14 +19,14 @@ function [A,b] = purge_rows(A,b,Nthr)
 %
 % See also: demo_custom_sirt.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 if nargin<3, Nthr = 0; end
 

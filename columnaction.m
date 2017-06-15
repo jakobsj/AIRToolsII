@@ -1,30 +1,31 @@
 function varargout = columnaction(varargin)
-%COLUMNACTION Column-action method (coordinate descent)
+%COLUMNACTION  Column-action method with cyclic column sweeps
 %
 %   [X,info] = columnaction(A,b,K)
 %   [X,info] = columnaction(A,b,K,x0)
 %   [X,info] = columnaction(A,b,K,x0,options)
 %
-% Implements the CART method for the system Ax = b:
+% Implements the column-action method for the system Ax = b:
 %
 %       x_j^{k+1} = x_j^k + relaxpar*a_j'(b - A x^k)/(||a_j||_2^2)
 %
 % where a_j is the j-th column of A, and j = (k mod n) + 1.
 %
-% This method incorporates the "flagging" idea: a component of the
+% This method is identical to the coordinate descent optimization method.
+% Our implementation incorporates the "flagging" idea: a component of the
 % solution x is "flagged" if its update is smaller than a threshold THR
-% times max(abs(x)) is not updated again until it is "unflagged" which
+% times max(abs(x)); it is not updated again until it is "unflagged" which
 % happens after a random number of iterations chosen as rand*Nunflag.
 %
 % Input:
 %   A        m times n matrix, or a function that implements matrix-vector
 %            multiplication with A and A'; please see explanation below.
 %   b        m times 1 vector containing the right-hand side.
-%   K        Number of iterations. If K is a scalar, then K is the maximum
-%            number of iterations and only the last iterate is saved.
-%            If K is a vector, then the largest value in K is the maximum
+%   K        Number of iterations. If K is a scalar, then K is the 
+%            maximum number of iterations and only the last iterate is 
+%            returned. If K is a vector, then max(K) is the maximum
 %            number of iterations and only iterates corresponding to the
-%            values in K are saved, together with the last iterate.
+%            values in K are returned, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
 %      relaxpar  The relaxation parameter. For this method relaxpar must
@@ -98,14 +99,14 @@ function varargout = columnaction(varargin)
 %
 % See also: cart, art, kaczmarz.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 
 [varargout{1:nargout}] = cart('columnaction',varargin{:});

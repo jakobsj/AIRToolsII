@@ -1,5 +1,5 @@
 function varargout = randkaczmarz(varargin)
-%RANDKACZMARZ Randomized Kaczmarz method
+%RANDKACZMARZ  Kaczmarz's method with random row selection
 %
 %   [X,info] = randkaczmarz(A,b,K)
 %   [X,info] = randkaczmarz(A,b,K,x0)
@@ -16,15 +16,18 @@ function varargout = randkaczmarz(varargin)
 %   A        m times n matrix, or a function that implements matrix-vector
 %            multiplication with A and A'; please see explanation below.
 %   b        m times 1 vector containing the right-hand side.
-%   K        Number of iterations. If K is a scalar, then K is the maximum
-%            number of iterations and only the last iterate is saved.
-%            If K is a vector, then the largest value in K is the maximum
+%   K        Number of iterations. If K is a scalar, then K is the 
+%            maximum number of iterations and only the last iterate is 
+%            returned. If K is a vector, then max(K) is the maximum
 %            number of iterations and only iterates corresponding to the
-%            values in K are saved, together with the last iterate.
+%            values in K are returned, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
-%      relaxpar  The relaxation parameter. For this method relaxpar must
-%                be a scalar < 2; default value is 1.
+%      relaxpar The relaxation parameter. If relaxpar is a scalar < 2 then
+%               it is used in each iteration; default value is 1.
+%               Alternatively, relaxpar can be a function with a diminishing
+%               parameter, e.g., @(j) 1/sqrt(j), where j counts the total
+%               number of row updates.
 %      stoprule  Struct containing the following information about the
 %                stopping rule:
 %                    type = 'none' : (Default) the only stopping rule
@@ -86,7 +89,7 @@ function varargout = randkaczmarz(varargin)
 %
 % See also: kaczmarz, symkaczmarz, art.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: T. Strohmer and R. Vershynin, A randomized Kaczmarz algorithm
@@ -97,6 +100,6 @@ function varargout = randkaczmarz(varargin)
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 [varargout{1:nargout}] = art('randkaczmarz',varargin{:});

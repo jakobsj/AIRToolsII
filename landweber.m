@@ -1,5 +1,5 @@
 function varargout = landweber(varargin)
-%LANDWEBER The classical Landweber method
+%LANDWEBER  Landweber's method
 %
 %   [X,info,ext_info] = landweber(A,b,K)
 %   [X,info,ext_info] = landweber(A,b,K,x0)
@@ -13,11 +13,11 @@ function varargout = landweber(varargin)
 %   A        m times n matrix, or a function that implements matrix-vector
 %            multiplication with A and A'; please see explanation below.
 %   b        m times 1 vector containing the right-hand side.
-%   K        Number of iterations. If K is a scalar, then K is the maximum
-%            number of iterations and only the last iterate is saved.
-%            If K is a vector, then the largest value in K is the maximum
+%   K        Number of iterations. If K is a scalar, then K is the 
+%            maximum number of iterations and only the last iterate is 
+%            returned. If K is a vector, then max(K) is the maximum
 %            number of iterations and only iterates corresponding to the
-%            values in K are saved, together with the last iterate.
+%            values in K are returned, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
 %      relaxpar  The relaxation parameter. If relaxpar is a scalar then
@@ -100,9 +100,9 @@ function varargout = landweber(varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then landweber is called with this A.
 %
-% See also: sirt, cimmino, cav, drop, sart.
+% See also: cav, cimmino, drop, sart, sirt.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: L. Landweber, An iteration formula for Fredholm integral
@@ -113,6 +113,6 @@ function varargout = landweber(varargin)
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 [varargout{1:nargout}] = sirt('landweber',varargin{:});

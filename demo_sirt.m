@@ -1,23 +1,22 @@
-%DEMO_SIRT (script) Demonstrates the use of, and results from, the SIRT methods
+%DEMO_SIRT (script) Demonstrates the use of, and results from, SIRT methods
 %
 % This script illustrates the use of the SIRT methods landweber,
 % cimmino, cav, drop, and sart.
 %
-% The script creates a parallel-beam CT test problem and solves it with
-% the SIRT methods. The exact solution and the results from the methods
-% are shown. 
+% The script creates a parallel-beam CT test problem and solves it with the
+% SIRT methods. The exact solution and the results from the methods are shown.
 %
-% See also: demo_art, demo_constraints, demo_custom, demo_matrixfree, 
-% demo_training.
+% See also: demo_art, demo_constraints, demo_custom_all, demo_matrixfree,
+% demo_relaxpar, demo_stoprules, demo_training.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 clear, clc
 fprintf(1,'Starting demo_sirt:\n\n');

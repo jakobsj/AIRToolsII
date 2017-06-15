@@ -1,4 +1,4 @@
-%DEMO_RELAXPAR (script) Demonstrates influence of relaxation parameter
+%DEMO_RELAXPAR (script) Demonstrates the use of the relaxation parameter
 %
 % This script illustrates the use of different relaxation parameter
 % strategies in Cimmino's method, including the one found by training.
@@ -9,18 +9,18 @@
 %
 % The script also illustrates that for noisy data, the line-search strategy
 % leads to some oscillations in the error history.  These oscillations
-% increase with the noise levels.
+% increase with the noise level.
 %
 % See also: train_relaxpar.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 clear, clc
 fprintf(1,'Starting demo_relaxpar:\n\n');

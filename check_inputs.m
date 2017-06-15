@@ -1,19 +1,19 @@
 function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
     relaxparinput,rho,res_dims,rkm1,dk,do_waitbar,verbose,damp,THR,...
     Kbegin,Nunflag] = check_inputs(A,b,K,x0,options)
-%CHECK_INPUTS Aux. function to check inputs, set defaults for ART,CART,SIRT
+%CHECK_INPUTS  Aux. function to check inputs and set default values
 %
 %   [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
 %    relaxparinput,rho,w,res_dims,rkm1,dk,damp,THR,Kbegin,Nunflag] = ...
 %    check_inputs(A,b,K,x0,options)
 %
-% From inputs given by user to a ART, CART or SIRT method check for
+% From inputs given by user to an ART, CART or SIRT method check for
 % inconsistencies, extract options or set default values.
 % 
 % Input:
 %    A              Forward operator matrix or function.
 %    b              Right-hand side vector.
-%    K              List of iterates to return.
+%    K              List of iterations to return.
 %    x0             Starting vector.
 %    options        Struct with options.
 %    
@@ -43,16 +43,16 @@ function [Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, ...
 %    Kbegin         Flagging parameter for CART.
 %    Nunflag        Unflagging parameter for CART.
 %
-% See also: art.m, cart.m, sirt.m
+% See also: art, cart, sirt
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 
 %% Check first number and dimensions of inputs given are correct.
@@ -133,15 +133,13 @@ end
 
 
 %% Relaxation parameter.
-
-relaxparinput = nan;
+relaxparinput = [];
 if isfield(options,'relaxpar')
     relaxparinput = options.relaxpar;
 end
 
 
 %% Largest singular value.
-
 rho = nan;
 if isfield(options,'rho')
      rho = options.rho;
@@ -226,7 +224,6 @@ end
 
 
 %% Damping in ART and CART methods.
-
 damp = 0;
 if isfield(options,'damp')
     damp = options.damp;
@@ -250,7 +247,7 @@ if isfield(options,'Nunflag')
     Nunflag = options.Nunflag;
 end
 
-%% Waitbar and printing info during run
+%% Waitbar and printing info during run.
 
 do_waitbar = false;
 if isfield(options,'waitbar') && options.waitbar

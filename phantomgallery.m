@@ -1,12 +1,12 @@
 function im = phantomgallery(name,N,P1,P2,P3)
-%PHANTOMGALLERY Different 2D phantoms for use in tomographic models
+%PHANTOMGALLERY  A collection of 2D phantoms for use in test problems
 %
-% im = phantomgallery(name,N)
-% im = phantomgallery(name,N,P1)
-% im = phantomgallery(name,N,P1,P2)
-% im = phantomgallery(name,N,P1,P2,P3)
+%   im = phantomgallery(name,N)
+%   im = phantomgallery(name,N,P1)
+%   im = phantomgallery(name,N,P1,P2)
+%   im = phantomgallery(name,N,P1,P2,P3)
 %
-% The phantom is N-by-N with pixel values between 0 and 1, and the
+% The phantom im is N-by-N with pixel values between 0 and 1, and the
 % following phantom types are available:
 %
 % shepplogan: the Shepp-Logan phantom
@@ -56,14 +56,13 @@ function im = phantomgallery(name,N,P1,P2,P3)
 % tectonic: a test image for the seismic tomography test problems.
 %   im = phantomgallery('tectonic',N)
 %
-% To use these images on connection with fanbeamtomo, paralleltomo, and
-% semismictomo, use the commands:
+% To use these images in connection with the test problems use the commands:
 %   im = phantomgallery(name,N,...);
 %   x = im(:);
 %   A = matrix generated, e.g., by paralleltomo;
 %   b = A*x;
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 % With contibutions by Mikhail Romanov, DTU Compute and Knud Cordua, 
 % Univ. of Copenhagen.
@@ -72,7 +71,7 @@ function im = phantomgallery(name,N,P1,P2,P3)
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 if nargin < 2, error('Not enought input arguments'), end
 

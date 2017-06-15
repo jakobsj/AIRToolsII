@@ -1,11 +1,11 @@
 function [stop, info, rkm1, dk] = check_stoprules(...
     stoprule, rk, relaxpar, taudelta, k, kmax, rkm1, dk, res_dims)
-%CHECK_STOPRULES Aux. function to check specified stopping rule
+%CHECK_STOPRULES  Aux. function to check if stopping rule criteria are met
 %
 %   [stop, info, rkm1, dk] = check_stoprules(...
 %    stoprule, rk, relaxpar, taudelta, k, kmax, rkm1, dk, res_dims)
 %
-% From information available at current iteration of ART, CART or SIRT
+% From information available at current iteration of an ART, CART or SIRT
 % method (and for some stopping rules previous iterates) determine if the
 % chosen stopping rule is satisfied in order to abort iteration.
 % 
@@ -22,7 +22,7 @@ function [stop, info, rkm1, dk] = check_stoprules(...
 %    res_dims     Dimensions of residual. Used only by NCP.
 %    
 % Output:
-%    stop         1 if stopping rule met, otherwise 0.
+%    stop         1 if stopping rule is met, otherwise 0.
 %    info         Struct with fields 
 %       stoprule = 0 : stopped by maximum number of iterations
 %                  1 : stopped by NCP-rule
@@ -34,16 +34,16 @@ function [stop, info, rkm1, dk] = check_stoprules(...
 %    dk           Filter vector updated by replacing oldest element by
 %                 the one from current iteration.
 %
-% See also: art.m, cart.m, sirt.m
+% See also: art, cart, sirt
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 % Defaults.
 stop = 0;
@@ -95,7 +95,7 @@ switch upper(stoprule)
     case 'NCP'
         % Normalized Cumulative Periodogram stopping rule.
         
-        % Depending on residual being 1D or 2D, set up NCP
+        % Depending on residual being 1D or 2D, set up NCP.
         switch length(res_dims)
             case 1
                 % If 1D signal.
@@ -125,15 +125,15 @@ switch upper(stoprule)
         c_white = (1:q)'./q;
         
         % Compute the norm of the difference between columns of c and
-        % c_white. The below handles both 2D and 1D and is generalized from
-        % the 1D statement:  ncc = norm(c-c_white).
+        % c_white. The below handles both 2D and 1D and is generalized
+        % from the 1D statement:  ncc = norm(c-c_white).
         ncc = mean(sqrt(sum(bsxfun(@minus,c,c_white).^2)));
         
         % Compare filtered new value with the previous filtered value.
         if  max(dk) < max([dk(2:end); ncc]) || k >= kmax
             stop = 1;
             if k ~= kmax
-                % Normalized Cumulative Periodogram stopping rule satisfied
+                % NCP stopping rule satisfied.
                 info.stoprule = 1;
                 info.finaliter = k;
                 info.relaxpar = relaxpar;

@@ -1,5 +1,5 @@
 function varargout = sart(varargin)
-%SART Simultaneous Algebraic Reconstruction Technique (SART) method
+%SART  Simultaneous Algebraic Reconstruction Technique (SART) method
 %
 %   [X,info,ext_info] = sart(A,b,K)
 %   [X,info,ext_info] = sart(A,b,K,x0)
@@ -17,11 +17,11 @@ function varargout = sart(varargin)
 %   A        m times n matrix, or a function that implements matrix-vector
 %            multiplication with A and A'; please see explanation below.
 %   b        m times 1 vector containing the right-hand side.
-%   K        Number of iterations. If K is a scalar, then K is the maximum
-%            number of iterations and only the last iterate is saved.
-%            If K is a vector, then the largest value in K is the maximum
+%   K        Number of iterations. If K is a scalar, then K is the 
+%            maximum number of iterations and only the last iterate is 
+%            returned. If K is a vector, then max(K) is the maximum
 %            number of iterations and only iterates corresponding to the
-%            values in K are saved, together with the last iterate.
+%            values in K are returned, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
 %      relaxpar  The relaxation parameter. If relaxpar is a scalar then
@@ -103,19 +103,16 @@ function varargout = sart(varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then sart is called with this A.
 %
-% Notes on SART: 
-% Unlike the other SIRT methods, SART does not accept inputs rho and w, 
-% since the special structure of SART causing the largest singular value 
-% to always be 1, would potentially be lost. Any such input is ignored.
-% Also note that the matrix-free version of SART assumes that all entries 
-% in the system matrix are nonnegative. Using a system matrix with negative
-% entries leads to undefined behavior. In the case of providing the matrix
-% explicitly, negative entries are allowed and handled, but this is not
-% possible without explicit access to system matrix entries.
+% For SART using a function handle, it is assumed (not checked) that the
+% underlying matrix only has nonnegative elements. If the matrix has one or 
+% more negative elements, the result produced by SART is not well-defined. 
+% With a sparse matrix, negative elements are allowed and handled properly.
+% Unlike the other SIRT methods, SART does not accept input rho, because
+% 1 is a good and safe lower bound for rho.
 % 
-% See also: sirt, landweber, cimmino, cav, drop.
+% See also: cav, cimmino, drop, landweber, sirt.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: A. H. Andersen and A. C. Kak, Simultaneous algebraic
@@ -126,6 +123,6 @@ function varargout = sart(varargin)
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 [varargout{1:nargout}] = sirt('sart',varargin{:});

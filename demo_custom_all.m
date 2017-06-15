@@ -1,24 +1,24 @@
-%DEMO_CUSTOM_ALL (script) Demonstrates how to specify custom ART and SIRT methods
+%DEMO_CUSTOM_ALL (script) Demonstrates how to specify custom ART/SIRT methods
 % 
 % This script creates a parallel-beam CT test problem and solves the problem
 % with the the standard Kaczmarz method and a custom ART method running
 % through the rows backwards. It also solves the problem using the standard
-% Landweber method and two custom variants by defining M and T matrices used
+% Landweber method and two custom variants by defining D and M matrices used
 % in the general formulation of SIRT, the last of which makes the custom
 % method identical to Cimmino (which we also show). The exact solution and
 % the results from all the methods are shown.
 %
-% See also: demo_art, demo_constraints, demo_matrixfree, demo_sirt, 
-% demo_training.
+% See also: demo_art, demo_cart, demo_constraints, demo_matrixfree,
+% demo_relaxpar, demo_sirt, demo_stoprules, demo_training.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 %% Set up test problem.
 
@@ -29,7 +29,7 @@ fprintf(1,'Starting demo_custom_all:\n\n');
 N = 50;           % The image is N-times-N..
 theta = 0:2:178;  % No. of used angles.
 p = 75;           % No. of parallel rays.
-eta = 0.0;       % Relative noise level.
+eta = 0.01;       % Relative noise level.
 
 figure(1), clf
 

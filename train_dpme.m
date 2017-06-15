@@ -1,13 +1,13 @@
 function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax,options)
-%TRAIN_DPME Training method for the stopping rules DP and ME
+%TRAIN_DPME  Training method for the stopping rules DP and ME
 %
 %   tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax)
 %   tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax,options)
 %
-% This function determines the parameter tau for a given method, for
-% the stopping rule DP or ME, by training on a problem given by A, b_exact,
-% and x_exact. The noise level is delta, s samples of the noisy right-hand
-% side are created, and from these samples the value of tau is determined.
+% This function determines the parameter tau for a given method, for the
+% stopping rule DP or ME, by training on a problem given by A, b_exact, and
+% x_exact. The noise level is delta, s samples of the noisy right-hand side
+% are created, and from these samples the value of tau is determined.
 %
 % Input:
 %   A           m times n matrix or function handle to matrix-free version.
@@ -26,10 +26,9 @@ function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax,options)
 % Output:
 %   tau         Scalar containing the trained parameter.
 %
-% See also: cav, cimmino, drop, kaczmarz, landweber, randkaczmarz, sart,
-% symkaczmarz, columnaction.
+% See also: demo_training, train_relaxpar.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: T. Elfving and T. Nikazad, Stopping rules for Landweber-type
@@ -39,7 +38,7 @@ function tau = train_dpme(A,b_exact,x_exact,method,type,delta,s,kmax,options)
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 % Remove any stopping rule given and make sure is set to none.
 if nargin == 9

@@ -8,17 +8,17 @@
 % the results from the methods are shown. The script shows that we obtain
 % better reconstructions when we are able to impose bounds.
 %
-% See also: demo_art, demo_custom, demo_matrixfree, demo_sirt, 
-% demo_training.
+% See also: demo_art, demo_cart, demo_custom_all, demo_matrixfree,
+% demo_relaxpar, demo_sirt, demo_stoprules, demo_training.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 clear, clc
 fprintf(1,'Starting demo_constraints:\n\n');
@@ -69,7 +69,7 @@ Xcimn = cimmino(A,b,k,[],options);
 subplot(2,3,4)
 imagesc(reshape(Xcimn,N,N)), colormap gray, axis image off
 caxis(c)
-title('Cimmino w/ nonneg.')
+title('With nonneg.')
 
 % Perform Cimmino iterations with box constraints.
 fprintf(1,'Perform k = %2.0f iterations with box constraints.\n',k);
@@ -82,7 +82,7 @@ subplot(2,3,5)
 imagesc(reshape(Xcimb,N,N)), colormap gray,
 axis image off
 caxis(c)
-title('Cimmino w/ box')
+title('With box')
 
 % Determine the indices to those regions in the image that are known to
 % have exact pixel values equal to 0.3, and enforce very tight bounds
@@ -103,11 +103,10 @@ Xcime = cimmino(A,b,k,[],options);
 subplot(2,3,6)
 imagesc(reshape(Xcime,N,N)), colormap gray, axis image off
 caxis(c)
-title('Cimmino w. box & eq.')
+title('With box & tight')
 
-% Show that enforcing constraints improves the reconstruction, by
-% computing the errors in those pixels where the equality constraint
-% is not active
+% Show that enforcing constraints improves the reconstruction, by computing
+% the errors in those pixels where the tight constraints are not active
 z_ex = x_ex; z_ex(I) = [];
 Zcim = Xcim; Zcim(I) = [];
 Zcimn = Xcimn; Zcimn(I) = [];

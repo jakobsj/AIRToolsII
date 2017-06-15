@@ -8,17 +8,16 @@
 % both the symmetric Kaczmarz method and the custom SIRT method with the
 % specific matrix M.
 %
-% See also: demo_art, demo_constraints, demo_matrixfree, demo_sirt, 
-% demo_training.
+% See also: demo_custom_all.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 %% Set up test problem
 
@@ -28,7 +27,7 @@ figure(1), clf
 
 % Set the parameters for the test problem.
 N = 50;           % The image is N-by-N.
-theta = 0:5:179;  % No. of used angles.
+theta = 0:5:175;  % No. of used angles.
 p = 75;           % No. of parallel rays.
 
 % Create the test problem and purge zero rows from A.

@@ -1,15 +1,15 @@
 function relaxpar = train_relaxpar(A,b,x_ex,method,kmax,options)
-%TRAIN_RELAXPAR Training to find optimal relaxpar for SIRT/ART/CART methods
+%TRAIN_RELAXPAR  Training to find optimal relaxpar for ART/CART/SIRT methods
 %
 %   relaxpar = train_relaxpar(A,b,x_ex,method,kmax)
 %   relaxpar = train_relaxpar(A,b,x_ex,method,kmax,options)
 %
 % This function determines the optimal value of the relaxation parameter
 % relaxpar for one of the SIRT methods cav, cimmino, drop, landweber, and
-% sart, ART methods kaczmarz, symkaczmarz and randkaczmarz, and the CART 
-% method columnaction. The optimal value of relaxpar is defined as the 
-% value that gives rise to the fastest convergence to the smallest error 
-% in the solution.
+% sart, one of the ART methods kaczmarz, symkaczmarz and randkaczmarz, and
+% the CART  method columnaction. The optimal value of relaxpar is defined
+% as the value that gives rise to the fastest convergence to the smallest
+% error  in the solution.
 %
 % Input:
 %   A           m times n matrix or function handle to matrix-free version.
@@ -24,16 +24,20 @@ function relaxpar = train_relaxpar(A,b,x_ex,method,kmax,options)
 % Output:   
 %   relaxpar    Scalar containing the found relaxpar value.
 %
-% See also: demo_training.
+% See also: demo_training, train_dpme.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
+
+% Reference: P. C. Hansen and M. Saxild-Hansen, AIR Tools - A MATLAB package
+% of algebraic iterative reconstruction methods, J. Comp. Appl. Math., 236
+% (2012), pp. 2167-2178,
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 % Input check: ensure that no stoprule is chosen.
 if nargin == 6

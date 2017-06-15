@@ -1,40 +1,38 @@
 %DEMO_MATRIXFREE (script) Demonstrates the matrix-free mode
 %
-% As an example, this script illustrates the use of the default SIRT 
-% method sart applied to the same test problem using the matrix version, a
-% "pseudo" matrix-free version in which the matrix exists but is wrapped
-% using a function handle, and a fully matrix-free version in which the
-% matrix is never explicitly formed. The fully matrix-free mode can be
-% useful when storing the full operator explicitly requires too much
-% memory. Computations are instead carried out on the fly, i.e., in every
-% application of forward/backprojection, so computation time will be
-% substantially longer.
+% This script illustrates the use of the default SIRT method sart applied
+% to the same test problem using the matrix version, a "pseudo" matrix-free
+% version in which the matrix exists but is wrapped using a function handle,
+% and a fully matrix-free version in which the matrix is never explicitly
+% stored.  The fully matrix-free mode is useful when storing the matrix
+% explicitly requires too much memory.  Computations are instead carried
+% out on the fly, i.e., in every application of forward/backprojection, so
+% computing time is substantially longer.
 %
 % The script creates a parallel-beam CT test problem and solves it with
 % the SART method in matrix, pseudo matrix-free and fully matrix-free mode.
-% It further demonstrates usage of the matrix-free
-% operator represented using a function handle. The exact phantom, the
-% (identical) results of the methods and the (identical) sinograms and
+% It further demonstrates the use of a function handle.  The exact phantom,
+% the (identical) results of the methods and the (identical) sinograms and
 % backprojected images are shown.
 %
-% See also: demo_art, demo_constraints, demo_custom, demo_sirt, 
-% demo_training, demo_astra_2d.
+% See also: demo_astra_2d, demo_art, demo_cart, demo_constraints,
+% demo_custom_all, demo_relaxpar, demo_sirt, demo_stoprules, demo_training.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 clear, clc
 fprintf(1,'Starting demo_matrixfree:\n\n');
 
 % Set the parameters for the test problem.
 N = 50;           % The discretization points.
-theta = 0:5:179;  % No. of used angles.
+theta = 0:5:175;  % No. of used angles.
 p = 75;           % No. of parallel rays.
 
 fprintf(1,'Creating a parallel-beam tomography test problem\n');
@@ -71,11 +69,11 @@ Afun_ps = @(XX,TT) afun_matrix(XX,TT,A);
 fprintf(1,'Perform k = %2.0f iterations with the pseudo matrix-free SART method.\n',k);
 
 % Perform the SART iterations.
-Xsart_pseudo = sart(Afun_ps,b,k);
+Xsart_ps = sart(Afun_ps,b,k);
 
 % Show the pseudo matrix-free SART solution.
 subplot(2,2,3)
-imagesc(reshape(Xsart_pseudo,N,N)), colormap gray, axis image off
+imagesc(reshape(Xsart_ps,N,N)), colormap gray, axis image off
 caxis(c)
 title('Pseudo matrix-free SART')
 
@@ -84,7 +82,7 @@ title('Pseudo matrix-free SART')
 Afun_mf = paralleltomo(N,theta,p,[],[],0);
 
 fprintf(1,'Perform k = %2.0f iterations with the fully matrix-free SART method.\n',k);
-fprintf(1,'  This is much slower - we trade speed for memory use!\n\n')
+fprintf(1,'  This is much slower - we trade speed for memory use!\n')
 
 % Perform the SART iterations.
 Xsart_mf = sart(Afun_mf,b,k);

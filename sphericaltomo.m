@@ -1,6 +1,6 @@
 function [A,b,x,theta,numCircles] = ...
     sphericaltomo(N,theta,numCircles,isDisp,isMatrix)
-%SPHERICALTOMO Creates a 2D spherical Radon tomography test problem
+%SPHERICALTOMO  Creates a 2D spherical Radon tomography test problem
 %
 %   [A,b,x,angles,numCircles] = sphericaltomo(N)
 %   [A,b,x,angles,numCircles] = sphericaltomo(N,angles)
@@ -13,10 +13,10 @@ function [A,b,x,theta,numCircles] = ...
 % Radon tranform where data consists of integrals along circles.  This type
 % of problem arises, e.g., in photoacoustic imaging.
 %
-% The image is square whose center is at the origo.  The centers for the
-% integration circles are placed on a circle just outside the square.
-% For each circle center we integrate along a number of circles with
-% different radii, using the periodic trapezoidal rule.
+% The image domain is a square centered at the origin.  The centers for the
+% integration circles are placed on a circle just outside the image domain.
+% For each circle center we integrate along a number of concentric circles
+% with equidistant radii, using the periodic trapezoidal rule.
 %
 % Input:
 %   N           Scalar denoting the number of pixels in each dimesion, such
@@ -28,13 +28,18 @@ function [A,b,x,theta,numCircles] = ...
 %   isDisp      If isDisp is non-zero it specifies the time in seconds
 %               to pause in the display of the rays. If zero (the default),
 %               no display is shown.
-%   isMatrix    If non-zero, a sparse matrix is set up to represent the
-%               forward problem. If zero, instead a function handle to a
-%               matrix-free version is returned.
+%   isMatrix    If non-zero, a sparse matrix is returned in A (default).
+%               If zero, instead a function handle is returned.
 %
 % Output:
-%   A           Sparse coefficient matrix with N^2 columns and
-%               length(angles)*numColumns rows.
+%   A           If input isMatrix is 1 (default): coefficient matrix with
+%               N^2 columns and length(theta)*p rows.
+%               If input isMatrix is 0: A function handle representing a
+%               matrix-free version of A in which the forward and backward
+%               operations are computed as A(x,'notransp') and A(y,'transp'),
+%               respectively, for column vectors x and y of appropriate size.
+%               The size of A can be retrieved using A([],'size'). The matrix
+%               is never formed explicitly, thus saving memory.
 %   b           Vector containing the rhs of the test problem.
 %   x           Vector containing the exact solution, with elements
 %               between 0 and 1.
@@ -44,7 +49,7 @@ function [A,b,x,theta,numCircles] = ...
 % See also: paralleltomo, fancurvedtomo, fanlineartomo, seismictomo,
 %           seismicwavetomo.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 % Based on Matlab code written by Juergen Frikel, OTH Regensburg.
 
@@ -52,7 +57,7 @@ function [A,b,x,theta,numCircles] = ...
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 % Default value of the angles to the circle centers.
 if nargin < 2 || isempty(theta)
@@ -123,8 +128,8 @@ if isDisp
     figure
 end
 
-% Deduce whether to set up matrix or apply to input from whether input u is
-% given.
+% Deduce whether to set up matrix or apply to input, depending on whether
+% input u is given.
 isMatrix = (nargin < 5);
 
 if isMatrix

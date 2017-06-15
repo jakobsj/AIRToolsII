@@ -1,21 +1,21 @@
 %DEMO_TRAINING (script) Demonstrates the use of the training methods
 %
-% This script demonstrates the use of the functions train_relaxpar_sirt,
-% train_relaxpar_art, and train_dpme.  We train the SIRT method cimmino
-% and the ART method kaczmarz.  For the SIRT method the stopping rule ME
-% is used, and for the ART method the stopping rule DP is used.
+% This script demonstrates the use of the functions train_relaxpar and
+% train_dpme.  We train the SIRT method cimmino and the ART method kaczmarz.
+% For the SIRT method the stopping rule ME is used, and for the ART method
+% the stopping rule DP is used.
 %
-% See also: demo_art, demo_constraints, demo_custom, demo_matrixfree, 
-% demo_sirt.
+% See also: demo_art, demo_constraints, demo_custom_all, demo_matrixfree,
+% demo_relaxpar, demo_sirt, demo_stoprules, train_dpme, train_relaxpar.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 clc
 fprintf(1,'Starting demo_training:\n\n');

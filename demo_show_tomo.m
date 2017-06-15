@@ -1,24 +1,24 @@
-%DEMO_SHOW_TOMO (script) Illustrates tomography test problems
+%DEMO_SHOW_TOMO (script) Illustrates the use of the show_tomo function
 %
 % This script illustrates each of the 6 supplied tomographic test problems.
 % First, while generating the test problem, the ray paths used in each
 % problem are plotted. Second, after generation of the test problem is
 % complete, the rows of the generated matrix are displayed as an image to
-% illustrate which entries in the system matrix arise in each geometry. For
-% the parallel-beam geometry also the illustration from the matrix-free
-% function handle representation of the test problem is demonstrated.
+% illustrate which entries in the system matrix arise in each geometry.
+% For the parallel-beam geometry we also illustration the corresponding use
+% of the matrix-free function handle representation of the test problem.
 %
-% See also: paralleltomo, fancurvedtomo, fanlineartomo, sphericaltomo, 
-% seismictomo, seismicwavetomo.
+% See also: paralleltomo, fancurvedtomo, fanlineartomo, show_tomo,
+% sphericaltomo, seismictomo, seismicwavetomo.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 clear, clc
 fprintf(1,'Starting demo_show_tomo:\n\n');
@@ -104,9 +104,9 @@ show_tomo(A,[],timedelay)
 
 fprintf(1,'seismictomo...\n\n');
 
-s = 32;   % The number of sources in the right side of the domain.
-p = 32;   % The number of receivers (seismographs) equally spaced on the
-          % surface and on the left side of the domain (default p = 2*N).
+s = 6;   % The number of sources in the right side of the domain.
+p = 10;  % The number of receivers (seismographs) equally spaced on the
+         % surface and on the left side of the domain (default p = 2*N).
 
 % Create matrix version of test problem and display rays 
 A = seismictomo(N,s,p,timedelay);
@@ -120,8 +120,8 @@ show_tomo(A,[],timedelay)
 
 fprintf(1,'seismicwavetomo...\n\n');
 
-s = 32;     % The number of sources in the right side of the domain.
-p = 32;     % The number of receivers (seismographs) equally spaced on the
+s = 6;      % The number of sources in the right side of the domain.
+p = 10;     % The number of receivers (seismographs) equally spaced on the
             % surface and on the left side of the domain (default p = 2*N).
 omega = 10; % Dominant frequency of the propagating wave (default = 10).
 

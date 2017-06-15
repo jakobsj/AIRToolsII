@@ -1,5 +1,5 @@
 function varargout = cimmino(varargin)
-%CIMMINO Cimmino's method
+%CIMMINO  Cimmino's method
 %
 %   [X,info,ext_info] = cimmino(A,b,K)
 %   [X,info,ext_info] = cimmino(A,b,K,x0)
@@ -15,11 +15,11 @@ function varargout = cimmino(varargin)
 %   A        m times n matrix, or a function that implements matrix-vector
 %            multiplication with A and A'; please see explanation below.
 %   b        m times 1 vector containing the right-hand side.
-%   K        Number of iterations. If K is a scalar, then K is the maximum
-%            number of iterations and only the last iterate is saved.
-%            If K is a vector, then the largest value in K is the maximum
-%            number of iterations and all iterates corresponding to the
-%            values in K are saved, together with the last iterate.no
+%   K        Number of iterations. If K is a scalar, then K is the 
+%            maximum number of iterations and only the last iterate is 
+%            returned. If K is a vector, then max(K) is the maximum
+%            number of iterations and only iterates corresponding to the
+%            values in K are returned, together with the last iterate.
 %   x0       n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
 %      relaxpar  The relaxation parameter. If relaxpar is a scalar then
@@ -102,9 +102,9 @@ function varargout = cimmino(varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then cimmino is called with this A.
 %
-% See also: sirt, landweber, cav, drop, sart.
+% See also: cav, drop, landweber, sart, sirt.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: C. D. Meyer, Matrix Analysis and Applied Linear Algebra, SIAM,
@@ -115,6 +115,6 @@ function varargout = cimmino(varargin)
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 [varargout{1:nargout}] = sirt('cimmino',varargin{:});

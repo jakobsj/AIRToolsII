@@ -1,4 +1,4 @@
-Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are met:

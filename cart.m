@@ -1,5 +1,5 @@
 function [X,info] = cart(cart_method, varargin)
-%CART General interface for calling CART methods.
+%CART  General interface for the CART methods.
 %
 %   [X,info] = cart(cart_method,A,b,K)
 %   [X,info] = cart(cart_method,A,b,K,x0)
@@ -10,9 +10,8 @@ function [X,info] = cart(cart_method, varargin)
 %       x_j^{k+1} = x_j^k + relaxpar*a_j'(b - A x^k)/(||a_j||_2^2)
 %
 % where a_j is the j-th column of A, and the order for j can be chosen in 
-% different ways. The provided method columnaction uses the natural order
-% from first to last column, while other orders can be specified by the
-% user. 
+% different ways. The provided method columnaction uses the order from
+% first to last column, while other orders can be specified by the user. 
 %
 % This method incorporates the "flagging" idea: a component of the
 % solution x is "flagged" if its update is smaller than a threshold THR
@@ -21,20 +20,18 @@ function [X,info] = cart(cart_method, varargin)
 %
 % Input:
 %   cart_method  Either the string 'columnaction' to specify the provided 
-%                method. Default is 'columnaction'.
-%                Or a column index vector of length n (for matrix A m times
-%                n) with a desired fixed order in which to step through all 
+%                method; default is 'columnaction'.
+%                Or a column index vector of length n (for matrix A m-by-n)
+%                with a desired fixed order in which to step through all 
 %                columns of A. Please see demo_custom for an example.
-%   A            m times n matrix, or a function that implements
-%                matrix-vector multiplication with A and A'; please see 
-%                explanation below.
+%   A            m times n matrix, or a function that implements matrix-
+%                vector multiplication with A and A'; see explanation below.
 %   b            m times 1 vector containing the right-hand side.
 %   K            Number of iterations. If K is a scalar, then K is the 
 %                maximum number of iterations and only the last iterate is 
-%                saved. If K is a vector, then the largest value in K is 
-%                the maximum number of iterations and only iterates 
-%                corresponding to the values in K are saved, together with 
-%                the last iterate.
+%                returned. If K is a vector, then max(K) is the maximum
+%                number of iterations and only iterates corresponding to the
+%                values in K are returned, together with the last iterate.
 %   x0           n times 1 starting vector. Default: x0 = 0.
 %   options  Struct with the following fields:
 %      relaxpar  The relaxation parameter. For this method relaxpar must
@@ -69,7 +66,7 @@ function [X,info] = cart(cart_method, varargin)
 %                by adding P*max_i{||a_i||_2^2} to ||a_i||_2^2.
 %      THR       A component is "flagged" if its update is smaller than
 %                THR*max(abs(x)) where x is the previous iteration vector.
-%                Default THR = 1e-4.
+%                Default = 1e-4.
 %      Kbegin    Perform Kbegin iterations before allowing "flagging".
 %                Default = 10.
 %      Nunflag   Upper bound on number of iterations to wait before
@@ -106,17 +103,17 @@ function [X,info] = cart(cart_method, varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then cart is called with this A.
 %
-% See also: columnaction, art, kaczmarz.
+% See also: art, columnaction.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
-% With contribution from Jacob Frosig and Nicolai Riis.
+% With contribution from Jacob Frøsig and Nicolai Riis.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 
 % Measure total time taken.
@@ -154,12 +151,15 @@ l = 1;   % Pointing to the next iterate number in K to be saved.
 % Compute the relaxation parameter to be used throughout iterations.
 relaxpar = calc_relaxpar(relaxparinput);
 
-% Calculate the norm of each column in A. This calculation can require a
-% lot of memory. Unlike ART methods, A is NOT transposed.
+% Calculate the norm of each column in A.
+normAj = zeros(1,n);
 if ~isa(A,'function_handle')
-    normAj = full(abs(sum(A.*A,1)));
+    B = 200;  % Block size; adjust if necessary.
+    for I=1:ceil(n/B)
+        J = 1+(I-1)*B : min(n,I*B);
+        normAj(J) = full(abs(sum(A(:,J).*A(:,J),1)));
+    end
 else
-    normAj = zeros(1,n);
     for j = 1:n
         e = zeros(n,1);
         e(j) = 1;
@@ -305,7 +305,7 @@ if do_waitbar
     close(h_waitbar);
 end
 
-% Return only the saved iterations: Only to "l-1" because "l" now points to
+% Return only the saved iterations: use "l-1" because "l" now points to
 % next candidate.
 X = X(:,1:l-1);
 

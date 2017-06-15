@@ -1,5 +1,5 @@
 function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
-%PARALLELTOMO Creates a 2D parallel-beam tomography test problem
+%PARALLELTOMO  Creates a 2D parallel-beam tomography test problem
 %
 %   [A,b,x,theta,p,d] = paralleltomo(N)
 %   [A,b,x,theta,p,d] = paralleltomo(N,theta)
@@ -13,46 +13,40 @@ function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 % angle in the vector theta.
 %
 % Input:
-%   N           Scalar denoting the number of discretization intervals in
-%               each dimesion, such that the domain consists of N^2 cells.
-%   theta       Vector containing the projetion angles in degrees.
-%               Default: theta = 0:1:179.
-%   p           Number of parallel rays for each angle.
-%               Default: p = round(sqrt(2)*N).
-%   d           Scalar denoting the distance from the first ray to the last.
-%               Default: d = p-1.
-%   isDisp      If isDisp is non-zero it specifies the time in seconds
-%               to pause in the display of the rays. If zero (the default),
-%               no display is shown.
-%   isMatrix    If non-zero, a sparse matrix is set up to represent the
-%               forward problem. If zero, instead a function handle to a
-%               matrix-free version is returned.
+%   N         Scalar denoting the number of discretization intervals in
+%             each dimesion, such that the domain consists of N^2 cells.
+%   theta     Vector containing the projetion angles in degrees.
+%             Default: theta = 0:1:179.
+%   p         Number of rays for each angle. Default: p = round(sqrt(2)*N).
+%   d         Scalar denoting the distance from the first ray to the last.
+%             Default: d = p-1.
+%   isDisp    If isDisp is non-zero it specifies the time in seconds
+%             to pause in the display of the rays. If zero (the default),
+%             no display is shown.
+%   isMatrix  If non-zero, a sparse matrix is returned in A (default).
+%             If zero, instead a function handle is returned.
 %
 % Output:
-%   A           If input isMatrix is 1 (default): Coefficient matrix with 
-%               N^2 columns and nA*p rows, where nA is the number of
-%               angles, i.e., length(theta). 
-%               If isMatrix is 0: A function handle representing a
-%               matrix-free version of A in which the forward and backward
-%               operations can be called as A(x,'notransp') and
-%               A(y,'transp'), respectively, for column vectors x and y of
-%               appropriate size. The size of A can be retrieved using
-%               A([],'size'). The matrix is never formed explicitly, thus
-%               saving memory, which for large problems can be essential.
-%               Instead output elements are computed on the fly as
-%               required, so each call to A requires full computation of
-%               elements in A.
-%   b           Vector containing the rhs of the test problem.
-%   x           Vector containing the exact solution, with elements
-%               between 0 and 1.
-%   theta       Vector containing the used angles in degrees.
-%   p           The number of used rays for each angle.
-%   d           The distance between the first and the last ray.
+%   A         If input isMatrix is 1 (default): coefficient matrix with
+%             N^2 columns and length(theta)*p rows.
+%             If input isMatrix is 0: A function handle representing a
+%             matrix-free version of A in which the forward and backward
+%             operations are computed as A(x,'notransp') and A(y,'transp'),
+%             respectively, for column vectors x and y of appropriate size.
+%             The size of A can be retrieved using A([],'size'). The matrix
+%             is never formed explicitly, thus saving memory.
+%             elements in A.
+%   b         Vector containing the rhs of the test problem.
+%   x         Vector containing the exact solution, with elements
+%             between 0 and 1.
+%   theta     Vector containing the used angles in degrees.
+%   p         The number of used rays for each angle.
+%   d         The distance between the first and the last ray.
 %
 % See also: fancurvedtomo, fanlineartomo, seismictomo, seismicwavetomo,
 %           sphericaltomo.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
@@ -62,7 +56,7 @@ function [A,b,x,theta,p,d] = paralleltomo(N,theta,p,d,isDisp,isMatrix)
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 % Default value of the projection angles theta.
 if nargin < 2 || isempty(theta)
@@ -133,8 +127,8 @@ if isDisp
     figure
 end
 
-% Deduce whether to set up matrix or apply to input from whether input u is
-% given.
+% Deduce whether to set up matrix or apply to input, depending on whether
+% input u is given.
 isMatrix = (nargin < 6);
 
 if isMatrix
@@ -184,7 +178,7 @@ end
 % Loop over the chosen angles.
 for i = II
     
-    % Illustration of the domain
+    % Illustration of the domain.
     if isDisp
         clf
         pause(isDisp)
@@ -217,7 +211,7 @@ for i = II
         ty = (y - y0theta(j))/b;
         xy = a*ty + x0theta(j);
         
-        % Illustration of the rays
+        % Illustration of the rays.
         if isDisp
             
             plot(x,yx,'-','color',[220 0 0]/255,'linewidth',1.5)

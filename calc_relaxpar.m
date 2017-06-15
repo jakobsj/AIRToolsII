@@ -1,64 +1,67 @@
 function [relaxpar, casel, rho] = ...
     calc_relaxpar(relaxparinput, rho, kmax, atma, n)
-%CALC_RELAXPAR Aux. function to compute relaxation parameter from input
+%CALC_RELAXPAR  Aux. function to compute the relaxation parameter
 %
 %   relaxpar = calc_relaxpar(relaxparinput)
 %   [relaxpar, casel, rho] = ...
 %              calc_relaxpar(relaxparinput, rhoinput, kmax, atma, n)
 %
-% Short form is used by art and cart and sets the relaxpar either to
+% The short form is used by art and cart and sets the relaxpar either to
 % default values of 1 or 0.25, respectively, or assigns a value given by
 % the user. If the value given by the user is outside the allowed interval,
 % a warning is given.
 % 
-% Long form is used by sirt, and inputs and outputs are explained below.
+% The long form is used by sirt, and inputs and outputs are explained below.
 % 
 % Input:
-%    relaxparinput     Any relaxation parameter or flag determining method 
-%                      to use for determinin relaxpar as specified by user.
-%    rho               The spectral radius of the iteration matrix, if
-%                      given by user.
-%    kmax              The maximum number of SIRT iterations.
-%    atma              A function handle to the iteration matrix
-%                      characterizing the SIRT method, for which to compute
-%                      the largest singular value.
-%    n                 The number of columns in A.
+%    relaxparinput  Any relaxation parameter or flag determining method 
+%                   to use for determining relaxpar as specified by user.
+%    rho            The spectral radius of the iteration matrix, if given
+%                   by user.
+%    kmax           The maximum number of SIRT iterations.
+%    atma           A function handle to the iteration matrix that
+%                   characterizes the SIRT method, for which to compute
+%                   the spectral radius.
+%    n              The number of columns in A.
 %    
 % Output:
-%    relaxpar          The computed relaxation parameter or vector of
-%                      iteration-dependent relaxation parameters.
-%    casel             A flag indicating whether a constant lambda is
-%                      returned (casel=1), line search is to be used
-%                      (casel=2) or the psi1/psi2 strategies to be used
-%                      (casel=3).
-%    rho               Computed spectral radius of the iteration matrix.
+%    relaxpar       The computed relaxation parameter, or a vector of
+%                   iteration-dependent relaxation parameters.
+%    casel          A flag indicating whether a constant lambda is
+%                   returned (casel=1), line search is to be used (casel=2)
+%                   or the psi1/psi2 strategies to be used (casel=3).
+%    rho            Computed spectral radius of the iteration matrix.
 %
-% See also: art.m, cart.m, sirt.m
+% See also: art, cart, sirt
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
-
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 % First determine whether called from art, cart or sirt. Just testing for
 % the specific method name such as cimmino would not cover the case of
 % custom methods.
 stack = dbstack;
 
+if ~strncmp(stack(2).name,'art',2) && ~isnumeric(relaxparinput)
+    error('MATLAB:IllegalRelaxParam','The relaxpar must be a scalar')
+end
+
 switch stack(2).name
     
     case 'art'
         % Default choice 1. If user gave as input, use that value and 
         % throw warning if outside [0,2], but proceed.
-        if isnan(relaxparinput)
+        if isempty(relaxparinput)
             relaxpar = 1;
         else
-            if relaxparinput <= 0 || relaxparinput >= 2
+            if isnumeric(relaxparinput) && ...
+                    (relaxparinput <= 0 || relaxparinput >= 2)
                 warning('MATLAB:UnstableRelaxParam',...
                     'The relaxpar value is outside the interval (0,2)');
             end
@@ -68,7 +71,7 @@ switch stack(2).name
     case 'cart'
         % Default choice 0.25. If user gave as input, use that value and
         % throw warning if outside [0,2], but proceed.
-        if isnan(relaxparinput)
+        if isempty(relaxparinput)
             relaxpar = 0.25;
         else
             if relaxparinput <= 0 || relaxparinput >= 2
@@ -85,10 +88,10 @@ switch stack(2).name
             optionsEIGS.disp = 0;
             optionsEIGS.tol = 1e-4;
             
-            % Save existing random number generator settings to restore
-            % after having specified a fixed random seed to allow
+            % Save existing random number generator settings to be restored
+            % after having specified a fixed random seed.  This ensures a
             % deterministic result (eigs without this is non-deterministic
-            % due to starting vector chosen using rand)
+            % due to starting vector chosen using rand).
             scurr = rng(0);
             rho = eigs(atma,n,1,'lm',optionsEIGS);
             rng(scurr);
@@ -105,7 +108,7 @@ switch stack(2).name
             % If relaxpar is a scalar.
         elseif ~ischar(relaxparinput)
             
-            % Checks if the given constant lambde value is unstable.
+            % Checks if the given constant lambde value is illegal.
             if relaxparinput <= 0 || relaxparinput >= 2/rho
                 warning('MATLAB:UnstableRelaxParam',...
                     ['The relaxpar value '...
@@ -117,7 +120,7 @@ switch stack(2).name
         else
             % Calculate the relaxpar value according to the chosen method.
             if strncmpi(relaxparinput,'line',4)
-                % Method: Line search
+                % Method: Line search.
                 casel = 2;
                 relaxpar = [];
                 
@@ -195,27 +198,27 @@ if k(1) < 2
     error('The polynomial is not defined for k < 2')
 end
 
-% The starting guess for Newton's method
+% The starting guess for Newton's method.
 z0 = 1;
-% The number of Newton iterations
+% The number of Newton iterations.
 kmax = 6;
 z = zeros(length(k),1);
 
-% Finds the root with Newton's method for all the values in k
+% Finds the root with Newton's method for all the values in k.
 for i = 1:length(k)
     z(i) = myNewton(z0,kmax,k(i));
 end
 
 function [x,k] = myNewton(x0,kmax,grad)
-% The Newton method specially defined for this problem
+% The Newton method specially defined for this problem.
 
-% Initialize the parameters
+% Initialize the parameters.
 k = 0;
 x = x0;
 [f, df] = fung(x,grad);
 h = f/df;
 
-% Iterate using Newtoms method
+% Iterate using Newtoms method.
 while  k < kmax
     k = k+1;
     x = x - h;
@@ -224,7 +227,7 @@ while  k < kmax
 end
 
 function [f, df] = fung(x,k)
-% Uses Horner's algorithm to evaluate the ploynomial and its derivative
+% Uses Horner's algorithm to evaluate the ploynomial and its derivative.
 
 C = [0 2*k-1 -ones(1,k-1)];
 f = C(1);

@@ -1,4 +1,4 @@
-%DEMO_STOPRULES (script) Demonstrates teh use of stopping rules
+%DEMO_STOPRULES (script) Demonstrates how to use different stopping rules
 %
 % This script illustrates the use of two different stopping rules for
 % Cimmino's method.
@@ -7,17 +7,17 @@
 % the problem without two different stopping rules.  Then the error
 % history is plotted together with the found number of iterations.
 %
-% See also: demo_art, demo_constraints, demo_custom, demo_matrixfree, 
-% demo_training.
+% See also: demo_art, demo_constraints, demo_custom_all, demo_matrixfree,
+% demo_relaxpar, demo_sirt, demo_training, train_dpme.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 clear, clc
 fprintf(1,'Starting demo_stoprules:\n\n');

@@ -1,5 +1,5 @@
 function [X,info] = art(art_method, varargin)
-%ART General interface for calling ART methods
+%ART  General interface for all Kaczmarz/ART methods
 %
 %   [X,info] = art(art_method,A,b,K)
 %   [X,info] = art(art_method,A,b,K,x0)
@@ -16,59 +16,59 @@ function [X,info] = art(art_method, varargin)
 %
 % Input:
 %   art_method  Either one of the strings 'kaczmarz', 'symkaczmarz', or 
-%               'randkaczmarz' to specify one of the provided methods.
-%                Default is 'kaczmarz'.
-%                Or a row index vector of length m (for matrix A m-by-n)
-%                with a desired fixed order in which to step through all 
-%                rows of A. Please see demo_custom for an example.
-%   A            m times n matrix, or a function that implements matrix-
-%                vector multiplication with A and A'; please see 
-%                explanation below.
-%   b            m times 1 vector containing the right-hand side.
-%   K            Number of iterations. If K is a scalar, then K is the 
-%                maximum number of iterations and only the last iterate is 
-%                returned. If K is a vector, then the largest value in K 
-%                is the maximum number of iterations and only iterates 
-%                corresponding to the values in K are returned, together 
-%                with the last iterate.
-%   x0           n times 1 starting vector. Default: x0 = 0.
-%   options      Struct with the following fields:
-%      relaxpar  The relaxation parameter. For this method relaxpar must
-%                be a scalar < 2; default value is 1.
-%      stoprule  Struct containing the following information about the
-%                stopping rule:
-%                    type = 'none' : (Default) the only stopping rule
-%                                    is the maximum number of iterations.
-%                           'NCP'  : Normalized Cumulative Perodogram.
-%                           'DP'   : Discrepancy Principle.
-%                    taudelta   = product of tau and delta, required for DP.
-%                    res_dims   = the dimensions that the residual vector
-%                                 should be reshaped to, required for NCP.
-%                                 E.g., for paralleltomo res_dims should
-%                                 be [p,length(theta)]. For a 1D signal
-%                                 res_dims can be a scalar equal to the
-%                                 number of elements. 
-%                    ncp_smooth = An positive integer specifying the
-%                                 filter length in the NCP criterion.
-%                                 Default: 2.
-%      lbound    Lower bound in box constraint [lbound,ubound]. If scalar,
-%                this value is enforced on all elements of x in each 
-%                iteration. If vector, it must have same size as x and 
-%                then enforces elementwise lower bounds on x. If empty, no
-%                bound is enforced. +/-Inf can be used.
-%      ubound    Upper bound in box constraint [lbound,ubound]. If scalar,
-%                this value is enforced on all elements of x in each 
-%                iteration. If vector, it must have same size as x and 
-%                then enforces elementwise lower bounds on x. If empty, no
-%                bound is enforced. +/-Inf can be used.
-%      damp      A parameter damp to avoid division by very small row norms
-%                by adding damp*max_i{||a_i||_2^2} to ||a_i||_2^2.
-%      verbose   Nonnegative integer specifying whether progress is printed
-%                to screen during iterations. Default=0: no info printed.
-%                1: Print in every iteration. Larger than 1: Print every
-%                verbose'th iteration and first and last.
-%      waitbar   Logical specifying whether a graphical waitbar is shown,
-%                default = false.
+%               'randkaczmarz' to specify one of the provided methods;
+%               default is 'kaczmarz'.
+%               Or a row index vector of length m (for matrix A m-by-n)
+%               with a desired fixed order in which to step through all 
+%               rows of A. Please see demo_custom for an example.
+%   A           m times n matrix, or a function that implements matrix-
+%               vector multiplication with A and A'; see explanation below.
+%   b           m times 1 vector containing the right-hand side.
+%   K           Number of iterations. If K is a scalar, then K is the 
+%               maximum number of iterations and only the last iterate is 
+%               returned. If K is a vector, then max(K) is the maximum
+%               number of iterations and only iterates corresponding to the
+%               values in K are returned, together with the last iterate.
+%   x0          n times 1 starting vector. Default: x0 = 0.
+%   options     Struct with the following fields:
+%      relaxpar The relaxation parameter. If relaxpar is a scalar < 2 then
+%               it is used in each iteration; default value is 1.
+%               Alternatively, relaxpar can be a function with a diminishing
+%               parameter, e.g., @(j) 1/sqrt(j), where j counts the total
+%               number of row updates.
+%      stoprule Struct containing the following information about the
+%               stopping rule:
+%                   type = 'none' : (Default) the only stopping rule
+%                                   is the maximum number of iterations.
+%                          'NCP'  : Normalized Cumulative Perodogram.
+%                          'DP'   : Discrepancy Principle.
+%                   taudelta   = product of tau and delta, required for DP.
+%                   res_dims   = the dimensions that the residual vector
+%                                should be reshaped to, required for NCP.
+%                                E.g., for paralleltomo res_dims should
+%                                be [p,length(theta)]. For a 1D signal,
+%                                res_dims can be a scalar equal to the
+%                                number of elements. 
+%                   ncp_smooth = An positive integer specifying the filter
+%                                length in the NCP criterion; default is 2.
+%      lbound   Lower bound in box constraint [lbound,ubound]. If scalar,
+%               this value is enforced on all elements of x in each 
+%               iteration. If vector, it must have same size as x and 
+%               then enforces elementwise lower bounds on x. If empty, no
+%               bound is enforced. +/-Inf can be used.
+%      ubound   Upper bound in box constraint [lbound,ubound]. If scalar,
+%               this value is enforced on all elements of x in each 
+%               iteration. If vector, it must have same size as x and 
+%               then enforces elementwise lower bounds on x. If empty, no
+%               bound is enforced. +/-Inf can be used.
+%      damp     A parameter damp to avoid division by very small row norms
+%               by adding damp*max_i{||a_i||_2^2} to ||a_i||_2^2.
+%      verbose  Nonnegative integer specifying whether progress is printed
+%               to screen during iterations. Default=0: no info printed.
+%               1: Print in every iteration. Larger than 1: Print every
+%               verbose'th iteration and first and last.
+%      waitbar  Logical specifying whether a graphical waitbar is shown,
+%               default = false.
 %
 % Output:
 %   X        Matrix containing the saved iterations as the columns.
@@ -94,7 +94,7 @@ function [X,info] = art(art_method, varargin)
 %       A = @(v,transp_flag) myfun(v,transp_flag,p1,p2,...);
 % 3) Then art is called with this A.
 %
-% See also: kaczmarz, randkaczmarz, symkaczmarz.
+% See also: cart, kaczmarz, randkaczmarz, symkaczmarz.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
@@ -104,6 +104,7 @@ function [X,info] = art(art_method, varargin)
 % of the package. 
 % 
 % Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+
 
 % Measure total time taken.
 t_total = tic;
@@ -118,7 +119,7 @@ end
      ~,res_dims,rkm1,dk,do_waitbar,verbose,...
      damp] = check_inputs(varargin{:});
 
-% Special check for symkaczmarz: number of iterations must be even
+% Special check for symkaczmarz: number of iterations must be even.
 if ischar(art_method) && strncmpi(art_method,'sym',3)
     if any(mod(K,2))
         error('For symkaczmarz only even iteration numbers can be requested.');
@@ -146,24 +147,26 @@ X = zeros(n,length(K));
 rk = b - Afun(x0,'notransp');
 
 % Initialization before iterations.
-k = 0;   % Iteration counter
+k = 0;   % Iteration counter.
 xk = x0; % Use initial vector.
 l = 1;   % Pointing to the next iterate number in K to be saved.
 
-% Do initial check of stopping criteria - probably relaxpar should be set
-% before this, perhaps just to nan.
+% Initial check of stopping criteria.
 [stop, info, rkm1, dk] = check_stoprules(...
     stoprule, rk, relaxparinput, taudelta, k, kmax, rkm1, dk, res_dims);
 
 % Compute the relaxation parameter to be used throughout iterations.
 relaxpar = calc_relaxpar(relaxparinput);
 
-% Calculate the norm of each row in A. This calculation can require a
-% lot of memory.
+% Calculate the norm of each row in A. Remember that A is transposed.
+normAi = zeros(1,m);
 if ~isa(A,'function_handle')
-    normAi = full(abs(sum(A.*A,1)));  % Remember that A is transposed.
+    B = 200;  % Block size; adjust if necessary.
+    for J = 1:ceil(m/B)
+        I = 1+(J-1)*B : min(m,J*B);
+        normAi(I) = full(abs(sum(A(:,I).*A(:,I),1)));
+    end
 else
-    normAi = zeros(1,m);
     for i = 1:m
         e = zeros(m,1);
         e(i) = 1;
@@ -172,7 +175,7 @@ else
     end
 end
 
-% Depending on ART method, set the row order.
+% Depending on the ART method, set the row order.
 is_randkaczmarz = false;
 if ischar(art_method)
     switch lower(art_method)
@@ -218,13 +221,13 @@ end
 % Main ART loop.
 while ~stop
         
-    % Update timer for current iteration
+    % Update timer for current iteration.
     t_iter = tic;
     
     % Update the iteration number k.
     k = k + 1;
     
-    % Update waitbar if selected
+    % Update waitbar if selected.
     if do_waitbar
         waitbar(k/kmax,h_waitbar,...
             sprintf('Running iteration %d of %d...',k, kmax))
@@ -240,7 +243,7 @@ while ~stop
     % The Kaczmarz sweep.
     for i = I_torun
         
-        % Special for randkaczmarz - 
+        % Special for randkaczmarz.
         if is_randkaczmarz
             % The random row index.
             if fast
@@ -259,9 +262,12 @@ while ~stop
         else
             ai = A(:,ri); % Remember that A is transposed.
         end
+        if isa(relaxparinput,'function_handle')
+            relaxpar = relaxparinput((k-1)*m+i);
+        end
         xk = xk + (relaxpar*(b(ri) - ai'*xk)/normAi(ri))*ai;
         
-        % Enforce any lower and upper bounds (scalars or xk-sized vectors)
+        % Enforce any lower and upper bounds (scalars or xk-sized vectors).
         if ~isempty(lbound)
             xk = max(xk,lbound);
         end
@@ -299,11 +305,11 @@ if do_waitbar
     close(h_waitbar);
 end
 
-% Return only the saved iterations: Only to "l-1" because "l" now points to
+% Return only the saved iterations: use "l-1" because "l" now points to
 % next candidate.
 X = X(:,1:l-1);
 
-% Special for symkaczmarz: double finaliter
+% Special for symkaczmarz: double finaliter.
 if ischar(art_method) && strncmpi(art_method,'sym',3)
     info.finaliter = 2*info.finaliter;
     K = 2*K;
@@ -312,5 +318,5 @@ end
 % List of iterates saved: all in K smaller than the final, and the final.
 info.itersaved = [K(K<info.finaliter), info.finaliter];
 
-% Save time total time taken
+% Save time total time taken.
 info.timetaken = toc(t_total);

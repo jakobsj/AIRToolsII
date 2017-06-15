@@ -1,19 +1,19 @@
-%DEMO_ASTRA_2D (script) Demonstrates interfacing to ASTRA Toolbox
+%DEMO_ASTRA_2D (script) Demonstrates interfacing to the ASTRA Toolbox
 %
 % This script demonstrates how to interface from AIR Tools to other
 % software, in the present case to the ASTRA Tomography Toolbox, see 
-% http://www.astra-toolbox.com/. Instead of using the matrices or
-% matrix-free versions of the test problems in AIR Tools, ASTRA can be used
-% for efficient GPU-accelerated application of the system matrix and its
-% transpose from all AIR Tools reconstruction functions.
+% http://www.astra-toolbox.com/. Instead of using the matrices or matrix-
+% free versions of the test problems in AIR Tools, ASTRA can be used for
+% efficient GPU-accelerated application of the matrix and its transpose
+% from all AIR Tools reconstruction functions.
 %
 % This script compares a fanlineartomo case reconstructed by the SART
 % algorithm using the matrix and matrix-free modes of AIR Tools,
-% interfacing from AIR Tools to ASTRA for application of system matrix and
-% transpose as well as the built-in SIRT algorithm of ASTRA, which is
+% interfacing from AIR Tools to ASTRA for application of the matrix and
+% its transpose, as well as the built-in "SIRT" algorithm of ASTRA which is
 % equivalent to AIR Tools' SART.
 %
-% See also: afun_astra_2d, demo_show_tomo, demo_sirt.
+% See also: afun_astra_2d, demo_sirt.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.

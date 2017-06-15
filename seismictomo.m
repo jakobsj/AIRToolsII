@@ -1,5 +1,5 @@
 function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
-%SEISMICTOMO Creates a 2D seismic travel-time tomography test problem
+%SEISMICTOMO  Creates a 2D seismic travel-time tomography test problem
 %
 %   [A,b,x,s,p] = seismictomo(N)
 %   [A,b,x,s,p] = seismictomo(N,s)
@@ -14,49 +14,44 @@ function [A,b,x,s,p] = seismictomo(N,s,p,isDisp,isMatrix)
 % source to each receiver. 
 %
 % Inupt: 
-%   N        Scalar denoting the number of discretization intervals in 
-%            each dimesion, such that the domain consists of N^2 cells.
-%   s        The number of sources in the right side of the domain
-%            (default s = N).
-%   p        The number of receivers (seismographs) equally spaced on the
-%            surface and on the left side of the domain (default p = 2*N).
-%   isDisp   If isDisp is nonzero it specifies the time in seconds 
-%            to pause in the display of the rays. If zero (the default), 
-%            no display is shown.
-%   isMatrix If non-zero (the default), a sparse matrix is set up to
-%            represent the forward problem. If zero, instead a function
-%            handle to a matrix-free version is returned.
+%   N         Scalar denoting the number of discretization intervals in 
+%             each dimesion, such that the domain consists of N^2 cells.
+%   s         The number of sources in the right side of the domain.
+%             Default s = N.
+%   p         The number of receivers (seismographs) equally spaced on the
+%             surface and on the left side of the domain. Default p = 2*N.
+%   isDisp    If isDisp is nonzero it specifies the time in seconds 
+%             to pause in the display of the rays. If zero (the default), 
+%             no display is shown.
+%   isMatrix  If non-zero, a sparse matrix is returned in A (default).
+%             If zero, instead a function handle is returned.
 %
 % Output:
-%   A        If input isMatrix is 1 (default): Coefficient matrix with N^2
-%            columns and s*p rows.
-%            If isMatrix is 0: A function handle representing a
-%            matrix-free version of A in which the forward and backward
-%            operations can be called as A(x,'notransp') and
-%            A(y,'transp'), respectively, for column vectors x and y of
-%            appropriate size. The size of A can be retrieved using
-%            A([],'size'). The matrix is never formed explicitly, thus
-%            saving memory, which for large problems can be essential.
-%            Instead output elements are computed on the fly as
-%            required, so each call to A requires full computation of
-%            elements in A.
-%   b        Vector containing the rhs of the test problem.
-%   x        Vector containing the exact solution, with elements
-%            between 0 and 1.
-%   s        The number of sources.
-%   p        The number of receivers (seismographs).
+%   A         If input isMatrix is 1 (default): coefficient matrix with
+%             N^2 columns and length(theta)*p rows.
+%             If input isMatrix is 0: A function handle representing a
+%             matrix-free version of A in which the forward and backward
+%             operations are computed as A(x,'notransp') and A(y,'transp'),
+%             respectively, for column vectors x and y of appropriate size.
+%             The size of A can be retrieved using A([],'size'). The matrix
+%             is never formed explicitly, thus saving memory.
+%   b         Vector containing the rhs of the test problem.
+%   x         Vector containing the exact solution, with elements
+%             between 0 and 1.
+%   s         The number of sources.
+%   p         The number of receivers (seismographs).
 %
 % See also: paralleltomo, fancurvedtomo, fanlineartomo, seismicwavetomo,
 %           sphericaltomo.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 if nargin < 5 || isempty(isMatrix)
     isMatrix = 1;
@@ -97,9 +92,6 @@ if nargout > 1
 end
 
 
-
-
-
 function A = get_or_apply_system_matrix(N,s,p,isDisp,u,transp_flag)
 
 N2 = N/2;
@@ -128,8 +120,8 @@ if isDisp
     figure
 end
 
-% Deduce whether to set up matrix or apply to input from whether input u is
-% given.
+% Deduce whether to set up matrix or apply to input, depending on whether
+% input u is given.
 isMatrix = (nargin < 5);
 
 if isMatrix
@@ -222,7 +214,7 @@ for i = II
         xxy = [x; xy];
         yxy = [yx; y];
         
-        % Sort the times:
+        % Sort the times.
         [~,I] = sort(t);
         xxy = xxy(I);
         yxy = yxy(I);

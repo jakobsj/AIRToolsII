@@ -1,5 +1,5 @@
 function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
-%FANCURVEDTOMO Creates 2D fan-beam curved-detector tomography test problem
+%FANCURVEDTOMO  Creates 2D fan-beam curved-detector tomography test problem
 %
 %   [A,b,x,theta,p,R,d] = fancurvedtomo(N)
 %   [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta)
@@ -15,51 +15,44 @@ function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
 % increments between rays in each projection is constant.
 %
 % Input:
-%   N           Scalar denoting the number of discretization intervals in 
-%               each dimesion, such that the domain consists of N^2 cells.
-%   theta       Vector containing the projetion angles in degrees.
-%               Default: theta = 0:2:358.
-%   p           Number of rays for each angle. Default: p =
-%               round(sqrt(2)*N).
-%   R           The distance from the source to the center of the domain
-%               is R*N. Default: R = 2.
-%   d           Scalar that determines the angular span of the rays, in
-%               degrees. The default value is defined such that from the
-%               source at (0,R*N) the first ray hits the corner (-N/2,N/2)
-%               and the last ray hits the corner (N/2,N/2).
-%   isDisp      If isDisp is non-zero it specifies the time in seconds 
-%               to pause in the display of the rays. If zero (the default), 
-%               no display is shown.
-%   isMatrix    If non-zero, a sparse matrix is set up to represent the
-%               forward problem. If zero, instead a function handle to a
-%               matrix-free version is returned.
+%   N         Scalar denoting the number of discretization intervals in 
+%             each dimesion, such that the domain consists of N^2 cells.
+%   theta     Vector containing the projetion angles in degrees.
+%             Default: theta = 0:2:358.
+%   p         Number of rays for each angle. Default: p = round(sqrt(2)*N).
+%   R         The distance from the source to the center of the domain
+%             is R*N. Default: R = 2.
+%   d         Scalar that determines the angular span of the rays, in
+%             degrees. The default value is defined such that from the
+%             source at (0,R*N) the first ray hits the corner (-N/2,N/2)
+%             and the last ray hits the corner (N/2,N/2).
+%   isDisp    If isDisp is non-zero it specifies the time in seconds 
+%             to pause in the display of the rays. If zero (the default), 
+%             no display is shown.
+%   isMatrix  If non-zero, a sparse matrix is returned in A (default).
+%             If zero, instead a function handle is returned.
 %
 % Output:
-%   A           If input isMatrix is 1 (default): Coefficient matrix with
-%               N^2 columns and nA*p rows, where nA is the number of
-%               angles, i.e., length(theta).
-%               If isMatrix is 0: A function handle representing a
-%               matrix-free version of A in which the forward and backward
-%               operations can be called as A(x,'notransp') and
-%               A(y,'transp'), respectively, for column vectors x and y of
-%               appropriate size. The size of A can be retrieved using
-%               A([],'size'). The matrix is never formed explicitly, thus
-%               saving memory, which for large problems can be essential.
-%               Instead output elements are computed on the fly as
-%               required, so each call to A requires full computation of
-%               elements in A.
-%   b           Vector containing the rhs of the test problem.
-%   x           Vector containing the exact solution, with elements
-%               between 0 and 1.
-%   theta       Vector containing the used angles in degrees.
-%   p           The number of used rays for each angle.
-%   R           The radius in side lengths. 
-%   d           The span of the rays.
+%   A         If input isMatrix is 1 (default): coefficient matrix with
+%             N^2 columns and length(theta)*p rows.
+%             If input isMatrix is 0: A function handle representing a
+%             matrix-free version of A in which the forward and backward
+%             operations are computed as A(x,'notransp') and A(y,'transp'),
+%             respectively, for column vectors x and y of appropriate size.
+%             The size of A can be retrieved using A([],'size'). The matrix
+%             is never formed explicitly, thus saving memory.
+%   b         Vector containing the rhs of the test problem.
+%   x         Vector containing the exact solution, with elements
+%             between 0 and 1.
+%   theta     Vector containing the used angles in degrees.
+%   p         The number of used rays for each angle.
+%   R         The radius in side lengths. 
+%   d         The span of the rays.
 %
 % See also: paralleltomo, fanlineartomo, seismictomo, seismicwavetomo,
 %           sphericaltomo.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % Reference: A. C. Kak and M. Slaney, Principles of Computerized
@@ -69,7 +62,7 @@ function [A,b,x,theta,p,R,d] = fancurvedtomo(N,theta,p,R,d,isDisp,isMatrix)
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 % Default illustration:
 if nargin < 6 || isempty(isDisp)
@@ -118,7 +111,7 @@ if d < 0 || d > 180
     error('The angle of the source must be in the interval [0 180]')
 end
 
-% Construct either matrix or function handle
+% Construct either matrix or function handle.
 if isMatrix
     A = get_or_apply_system_matrix(N,theta,p,R,d,isDisp);
 else
@@ -143,11 +136,9 @@ if nargout > 5
 end
 
 
-
-
 function A = get_or_apply_system_matrix(N,theta,p,R,d,isDisp,u,transp_flag)
 
-% Anonymous function rotation matrix
+% Anonymous function rotation matrix.
 Omega_x = @(omega_par) [cosd(omega_par) -sind(omega_par)];
 Omega_y = @(omega_par) [sind(omega_par)  cosd(omega_par)];
 
@@ -165,20 +156,20 @@ omega = linspace(-d/2,d/2,p);
 x = (-N/2:N/2)';
 y = x;
 
-% Prepare for illustration
+% Prepare for illustration.
 if isDisp
     AA = phantomgallery('smooth',N);
     figure
 end
 
-% Deduce whether to set up matrix or apply to input from whether input u is
-% given.
+% Deduce whether to set up matrix or apply to input, deponding on whether
+% input u is given.
 isMatrix = (nargin < 7);
 
 if isMatrix
     
-    % Initialize vectors that contains the row numbers, the column numbers and
-    % the values for creating the matrix A effiecently.
+    % Initialize vectors that contains the row numbers, the column numbers
+    % and the values for creating the matrix A effiecently.
     rows = zeros(2*N*nA*p,1);
     cols = rows;
     vals = rows;
@@ -222,8 +213,8 @@ for i = II
     x0theta = Omega_x(theta(i))*xy0;
     y0theta = Omega_y(theta(i))*xy0;
     
-    % Illustration of the domain
-    if isDisp % illustration of source
+    % Illustration of the domain.
+    if isDisp % illustration of source.
         clf
         pause(isDisp)
         imagesc((-N/2+.5):(N/2-0.5),(-N/2+.5):(N/2-0.5),flipud(AA))
@@ -248,7 +239,7 @@ for i = II
         a = Omega_x(omega(j))*abtheta;
         b = Omega_y(omega(j))*abtheta;
         
-        % Illustration of rays
+        % Illustration of rays.
         if isDisp
             plot([x0theta,x0theta+1.7*R*a],[y0theta,y0theta+1.7*R*b],'-',...
                 'color',[220 0 0]/255,'linewidth',1.5)

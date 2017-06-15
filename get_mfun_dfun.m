@@ -1,5 +1,5 @@
 function [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n)
-%GET_MFUN_DFUN Aux. function to set up M and D matrices for SIRT methods
+%GET_MFUN_DFUN  Aux. function to compute M and D matrices for SIRT methods
 %
 %   [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n)
 %
@@ -8,39 +8,42 @@ function [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n)
 % Input:
 %    sirt_method  Name of SIRT method: 'landweber', 'cimmino', 'cav', 
 %                 'drop', or 'sart'.
-%    A            The forward operator A, either as matrix or function.
+%    A            The forward operator, either as matrix or function handle.
 %    m            Number of rows in A.
 %    n            Number of columns in A.
 %    
 % Output:
 %    Mfun         Function handle which applies the matrix-vector
-%                 multiplication of M on input Mfun(v) is M*v.
+%                 multiplication of M on input, i.e., Mfun(v) is M*v.
 %    Dfun         Function handle which applies the matrix-vector
-%                 multiplication of D on input Dfun(v) is D*v.
+%                 multiplication of D on input, i.e., Dfun(v) is D*v.
 %    Mflag        Integer stating how the matrix operation within the Mfun
-%                 function handle is represented. 0: The matrix M is the
+%                 function handle is represented. 0: the matrix M is the
 %                 identity represented as simply returning the input. 1:
-%                 A vector of weights corresponding to the diagonal of M.
-%                 2: A matrix.
+%                 a vector of weights corresponding to the diagonal of M.
+%                 2: a matrix.
 %    Dflag        Integer stating how the matrix operation within the Dfun
-%                 function handle is represented. 0: The matrix D is the
+%                 function handle is represented. 0: the matrix D is the
 %                 identity represented as simply returning the input. 1:
-%                 A vector of weights corresponding to the diagonal of D.
-%                 2: A matrix.
+%                 a vector of weights corresponding to the diagonal of D.
+%                 2: a matrix.
 %
-% See also: art.m, cart.m, sirt.m
+% See also: art, cart, sirt
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
 % Maria Saxild-Hansen, DTU Compute, 2010-2017.
 
 % This file is part of the AIR Tools package and is distributed under the 
 % 3-Clause BSD Licence. A separate license file should be provided as part 
 % of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 
-% Split between builtin and custom methods depending on type of sirt_method
+% Set block size for row norm computations; adjust if necessary.
+B = 200;
+
+% Split between built-in and custom methods depending on type of sirt_method.
 if ischar(sirt_method)
     switch sirt_method
         
@@ -55,12 +58,14 @@ if ischar(sirt_method)
             % D is identity, so do nothing.
             Dfun = @(XX) XX;
             
-            % Define the M matrix.
-            % Calculate the norm of each row in A.
+            % Define the M matrix. Compute the norm of each row in A.
+            normAi = zeros(m,1);
             if ~isa(A,'function_handle')
-                normAi = full(abs(sum(A.*A,2)));
+                for J = 1:ceil(m/B)
+                    I = 1+(J-1)*B : min(m,J*B);
+                    normAi(I) = full(abs(sum(A(I,:).*A(I,:),2)));
+                end
             else
-                normAi = zeros(m,1);
                 for i = 1:m
                     e = zeros(m,1);
                     e(i) = 1;
@@ -69,10 +74,8 @@ if ischar(sirt_method)
                 end
             end
             
-            % Generate diagonal entries.
+            % Generate diagonal entries and fix division by zero.
             M = 1/m*(1./normAi);
-            
-            % Fix any divisions be zero.
             I = (M == Inf);
             M(I) = 0;
             
@@ -85,18 +88,24 @@ if ischar(sirt_method)
             Dfun = @(XX) XX;
             
             % Define the M matrix.
+            s = zeros(n,1);
+            normAs = zeros(m,1);
             if ~isa(A,'function_handle')
-                s = sum(A~=0,1)';
+                for I = 1:ceil(n/B)
+                    J = 1+(I-1)*B : min(n,I*B);
+                    s(J) = sum(A(:,J)~=0,1)';
+                end
                 s = spdiags(s,0,n,n);
-                normAs = full(sum(A.^2*s,2));
+                for J = 1:ceil(m/B)
+                    I = 1+(J-1)*B : min(m,J*B);
+                    normAs(I) = full(abs(sum((A(I,:).*A(I,:))*s,2)));
+                end
             else
-                s = zeros(n,1);
                 for i=1:n
                     e = zeros(n,1); e(i) = 1;
                     Aj = A(e,'notransp');
                     s(i) = 1/sum(Aj~=0);
                 end
-                normAs = zeros(m,1);
                 for i=1:m
                     e = zeros(m,1); e(i) = 1;
                     Ai = A(e,'transp');
@@ -104,10 +113,8 @@ if ischar(sirt_method)
                 end
             end
             
-            % Generate diagonal entries.
+            % Generate diagonal entries and fix division by zero.
             M = 1./normAs;
-            
-            % Fix divisions by zero.
             I = (M == Inf);
             M(I) = 0;
             
@@ -116,12 +123,15 @@ if ischar(sirt_method)
             
         case 'drop'
             
-            % Define the M matrix. Same as in Cimmino.
-            % Calculate the norm of each row in A.
+            % Define the M matrix; same as in Cimmino.
+            % Compute the norm of each row in A.
+            normAi = zeros(m,1);
             if ~isa(A,'function_handle')
-                normAi = full(abs(sum(A.*A,2)));
+                for J = 1:ceil(m/B)
+                    I = 1+(J-1)*B : min(m,J*B);
+                    normAi(I) = full(abs(sum(A(I,:).*A(I,:),2)));
+                end
             else
-                normAi = zeros(m,1);
                 for i = 1:m
                     e = zeros(m,1);
                     e(i) = 1;
@@ -130,22 +140,22 @@ if ischar(sirt_method)
                 end
             end
             
-            % Generate diagonal entries.
+            % Generate diagonal entries and fix division by zero.
             M = 1./normAi;
-            
-            % Fix divisions by zero.
             I = (M == Inf);
             M(I) = 0;
             
             % Store M in function handle.
             Mfun = @(XX) M.*XX;
             
-            % Define the D matrix.
-            % Define the s vector and the M matrix.
+            % Define diagonal s of the D matrix.
+            s = zeros(n,1);
             if ~isa(A,'function_handle')
-                s = 1./sum(A~=0,1)';
+                for I = 1:ceil(n/B)
+                    J = 1+(I-1)*B : min(n,I*B);
+                    s(J) = 1./sum(A(:,J)~=0,1)';
+                end
             else
-                s = zeros(n,1);
                 for i=1:n
                     e = zeros(n,1); e(i) = 1;
                     Aj = A(e,'notransp');
@@ -161,15 +171,16 @@ if ischar(sirt_method)
             Dfun = @(XX) s.*XX;
             
         case 'sart'
-            % Set diagonal of W = M if not given as input. W is the notation of
-            % the original SART article.
+            % Compute diagonal of M.
             if ~isa(A,'function_handle')
-                Aip = full(sum(abs(A),2));
+                Aip = zeros(m,1);
+                for J = 1:ceil(m/B)
+                    I = 1+(J-1)*B : min(m,J*B);
+                    Aip(I) = full(abs(sum(A(I,:),2)));
+                end
             else
                 Aip = abs(A(ones(n,1),'notransp'));
             end
-            
-            % Generate diagonal entries.
             M = 1./Aip;
             
             % Fix divisions by zero.
@@ -179,21 +190,24 @@ if ischar(sirt_method)
             % Store M in function handle.
             Mfun = @(XX) M.*XX;
             
-            % Set s-vector representing V = D if not given as input. V is the
-            % notation from the original SART article.
+            %  Compute diagonal of D.
             if ~isa(A,'function_handle')
-                Apj = full(sum(abs(A),1))';
+                Apj = zeros(n,1);
+                for I = 1:ceil(n/B)
+                    J = 1+(I-1)*B : min(n,I*B);
+                    Apj(J) = full(abs(sum(A(:,J),1)));
+                end
             else
                 Apj = abs(A(ones(m,1),'transp'));
             end
-            s = 1./Apj;
+            D = 1./Apj;
             
             % Fix divisions by zero.
-            I = (s == Inf);
-            s(I) = 0;
+            I = (D == Inf);
+            D(I) = 0;
             
             % Store D as function handle.
-            Dfun = @(XX) s.*XX;
+            Dfun = @(XX) D.*XX;
             
         otherwise
             error('SIRT method not defined.')
