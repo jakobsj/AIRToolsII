@@ -48,10 +48,6 @@ function [relaxpar, casel, rho] = ...
 % custom methods.
 stack = dbstack;
 
-if ~strncmp(stack(2).name,'art',2) && ~isnumeric(relaxparinput)
-    error('MATLAB:IllegalRelaxParam','The relaxpar must be a scalar')
-end
-
 switch stack(2).name
     
     case 'art'
@@ -59,13 +55,16 @@ switch stack(2).name
         % throw warning if outside [0,2], but proceed.
         if isempty(relaxparinput)
             relaxpar = 1;
-        else
-            if isnumeric(relaxparinput) && ...
-                    (relaxparinput <= 0 || relaxparinput >= 2)
+        elseif isnumeric(relaxparinput)
+            if (relaxparinput <= 0 || relaxparinput >= 2)
                 warning('MATLAB:UnstableRelaxParam',...
                     'The relaxpar value is outside the interval (0,2)');
             end
             relaxpar = relaxparinput;
+        else
+            error('MATLAB:IllegalRelaxParam',...
+                ['For ART methods the relaxpar must be a scalar or ',...
+                'function handle.'])
         end
         
     case 'cart'
@@ -73,12 +72,15 @@ switch stack(2).name
         % throw warning if outside [0,2], but proceed.
         if isempty(relaxparinput)
             relaxpar = 0.25;
-        else
+        elseif isnumeric(relaxparinput)
             if relaxparinput <= 0 || relaxparinput >= 2
                 warning('MATLAB:UnstableRelaxParam',...
                     'The relaxpar value is outside the interval (0,2)');
             end
             relaxpar = relaxparinput;
+        else
+            error('MATLAB:IllegalRelaxParam',...
+                'For CART methods the relaxpar must be a scalar.')
         end
         
     case 'sirt'
@@ -99,7 +101,7 @@ switch stack(2).name
         
         % Determine the relaxation parameter relaxpar.
         % If relaxparinput is nan, set default.
-        if isnan(relaxparinput)
+        if isempty(relaxparinput)
             
             % Define a default constant relaxpar value.
             relaxpar = 1.9/rho;

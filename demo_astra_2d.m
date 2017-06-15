@@ -41,6 +41,9 @@ X = phantomgallery('shepplogan',N);
 x = X(:);
 
 % AIRtools matrix and matrix-free
+fprintf(1,'Creating a fanlineartomo tomography test problem\n');
+fprintf(1,'with N = %2.0f, theta = %1.0f:%1.0f:%3.0f, and p = %2.0f.',...
+    [N,theta(1),theta(2)-theta(1),theta(end),p]);
 A = fanlineartomo(N,theta,p,R,dw,sd);
 Afun = fanlineartomo(N,theta,p,R,dw,sd,[],0);
 
