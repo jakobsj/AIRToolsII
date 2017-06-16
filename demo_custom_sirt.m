@@ -63,7 +63,7 @@ L = tril(AAT,-1);
 Delta = diag(diag(AAT));
 M = ((1/omega)*Delta+L')\((2/omega-1)*Delta)/((1/omega)*Delta+L);
 
-% Set M and D function handles (if unset, as D here, they are set to the
+% Set M and D fields (if unset, as D here, they are set to the
 % default which is the identity matrix, implemented efficiently).
 sirt_method.M = M;
 
