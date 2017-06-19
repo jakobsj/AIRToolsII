@@ -1,4 +1,4 @@
-**********************************************************************
+﻿**********************************************************************
 *   This is AIR Tools II (Version 2.0 of AIR Tools) for Matlab 8.0   *
 *--------------------------------------------------------------------*
 *    Per Christian Hansen  &  Jakob Sauer Jørgensen - DTU Compute    *
@@ -34,8 +34,6 @@ problem with the ray assumption.
 
 The code is reorganized in a modular fashion to allow more reuse of code, make
 it more reliable, and easier to maintain.
-
-The filtered backprojection method fbp.m introduced in version 1.3 is removed.
 
 New general interfaces art.m, cart.m and sirt.m are introduced, which contain
 the core functionality of all ART, CART and SIRT methods. This has turned all

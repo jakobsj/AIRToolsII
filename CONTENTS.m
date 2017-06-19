@@ -91,4 +91,5 @@
 %   calc_relaxpar       - Compute the relaxation parameter for all methods.
 %   check_inputs        - Check inputs and set default values.
 %   check_stoprules     - Check if stopping rule criteria are met.
+%   fbp                 - Filtered back projection using the system matrix.
 %   get_mfun_dfun       - Computes matrices M and D for SIRT methods.
