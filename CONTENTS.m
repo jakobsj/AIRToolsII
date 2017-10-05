@@ -3,17 +3,14 @@
 % Version 2.0 of AIR Tools
 % June 2017
 % 
-% Per Christian Hansen and Jakob Sauer Jørgensen
-% Dept. Applied Mathematics and Computer Science (DTU Compute)
-% Technical University of Denmark
-%
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
+% 
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
+% 
 % Contact: pcha@dtu.dk
-% 
-% This file is part of the AIR Tools package and is distributed under
-% the 3-Clause BSD Licence.  A separate license file should be provided
-% as part of the package. 
-% 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Info:

@@ -1,4 +1,8 @@
-Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
+
+3-Clause BSD License
+
+Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+Jakob Sauer Jorgensen, University of Manchester.
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are met:

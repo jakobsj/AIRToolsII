@@ -1,5 +1,5 @@
-function [A,b,x,theta,numCircles] = ...
-    sphericaltomo(N,theta,numCircles,isDisp,isMatrix)
+function [A,b,x,angles,numCircles] = ...
+    sphericaltomo(N,angles,numCircles,isDisp,isMatrix)
 %SPHERICALTOMO  Creates a 2D spherical Radon tomography test problem
 %
 %   [A,b,x,angles,numCircles] = sphericaltomo(N)
@@ -21,7 +21,7 @@ function [A,b,x,theta,numCircles] = ...
 % Input:
 %   N           Scalar denoting the number of pixels in each dimesion, such
 %               that the image domain consists of N^2 cells.
-%   theta       Vector containing the angles to the circle centers in
+%   angles      Vector containing the angles to the circle centers in
 %               degrees. Default: angles = 0:2:358.
 %   numCircles  Number of concentric integration circles for each center.
 %               Default: numCircles = round(sqrt(2)*N).
@@ -33,7 +33,7 @@ function [A,b,x,theta,numCircles] = ...
 %
 % Output:
 %   A           If input isMatrix is 1 (default): coefficient matrix with
-%               N^2 columns and length(theta)*p rows.
+%               N^2 columns and length(angles)*p rows.
 %               If input isMatrix is 0: A function handle representing a
 %               matrix-free version of A in which the forward and backward
 %               operations are computed as A(x,'notransp') and A(y,'transp'),
@@ -43,30 +43,31 @@ function [A,b,x,theta,numCircles] = ...
 %   b           Vector containing the rhs of the test problem.
 %   x           Vector containing the exact solution, with elements
 %               between 0 and 1.
-%   theta       Similar to input.
+%   angles      Similar to input.
 %   numCircles  Similar to input.
 %
 % See also: paralleltomo, fancurvedtomo, fanlineartomo, seismictomo,
 %           seismicwavetomo.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, 2010-2017.
 % Based on Matlab code written by Juergen Frikel, OTH Regensburg.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 % Default value of the angles to the circle centers.
-if nargin < 2 || isempty(theta)
-    theta = 0:2:358;
+if nargin < 2 || isempty(angles)
+    angles = 0:2:358;
 end
 
-% Make sure theta is double precison to prevent round-off issues caused by
+% Make sure angles is double precison to prevent round-off issues caused by
 % single input.
-theta = double(theta);
+angles = double(angles);
 
 % Default value of the number of circles.
 if nargin < 3 || isempty(numCircles)
@@ -85,9 +86,9 @@ end
 
 % Construct either matrix or function handle
 if isMatrix
-    A = get_or_apply_system_matrix(N,theta,numCircles,isDisp);
+    A = get_or_apply_system_matrix(N,angles,numCircles,isDisp);
 else
-    A = @(U,TRANSP_FLAG) get_or_apply_system_matrix(N,theta,numCircles,...
+    A = @(U,TRANSP_FLAG) get_or_apply_system_matrix(N,angles,numCircles,...
         isDisp,U,TRANSP_FLAG);
 end
 
@@ -105,10 +106,10 @@ end
 
 
 function A = ...
-    get_or_apply_system_matrix(N,theta,numCircles,isDisp,u,transp_flag)
+    get_or_apply_system_matrix(N,angles,numCircles,isDisp,u,transp_flag)
 
 % Define the number of angles.
-nA = length(theta);
+nA = length(angles);
 
 % Radii for the circles.
 radii  = linspace(0,2,numCircles+1);
@@ -192,8 +193,8 @@ for m = II
     end
     
     % Angular position of source.
-    xix = cosd(theta(m));
-    xiy = sind(theta(m));
+    xix = cosd(angles(m));
+    xiy = sind(angles(m));
     
     % Loop over the circles.
     for n = JJ

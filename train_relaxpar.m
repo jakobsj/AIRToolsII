@@ -26,18 +26,19 @@ function relaxpar = train_relaxpar(A,b,x_ex,method,kmax,options)
 %
 % See also: demo_training, train_dpme.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
-
 % Reference: P. C. Hansen and M. Saxild-Hansen, AIR Tools - A MATLAB package
 % of algebraic iterative reconstruction methods, J. Comp. Appl. Math., 236
-% (2012), pp. 2167-2178,
+% (2012), pp. 2167-2178.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, 2010-2017.
+
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 % Input check: ensure that no stoprule is chosen.
 if nargin == 6

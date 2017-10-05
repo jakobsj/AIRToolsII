@@ -105,16 +105,16 @@ function [X,info] = cart(cart_method, varargin)
 %
 % See also: art, columnaction.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
-% With contribution from Jacob Frøsig and Nicolai Riis.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, 2010-2017.
+% With contribution from Jacob Frosig and Nicolai Riis.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
-
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 % Measure total time taken.
 t_total = tic;
@@ -125,7 +125,7 @@ if isempty(cart_method)
 end
 
 % Parse inputs.
-[Afun,b,m,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
+[Afun,b,~,n,K,kmax,x0,lbound,ubound,stoprule,taudelta, relaxparinput, ...
     ~,res_dims,rkm1,dk,do_waitbar,verbose,damp,THR,Kbegin,Nunflag] = ...
     check_inputs(varargin{:});
 
@@ -153,17 +153,22 @@ relaxpar = calc_relaxpar(relaxparinput);
 
 % Calculate the norm of each column in A.
 normAj = zeros(1,n);
-if ~isa(A,'function_handle')
+if isnumeric(A)
     B = 200;  % Block size; adjust if necessary.
-    for I=1:ceil(n/B)
+    for I = 1:ceil(n/B)
         J = 1+(I-1)*B : min(n,I*B);
-        normAj(J) = full(abs(sum(A(:,J).*A(:,J),1)));
+        normAj(J) = sum(A(:,J).*A(:,J),1);
+    end
+elseif isa(A,'function_handle')
+    for j = 1:n
+        e = zeros(n,1); e(j) = 1;
+        v = A(e,'notransp');
+        normAj(j) = norm(v)^2;
     end
 else
     for j = 1:n
-        e = zeros(n,1);
-        e(j) = 1;
-        v = A(e,'notransp');
+        e = zeros(n,1); e(j) = 1;
+        v = A*e;
         normAj(j) = norm(v)^2;
     end
 end
@@ -223,12 +228,14 @@ while ~stop
         if F(j)
             
             % Get the j'th column of A
-            if ~isa(A,'function_handle')
+            if isnumeric(A)
                 aj = A(:,j);
-            else
-                e = zeros(n,1);
-                e(j) = 1;
+            elseif isa(A,'function_handle')
+                e = zeros(n,1); e(j) = 1;
                 aj = A(e,'notransp');
+            else
+                e = zeros(n,1); e(j) = 1;
+                aj = A*e;
             end
             
             % The update.
@@ -310,7 +317,7 @@ end
 X = X(:,1:l-1);
 
 % List of iterates saved: all in K smaller than the final, and the final.
-info.itersaved = [K(K<info.finaliter), info.finaliter];
+K = K(:);  info.itersaved = [K(K<info.finaliter); info.finaliter];
 
 % Save time total time taken
 info.timetaken = toc(t_total);

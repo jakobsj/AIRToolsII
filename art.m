@@ -97,14 +97,14 @@ function [X,info] = art(art_method, varargin)
 % See also: cart, kaczmarz, randkaczmarz, symkaczmarz.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
+% Maria Saxild-Hansen, 2010-2017.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
-
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 % Measure total time taken.
 t_total = tic;
@@ -160,17 +160,22 @@ relaxpar = calc_relaxpar(relaxparinput);
 
 % Calculate the norm of each row in A. Remember that A is transposed.
 normAi = zeros(1,m);
-if ~isa(A,'function_handle')
+if isnumeric(A)
     B = 200;  % Block size; adjust if necessary.
     for J = 1:ceil(m/B)
         I = 1+(J-1)*B : min(m,J*B);
-        normAi(I) = full(abs(sum(A(:,I).*A(:,I),1)));
+        normAi(I) = sum(A(:,I).*A(:,I),1);
+    end
+elseif isa(A,'function_handle')
+    for i = 1:m
+        e = zeros(m,1); e(i) = 1;
+        v = A(e,'transp');
+        normAi(i) = norm(v)^2;
     end
 else
     for i = 1:m
-        e = zeros(m,1);
-        e(i) = 1;
-        v = A(e,'transp');
+        e = zeros(m,1); e(i) = 1;
+        v = A'*e;
         normAi(i) = norm(v)^2;
     end
 end
@@ -256,11 +261,14 @@ while ~stop
             ri = i;
         end
         
-        if isa(A,'function_handle')
+        if isnumeric(A)
+            ai = A(:,ri); % Remember that A is transposed.
+        elseif isa(A,'function_handle')
             e = zeros(m,1); e(ri) = 1;
             ai = Afun(e,'transp');  % ai is a column vector.
         else
-            ai = A(:,ri); % Remember that A is transposed.
+            e = zeros(m,1); e(ri) = 1;
+            ai = A'*e;  % ai is a column vector.
         end
         if isa(relaxparinput,'function_handle')
             relaxpar = relaxparinput((k-1)*m+i);
@@ -316,7 +324,7 @@ if ischar(art_method) && strncmpi(art_method,'sym',3)
 end
 
 % List of iterates saved: all in K smaller than the final, and the final.
-info.itersaved = [K(K<info.finaliter), info.finaliter];
+K = K(:); info.itersaved = [K(K<info.finaliter); info.finaliter];
 
 % Save time total time taken.
 info.timetaken = toc(t_total);

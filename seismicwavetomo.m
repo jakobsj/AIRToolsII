@@ -52,19 +52,20 @@ function [A,b,x,s,p,omega] = seismicwavetomo(N,s,p,omega,isDisp,isMatrix)
 % See also: paralleltomo, fancurvedtomo, fanlineartomo, seismictomo,
 %           sphericaltomo.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
-% With contribution from Mikkel Brettschneider.
-
 % Reference: J. M. Jensen, B. H. Jacobsen, and J. Christensen-Dalsgaard,
 % Sensitivity kernels for time-distance inversion, Solar Physics, 192
 % (2000), pp. 231-239.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, 2010-2017.
+% With contribution from Mikkel Brettschneider.
+
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 % Default number of sources.
 if nargin < 2 || isempty(s)

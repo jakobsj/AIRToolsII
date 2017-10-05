@@ -36,14 +36,15 @@ function [stop, info, rkm1, dk] = check_stoprules(...
 %
 % See also: art, cart, sirt
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, 2010-2017.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 % Defaults.
 stop = 0;

@@ -121,14 +121,15 @@ function [X,info,ext_info] = sirt(sirt_method, varargin)
 %
 % See also: landweber, cimmino, cav, drop, sart.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, 2010-2017.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 % Measure total time taken.
 t_total = tic;
@@ -274,7 +275,7 @@ X = X(:,1:l-1);
 info.rho = rho;
 
 % List of iterates saved: all in K smaller than the final, and the final.
-info.itersaved = [K(K<info.finaliter), info.finaliter];
+K = K(:); info.itersaved = [K(K<info.finaliter); info.finaliter];
 
 % Save time total time taken
 info.timetaken = toc(t_total);

@@ -1,14 +1,17 @@
 ﻿**********************************************************************
 *   This is AIR Tools II (Version 2.0 of AIR Tools) for Matlab 8.0   *
 *--------------------------------------------------------------------*
-*    Per Christian Hansen  &  Jakob Sauer Jørgensen - DTU Compute    *
+*        Per Christian Hansen, Techical University of Denmark        *
+*          Jakob Sauer Jørgensen, University of Manchester           *
 **********************************************************************
 
-This file is part of the AIR Tools II package and is distributed under the 
-3-Clause BSD Licence.  A separate license file should be provided as part 
-of the package. 
+This file is part of the AIR Tools II package and is distributed under
+the 3-Clause BSD License. A separate license file should be provided as
+part of the package. 
+ 
+Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+Jakob Sauer Jorgensen, University of Manchester.
 
-Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
 
 
 Revisions in Version 2.0
@@ -125,7 +128,6 @@ random variations in the computed rho.
 Previous functions trainLambdaART and trainLambdaSIRT have been simplified 
 and merged into a new function train_relaxpar, which also supports training 
 of relaxation parameter for the the CART method columnaction.
-
 
 
 

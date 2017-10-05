@@ -16,13 +16,14 @@
 % See also: afun_astra_2d, demo_sirt.
 
 % Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
+% Maria Saxild-Hansen, 2010-2017.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jorgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 clear, clc
 fprintf(1,'Starting demo_astra_2d:\n\n');
@@ -115,7 +116,6 @@ astra_mex_algorithm('delete', alg_id);
 astra_mex_data2d('delete', rec_id);
 astra_mex_data2d('delete', sinogram_id);
 time_builtin = toc(tic_builtin);
-
 
 % Display all reconstructions
 figure

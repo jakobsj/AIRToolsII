@@ -30,15 +30,15 @@ function [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n)
 %
 % See also: art, cart, sirt
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, 2010-2017.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
-
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 % Set block size for row norm computations; adjust if necessary.
 B = 200;
@@ -60,16 +60,21 @@ if ischar(sirt_method)
             
             % Define the M matrix. Compute the norm of each row in A.
             normAi = zeros(m,1);
-            if ~isa(A,'function_handle')
+            if isnumeric(A)
                 for J = 1:ceil(m/B)
                     I = 1+(J-1)*B : min(m,J*B);
-                    normAi(I) = full(abs(sum(A(I,:).*A(I,:),2)));
+                    normAi(I) = sum(A(I,:).*A(I,:),2);
+                end
+            elseif isa(A,'function_handle')
+                for i = 1:m
+                    e = zeros(m,1); e(i) = 1;
+                    v = A(e,'transp');
+                    normAi(i) = norm(v)^2;
                 end
             else
                 for i = 1:m
-                    e = zeros(m,1);
-                    e(i) = 1;
-                    v = A(e,'transp');
+                    e = zeros(m,1); e(i) = 1;
+                    v = A'*e;
                     normAi(i) = norm(v)^2;
                 end
             end
@@ -90,7 +95,7 @@ if ischar(sirt_method)
             % Define the M matrix.
             s = zeros(n,1);
             normAs = zeros(m,1);
-            if ~isa(A,'function_handle')
+            if isnumeric(A)
                 for I = 1:ceil(n/B)
                     J = 1+(I-1)*B : min(n,I*B);
                     s(J) = sum(A(:,J)~=0,1)';
@@ -98,9 +103,9 @@ if ischar(sirt_method)
                 s = spdiags(s,0,n,n);
                 for J = 1:ceil(m/B)
                     I = 1+(J-1)*B : min(m,J*B);
-                    normAs(I) = full(abs(sum((A(I,:).*A(I,:))*s,2)));
+                    normAs(I) = sum((A(I,:).*A(I,:))*s,2);
                 end
-            else
+            elseif isa(A,'function_handle')
                 for i=1:n
                     e = zeros(n,1); e(i) = 1;
                     Aj = A(e,'notransp');
@@ -109,6 +114,17 @@ if ischar(sirt_method)
                 for i=1:m
                     e = zeros(m,1); e(i) = 1;
                     Ai = A(e,'transp');
+                    normAs(i) = (s'*Ai.^2);
+                end
+            else
+                for i=1:n
+                    e = zeros(n,1); e(i) = 1;
+                    Aj = A*e;
+                    s(i) = 1/sum(Aj~=0);
+                end
+                for i=1:m
+                    e = zeros(m,1); e(i) = 1;
+                    Ai = A'*e;
                     normAs(i) = (s'*Ai.^2);
                 end
             end
@@ -126,16 +142,21 @@ if ischar(sirt_method)
             % Define the M matrix; same as in Cimmino.
             % Compute the norm of each row in A.
             normAi = zeros(m,1);
-            if ~isa(A,'function_handle')
+            if isnumeric(A)
                 for J = 1:ceil(m/B)
                     I = 1+(J-1)*B : min(m,J*B);
-                    normAi(I) = full(abs(sum(A(I,:).*A(I,:),2)));
+                    normAi(I) = sum(A(I,:).*A(I,:),2);
+                end
+            elseif isa(A,'function_handle')
+                for i = 1:m
+                    e = zeros(m,1); e(i) = 1;
+                    v = A(e,'transp');
+                    normAi(i) = norm(v)^2;
                 end
             else
                 for i = 1:m
-                    e = zeros(m,1);
-                    e(i) = 1;
-                    v = A(e,'transp');
+                    e = zeros(m,1); e(i) = 1;
+                    v = A'*e;
                     normAi(i) = norm(v)^2;
                 end
             end
@@ -150,15 +171,21 @@ if ischar(sirt_method)
             
             % Define diagonal s of the D matrix.
             s = zeros(n,1);
-            if ~isa(A,'function_handle')
+            if isnumeric(A)
                 for I = 1:ceil(n/B)
                     J = 1+(I-1)*B : min(n,I*B);
                     s(J) = 1./sum(A(:,J)~=0,1)';
                 end
-            else
+            elseif isa(A,'function_handle')
                 for i=1:n
                     e = zeros(n,1); e(i) = 1;
                     Aj = A(e,'notransp');
+                    s(i) = 1./sum(Aj~=0);
+                end
+            else
+                for i=1:n
+                    e = zeros(n,1); e(i) = 1;
+                    Aj = A*e;
                     s(i) = 1./sum(Aj~=0);
                 end
             end
@@ -172,14 +199,16 @@ if ischar(sirt_method)
             
         case 'sart'
             % Compute diagonal of M.
-            if ~isa(A,'function_handle')
+            if isnumeric(A)
                 Aip = zeros(m,1);
                 for J = 1:ceil(m/B)
                     I = 1+(J-1)*B : min(m,J*B);
-                    Aip(I) = full(abs(sum(A(I,:),2)));
+                    Aip(I) = sum(abs(A(I,:)),2);
                 end
-            else
+            elseif isa(A,'function_handle')
                 Aip = abs(A(ones(n,1),'notransp'));
+            else
+                Aip = abs(A*ones(n,1));
             end
             M = 1./Aip;
             
@@ -191,14 +220,16 @@ if ischar(sirt_method)
             Mfun = @(XX) M.*XX;
             
             %  Compute diagonal of D.
-            if ~isa(A,'function_handle')
+            if isnumeric(A)
                 Apj = zeros(n,1);
                 for I = 1:ceil(n/B)
                     J = 1+(I-1)*B : min(n,I*B);
-                    Apj(J) = full(abs(sum(A(:,J),1)));
+                    Apj(J) = sum(abs(A(:,J)),1);
                 end
-            else
+            elseif isa(A,'function_handle')
                 Apj = abs(A(ones(m,1),'transp'));
+            else
+                Apj = abs(A'*ones(n,1));
             end
             D = 1./Apj;
             

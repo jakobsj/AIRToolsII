@@ -89,17 +89,18 @@ function varargout = randkaczmarz(varargin)
 %
 % See also: kaczmarz, symkaczmarz, art.
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
-
 % Reference: T. Strohmer and R. Vershynin, A randomized Kaczmarz algorithm
 % for linear systems with exponential convergence, J. Fourier Analysis and
 % Applications, 15 (2009), pp. 262-278.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, 2010-2017.
+
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 [varargout{1:nargout}] = art('randkaczmarz',varargin{:});

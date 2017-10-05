@@ -62,16 +62,17 @@ function im = phantomgallery(name,N,P1,P2,P3)
 %   A = matrix generated, e.g., by paralleltomo;
 %   b = A*x;
 
-% Code written by: Per Christian Hansen, Jakob Sauer Jørgensen, and 
-% Maria Saxild-Hansen, DTU Compute, 2010-2017.
-% With contibutions by Mikhail Romanov, DTU Compute and Knud Cordua, 
-% Univ. of Copenhagen.
+% Code written by: Per Christian Hansen, Jakob Sauer Jorgensen, and 
+% Maria Saxild-Hansen, 2010-2017.
+% With contibutions by Mikhail Romanov, Technical University of Denmark
+% and Knud Cordua, University of Copenhagen.
 
-% This file is part of the AIR Tools package and is distributed under the 
-% 3-Clause BSD Licence. A separate license file should be provided as part 
-% of the package. 
+% This file is part of the AIR Tools II package and is distributed under
+% the 3-Clause BSD License. A separate license file should be provided as
+% part of the package. 
 % 
-% Copyright 2017 Per Christian Hansen & Jakob Sauer Jørgensen, DTU Compute
+% Copyright 2017 Per Christian Hansen, Technical University of Denmark and
+% Jakob Sauer Jorgensen, University of Manchester.
 
 if nargin < 2, error('Not enought input arguments'), end
 
