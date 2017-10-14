@@ -1,0 +1,139 @@
+  ***************************************************************************
+  * ANY USE  OF THE SOFTWARE  CONSTITUTES  ACCEPTANCE  OF THE TERMS  OF THE *
+  * STATEMENTS IN THE ACCOMPANYING FILE LICENSE.txt.                        *
+  ***************************************************************************
+
+   AUTHORS:
+
+       Per Christian Hansen
+       Technical University of Denmark, Denmark
+       Email: pcha@dtu.dk
+
+       Jakob Sauer Jorgensen
+       University of Manchester, United Kingdom
+       Email: jakob.jorgensen@manchester.ac.uk
+
+   REFERENCE:
+
+       AIR Tools II: Algebraic Iterative Reconstruction Methods,
+       Improved Implementation
+       NUMERICAL ALGORITHMS, XX (XXXX), pp. XXX-XXX
+       DOI: XXXXXXXXXXXXXXXXXXXXXXXXXXX.
+
+   SOFTWARE REVISION DATE:
+
+       V1.0, October 2017
+
+   SOFTWARE LANGUAGE:
+
+       MATLAB 9.0 (R2016a)
+
+
+======================================================================
+SOFTWARE
+======================================================================
+
+The AIR Tools II toolbox for MATLAB provides effcient, robust and 
+flexible implementations of algebraic iterative reconstruction (AIR) 
+methods for computing regularized solutions to discretizations of 
+inverse problems.
+
+The AIR Tools II toolbox is an updated and expanded version of the 
+AIR Tools toolbox from 2012.
+
+The software has been developed and tested using MATLAB version 9.0.
+No other MathWorks products or toolboxes are required.
+
+
+======================================================================
+HOW TO INSTALL AND CHECK THE INSTALLATION
+======================================================================
+
+Please follow these steps:
+
+- Extract the archive in a directory of your choice. This creates a  
+  directory called AIRToolsII with all files of the toolbox.
+
+- Start MATLAB.
+
+- Add the directory AIRToolsII contining the toolbox as well as all 
+  subdirectories to the MATLAB search path. The first method to do 
+  this is using the "Set Path" tool in the "Home" tab of the main 
+  MATLAB window, by clicking "Add with Subfolders..." and choosing 
+  the AIRToolsII directory. The second method is to execute the 
+  command
+     addpath(genpath(AIRToolsIIPATH))
+  where AIRToolsIIPATH must be replaced by the absolute or relative
+  path to the AIRToolsII directory as a string, for example
+     addpath(genpath('C:\Software\AIRToolsII\')
+
+- The software installation can be checked by running demo scripts 
+  from the demos subdirectory.
+
+
+======================================================================
+SOFTWARE UPDATES AND BUG FIXES
+======================================================================
+
+In addition to the refereed version of the software published along 
+with the journal paper, the AIR Tools II software will be maintained 
+in the GitHub code repository
+
+  https://github.com/jakobsj/AIRToolsII
+
+Please check this location for software updates and bug fixes.
+
+
+======================================================================
+PACKAGE
+======================================================================
+
+The AIRToolsII package is organized into a main directory with seven 
+subdirectories:
+
+AIRToolsII             contains this README.txt file, a LICENSE.txt 
+                       file, a file CHANGES.txt listing major changes 
+                       since previous versions, as well as CONTENTS.m 
+                       which provides a detailed overview of all 
+                       files in the package (can be listed from 
+                       within MATLAB using "help CONTENTS".
+AIRToolsII/art         contains all ART methods.
+AIRToolsII/cart        contains all CART methods.
+AIRToolsII/sirt        contains all SIRT methods.
+AIRToolsII/train       contains methods to train parameters.
+AIRToolsII/testprobs   contains tomography test problems.
+AIRToolsII/demos       contains demonstration scripts illustrating 
+                       important functionality.
+AIRToolsII/aux         contains auxiliary files.
+
+
+======================================================================
+DEMONSTRATION SCRIPTS
+======================================================================
+
+The directory AIRToolsII/demos contains 12 demo scripts, which can be
+executed for illustrating the basic use and functionality of the 
+toolbox.
+
+The demo demo_astra_2d.m illustrates how to interface from the AIR 
+Tools II package to external software, in this case the ASTRA 
+Tomography Toolbox, which must be installed separately, see 
+  http://www.astra-toolbox.com/
+for instructions.
+
+
+======================================================================
+DOCUMENTATION
+======================================================================
+
+More information can be found:
+
+     - in the paper
+       AIR Tools II: Algebraic Iterative Reconstruction Methods,
+       Improved Implementation
+       NUMERICAL ALGORITHMS, XX (XXXX), pp. XXX-XXX
+       DOI: XXXXXXXXXXXXXXXXXXXXXXXXXXX.
+
+     - in the GitHub code repository
+       https://github.com/jakobsj/AIRToolsII
+
