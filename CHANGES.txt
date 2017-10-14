@@ -1,5 +1,5 @@
 ﻿**********************************************************************
-*   This is AIR Tools II (Version 2.0 of AIR Tools) for Matlab 8.0   *
+*   This is AIR Tools II (new version of AIR Tools) for Matlab 9.0   *
 *--------------------------------------------------------------------*
 *        Per Christian Hansen, Techical University of Denmark        *
 *          Jakob Sauer Jorgensen, University of Manchester           *
@@ -14,8 +14,8 @@ Jakob Sauer Jorgensen, University of Manchester.
 
 
 
-Revisions in Version 2.0
-------------------------
+Revisions in AIR Tools II
+-------------------------
 
 All ART, CART and SIRT functions now accept a function handle as input instead
 of a sparse matrix, thus allowing matrix-free problem formulations, and it also
@@ -131,8 +131,8 @@ of relaxation parameter for the the CART method columnaction.
 
 
 
-Revisions in Version 1.3
-------------------------
+Revisions in AIR Tools Version 1.3
+----------------------------------
 
 A bug was found in fanbeamtomo, paralleltomo, and seismictomo that caused
 some elements of the matrix A to incorectly be set to zero; it was fixed
