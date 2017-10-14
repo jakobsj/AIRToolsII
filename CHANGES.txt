@@ -2,7 +2,7 @@
 *   This is AIR Tools II (Version 2.0 of AIR Tools) for Matlab 8.0   *
 *--------------------------------------------------------------------*
 *        Per Christian Hansen, Techical University of Denmark        *
-*          Jakob Sauer Jørgensen, University of Manchester           *
+*          Jakob Sauer Jorgensen, University of Manchester           *
 **********************************************************************
 
 This file is part of the AIR Tools II package and is distributed under
