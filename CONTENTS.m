@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % AIR Tools II
-% Version 2.0 of AIR Tools
-% June 2017
+% Updated and expanded version of the AIR Tools package.
+% October 2017
 % 
 % This file is part of the AIR Tools II package and is distributed under
 % the 3-Clause BSD License. A separate license file should be provided as
