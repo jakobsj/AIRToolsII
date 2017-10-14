@@ -104,7 +104,7 @@ AIRToolsII/train       contains methods to train parameters.
 AIRToolsII/testprobs   contains tomography test problems.
 AIRToolsII/demos       contains demonstration scripts illustrating 
                        important functionality.
-AIRToolsII/aux         contains auxiliary files.
+AIRToolsII/auxil       contains auxiliary files.
 
 
 ======================================================================
