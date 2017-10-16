@@ -1,4 +1,4 @@
-%DEMO_CART (script) Demonstrates the use of, and results from, the CART method
+%DEMO_CART  Demonstrates the use of, and results from, the CART method
 %
 % This script illustrates the use of the column-action reconstruction
 % method and compares it with the standard (row-action) Kaczmarz method.

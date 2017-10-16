@@ -1,4 +1,4 @@
-%DEMO_ART (script) Demonstrates the use of, and results from, the ART methods
+%DEMO_ART Demonstrates the use of, and results from, the ART methods
 %
 % This script illustrates the use of the ART methods Kaczmarz, symmetric
 % Kaczmarz, and randomized Kaczmarz.

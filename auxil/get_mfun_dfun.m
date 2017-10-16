@@ -1,5 +1,5 @@
 function [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n)
-%GET_MFUN_DFUN  Aux. function to compute M and D matrices for SIRT methods
+%GET_MFUN_DFUN  Computes matrices M and D for SIRT methods
 %
 %   [Mfun,Dfun,Mflag,Dflag] = get_mfun_dfun(sirt_method, A, m, n)
 %

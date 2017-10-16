@@ -1,4 +1,4 @@
-%DEMO_ASTRA_2D (script) Demonstrates interfacing to the ASTRA Toolbox
+%DEMO_ASTRA_2D  Demonstrates interfacing to the ASTRA Toolbox
 %
 % This script demonstrates how to interface from AIR Tools to other
 % software, in the present case to the ASTRA Tomography Toolbox, see 

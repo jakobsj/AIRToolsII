@@ -1,4 +1,4 @@
-%DEMO_TRAINING (script) Demonstrates the use of the training methods
+%DEMO_TRAINING  Demonstrates the use of the training methods
 %
 % This script demonstrates the use of the functions train_relaxpar and
 % train_dpme.  We train the SIRT method cimmino and the ART method kaczmarz.

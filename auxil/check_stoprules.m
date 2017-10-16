@@ -1,6 +1,6 @@
 function [stop, info, rkm1, dk] = check_stoprules(...
     stoprule, rk, relaxpar, taudelta, k, kmax, rkm1, dk, res_dims)
-%CHECK_STOPRULES  Aux. function to check if stopping rule criteria are met
+%CHECK_STOPRULES  Check if stopping rule criteria are met
 %
 %   [stop, info, rkm1, dk] = check_stoprules(...
 %    stoprule, rk, relaxpar, taudelta, k, kmax, rkm1, dk, res_dims)

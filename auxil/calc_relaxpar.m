@@ -1,6 +1,6 @@
 function [relaxpar, casel, rho] = ...
     calc_relaxpar(relaxparinput, rho, kmax, atma, n)
-%CALC_RELAXPAR  Aux. function to compute the relaxation parameter
+%CALC_RELAXPAR  Compute the relaxation parameter for all methods
 %
 %   relaxpar = calc_relaxpar(relaxparinput)
 %   [relaxpar, casel, rho] = ...

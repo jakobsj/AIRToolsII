@@ -1,4 +1,4 @@
-%DEMO_SIRT (script) Demonstrates the use of, and results from, SIRT methods
+%DEMO_SIRT  Demonstrates the use of, and results from, SIRT methods
 %
 % This script illustrates the use of the SIRT methods landweber,
 % cimmino, cav, drop, and sart.

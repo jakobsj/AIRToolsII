@@ -1,4 +1,4 @@
-%DEMO_MATRIXFREE (script) Demonstrates the matrix-free mode
+%DEMO_MATRIXFREE  Demonstrates the matrix-free mode
 %
 % This script illustrates the use of the default SIRT method sart applied
 % to the same test problem using the matrix version, a "pseudo" matrix-free
@@ -83,7 +83,7 @@ title('Pseudo matrix-free SART')
 Afun_mf = paralleltomo(N,theta,p,[],[],0);
 
 fprintf(1,'Perform k = %2.0f iterations with the fully matrix-free SART method.\n',k);
-fprintf(1,'  This is much slower - we trade speed for memory use!\n')
+fprintf(1,'  This is much slower - we trade speed for memory use!\n');
 
 % Perform the SART iterations.
 Xsart_mf = sart(Afun_mf,b,k);
@@ -141,6 +141,10 @@ fprintf(1,'\n');
 fprintf(1,'Compare sizes of matrix, pseudo and fully matrix-free operators.\n');
 
 % Size of operator, equivalent to size(A).
-sizeA = size(A)
-sizeA_ps = Afun_ps([], 'size')
-sizeA_mf = Afun_mf([], 'size')
+fprintf(1,'Size of A matrix from the three different versions\n');
+fprintf(1,'A is a matrix:\n');
+disp(size(A))
+fprintf(1,'A is a matrix wrapped into a function handle:\n');
+disp(Afun_ps([], 'size'))
+fprintf(1,'A is a true fundtion handle (no matrix):\n');
+disp(Afun_mf([], 'size'))

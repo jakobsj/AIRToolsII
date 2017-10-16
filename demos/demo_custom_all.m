@@ -1,4 +1,4 @@
-%DEMO_CUSTOM_ALL (script) Demonstrates how to specify custom ART/SIRT methods
+%DEMO_CUSTOM_ALL  Demonstrates how to specify custom ART/SIRT methods
 % 
 % This script creates a parallel-beam CT test problem and solves the problem
 % with the the standard Kaczmarz method and a custom ART method running

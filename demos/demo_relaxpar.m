@@ -1,4 +1,4 @@
-%DEMO_RELAXPAR (script) Demonstrates the use of the relaxation parameter
+%DEMO_RELAXPAR Demonstrates the use of the relaxation parameter
 %
 % This script illustrates the use of different relaxation parameter
 % strategies in Cimmino's method, including the one found by training.
@@ -71,6 +71,7 @@ Xline = cimmino(A,b,1:kmax,[],options);
 options.relaxpar = 'psi2mod';
 fprintf(1,['Running cimmino with ',options.relaxpar,' strategy\n']);
 Xpsi1 = cimmino(A,b,1:kmax,[],options);
+E = zeros(kmax,4);
 for k=1:kmax
     E(k,1) = norm(x_ex-X(:,k));
     E(k,2) = norm(x_ex-Xtrain(:,k));
@@ -116,7 +117,7 @@ options.relaxpar = 'psi1';
 fprintf(1,['Running cimmino with ',options.relaxpar,' strategy\n']);
 options.relaxpar = 'psi1';
 Xpsi1 = cimmino(A,b,1:kmax,[],options);
-clear E
+E = zeros(kmax,4);
 for k=1:kmax
     E(k,1) = norm(x_ex-X(:,k));
     E(k,2) = norm(x_ex-Xtrain(:,k));
@@ -126,7 +127,7 @@ end
 E = E/norm(x_ex);
 [minE,K] = min(E);
 
-fprintf(1,'\nNote the largeoscillations in the error for ''line'' here\n')
+fprintf(1,'\nNote the large oscillations in the error for ''line'' here\n');
 
 figure(2), clf
 plot(1:kmax,E,'linewidth',1.5)

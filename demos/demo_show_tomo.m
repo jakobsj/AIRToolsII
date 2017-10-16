@@ -1,4 +1,4 @@
-%DEMO_SHOW_TOMO (script) Illustrates the use of the show_tomo function
+%DEMO_SHOW_TOMO  Illustrates the use of the show_tomo function
 %
 % This script illustrates each of the 6 supplied tomographic test problems.
 % First, while generating the test problem, the ray paths used in each

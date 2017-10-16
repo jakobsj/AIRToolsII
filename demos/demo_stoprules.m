@@ -1,4 +1,4 @@
-%DEMO_STOPRULES (script) Demonstrates how to use different stopping rules
+%DEMO_STOPRULES  Demonstrates how to use different stopping rules
 %
 % This script illustrates the use of two different stopping rules for
 % Cimmino's method.
@@ -47,8 +47,9 @@ b = b_ex + e;                   % Add the noise to the pure data.
 
 % Run Cimmino's method without a stopping rule, and compute the
 % error history and its minimum.
-fprintf(1,'\n\nRunning %2.0f iterations of Cimmino''s method',kmax)
+fprintf(1,'\n\nRunning %2.0f iterations of Cimmino''s method',kmax);
 X = cimmino(A,b,1:kmax);
+E = zeros(kmax,1);
 for k=1:kmax
     E(k) = norm(x_ex-X(:,k));
 end
@@ -57,7 +58,7 @@ E = E/norm(x_ex);
 
 % Run Cimmino's method with the discrepancy principle stopping rule.
 % Since we know the exact norm of the noise, we use a tau close to 1.
-fprintf(1,'\n\nRunning cimmino with DP stopping rule\n')
+fprintf(1,'\n\nRunning cimmino with DP stopping rule\n');
 options.stoprule.type = 'DP';
 options.stoprule.taudelta = 1.01*norm(e);
 [~,info] = cimmino(A,b,1:kmax,[],options);
@@ -65,7 +66,7 @@ kDP = info.finaliter;
 disp(['  DP found k = ',num2str(kDP)])
 
 % Run Cimmino's method with the NCP stopping rule suited for 2D CT problem.
-fprintf(1,'\nRunning cimmino with NCP stopping rule\n')
+fprintf(1,'\nRunning cimmino with NCP stopping rule\n');
 ntheta = length(theta);
 p = m/ntheta;
 options.stoprule.type = 'NCP';

@@ -1,7 +1,7 @@
-  ***************************************************************************
-  * ANY USE  OF THE SOFTWARE  CONSTITUTES  ACCEPTANCE  OF THE TERMS  OF THE *
-  * STATEMENTS IN THE ACCOMPANYING FILE LICENSE.txt.                        *
-  ***************************************************************************
+  *************************************************************************
+  * ANY USE OF THE SOFTWARE  CONSTITUTES  ACCEPTANCE OF THE TERMS  OF THE *
+  * STATEMENTS IN THE ACCOMPANYING FILE LICENSE.txt.                      *
+  *************************************************************************
 
    AUTHORS:
 
@@ -56,16 +56,15 @@ Please follow these steps:
 
 - Start MATLAB.
 
-- Add the directory AIRToolsII contining the toolbox as well as all 
-  subdirectories to the MATLAB search path. The first method to do 
-  this is using the "Set Path" tool in the "Home" tab of the main 
-  MATLAB window, by clicking "Add with Subfolders..." and choosing 
-  the AIRToolsII directory. The second method is to execute the 
-  command
-     addpath(genpath(AIRToolsIIPATH))
-  where AIRToolsIIPATH must be replaced by the absolute or relative
-  path to the AIRToolsII directory as a string, for example
-     addpath(genpath('C:\Software\AIRToolsII\')
+- Add the directory AIRToolsII containing the toolbox as well as all 
+  subdirectories to the MATLAB search path.
+  - The easiest way to do this is by using the function AIRToolsII_setup
+    which updates the path either temporarily (for the current MATLAB
+    session only - this is the default if no input is given) or permanently
+   (for the current and all future MATLAB sessions).
+  - The alternative is to use the "Set Path" tool in the "Home" tab of the
+    main MATLAB window, by clicking "Add with Subfolders..." and choosing
+    the AIRToolsII directory.
 
 - The software installation can be checked by running demo scripts 
   from the demos subdirectory.

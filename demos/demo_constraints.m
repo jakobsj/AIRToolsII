@@ -1,4 +1,4 @@
-%DEMO_CONSTRAINTS (script) Demonstrates the use of various constraints
+%DEMO_CONSTRAINTS  Demonstrates the use of various constraints
 %
 % This script illustrates the use of Cimmino's method with the lbound
 % and ubound options.

@@ -1,5 +1,5 @@
 function [X,info] = cart(cart_method, varargin)
-%CART  General interface for the CART methods.
+%CART  General interface for the CART methods
 %
 %   [X,info] = cart(cart_method,A,b,K)
 %   [X,info] = cart(cart_method,A,b,K,x0)

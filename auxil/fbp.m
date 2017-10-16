@@ -1,5 +1,5 @@
 function x = fbp(A,b,theta,filter)
-%FBP  Filtered back projection that uses the sparse system matrix
+%FBP  Filtered Back Projection using the system matrix
 %
 % x = fbp(A,b,theta,filter)
 %

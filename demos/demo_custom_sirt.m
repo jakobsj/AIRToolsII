@@ -1,4 +1,4 @@
-%DEMO_CUSTOM_SIRT (script) Demonstrates the custom SIRT method
+%DEMO_CUSTOM_SIRT  Demonstrates the custom SIRT method
 % 
 % This script deomonstrates that the symmetric Kaczmarz algorithm is,
 % theoretically, identical to a certain SIRT algorithm with a dense
