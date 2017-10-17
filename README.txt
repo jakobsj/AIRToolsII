@@ -1,7 +1,21 @@
-  *************************************************************************
-  * ANY USE OF THE SOFTWARE  CONSTITUTES  ACCEPTANCE OF THE TERMS  OF THE *
-  * STATEMENTS IN THE ACCOMPANYING FILE LICENSE.txt.                      *
-  *************************************************************************
+  ***************************************************************************
+  * All the software  contained in this library  is protected by copyright. *
+  * Permission  to use, copy, modify, and  distribute this software for any *
+  * purpose without fee is hereby granted, provided that this entire notice *
+  * is included  in all copies  of any software which is or includes a copy *
+  * or modification  of this software  and in all copies  of the supporting *
+  * documentation for such software.                                        *
+  ***************************************************************************
+  * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED *
+  * WARRANTY. IN NO EVENT, NEITHER  THE AUTHORS, NOR THE PUBLISHER, NOR ANY *
+  * MEMBER  OF THE EDITORIAL BOARD OF  THE JOURNAL  "NUMERICAL ALGORITHMS", *
+  * NOR ITS EDITOR-IN-CHIEF, BE  LIABLE FOR ANY ERROR  IN THE SOFTWARE, ANY *
+  * MISUSE  OF IT  OR ANY DAMAGE ARISING OUT OF ITS USE. THE ENTIRE RISK OF *
+  * USING THE SOFTWARE LIES WITH THE PARTY DOING SO.                        *
+  ***************************************************************************
+  * ANY USE  OF THE SOFTWARE  CONSTITUTES  ACCEPTANCE  OF THE TERMS  OF THE *
+  * ABOVE STATEMENT AND OF THE ACCOMPANYING FILE LICENSE.txt.               *
+  ***************************************************************************
 
    AUTHORS:
 
@@ -29,11 +43,11 @@
        MATLAB 9.0 (R2016a)
 
 
-======================================================================
+=====================================================================
 SOFTWARE
-======================================================================
+=====================================================================
 
-The AIR Tools II toolbox for MATLAB provides effcient, robust and 
+The AIR Tools II toolbox for MATLAB provides efficient, robust and 
 flexible implementations of algebraic iterative reconstruction (AIR) 
 methods for computing regularized solutions to discretizations of 
 inverse problems.
@@ -45,9 +59,9 @@ The software has been developed and tested using MATLAB version 9.0.
 No other MathWorks products or toolboxes are required.
 
 
-======================================================================
+=====================================================================
 HOW TO INSTALL AND CHECK THE INSTALLATION
-======================================================================
+=====================================================================
 
 Please follow these steps:
 
@@ -58,21 +72,22 @@ Please follow these steps:
 
 - Add the directory AIRToolsII containing the toolbox as well as all 
   subdirectories to the MATLAB search path.
-  - The easiest way to do this is by using the function AIRToolsII_setup
-    which updates the path either temporarily (for the current MATLAB
-    session only - this is the default if no input is given) or permanently
-   (for the current and all future MATLAB sessions).
-  - The alternative is to use the "Set Path" tool in the "Home" tab of the
-    main MATLAB window, by clicking "Add with Subfolders..." and choosing
-    the AIRToolsII directory.
+  - The easiest way to do this is by using the function
+    AIRToolsII_setup which updates the path either temporarily (for
+    the current MATLAB session only - this is the default if no input
+    is given) or permanently (for the current and all future MATLAB
+    sessions).
+  - The alternative is to use the "Set Path" tool in the "Home" tab 
+    of the main MATLAB window, by clicking "Add with Subfolders..." 
+    and choosing the AIRToolsII directory.
 
 - The software installation can be checked by running demo scripts 
   from the demos subdirectory.
 
 
-======================================================================
+=====================================================================
 SOFTWARE UPDATES AND BUG FIXES
-======================================================================
+=====================================================================
 
 In addition to the refereed version of the software published along 
 with the journal paper, the AIR Tools II software will be maintained 
@@ -83,19 +98,20 @@ in the GitHub code repository
 Please check this location for software updates and bug fixes.
 
 
-======================================================================
+=====================================================================
 PACKAGE
-======================================================================
+=====================================================================
 
 The AIRToolsII package is organized into a main directory with seven 
 subdirectories:
 
 AIRToolsII             contains this README.txt file, a LICENSE.txt 
                        file, a file CHANGES.txt listing major changes 
-                       since previous versions, as well as CONTENTS.m 
-                       which provides a detailed overview of all 
-                       files in the package (can be listed from 
-                       within MATLAB using "help CONTENTS".
+                       since previous versions, Contents.m which 
+                       provides a detailed overview of all files in 
+                       the package (can be listed from within MATLAB 
+                       using "help AIRToolsII"), and an installation 
+                       function called AIRToolsII_setup.m.
 AIRToolsII/art         contains all ART methods.
 AIRToolsII/cart        contains all CART methods.
 AIRToolsII/sirt        contains all SIRT methods.
@@ -105,10 +121,13 @@ AIRToolsII/demos       contains demonstration scripts illustrating
                        important functionality.
 AIRToolsII/auxil       contains auxiliary files.
 
+See the file Contents.m for a list of the files contained in the 
+toolbox.
 
-======================================================================
+
+=====================================================================
 DEMONSTRATION SCRIPTS
-======================================================================
+=====================================================================
 
 The directory AIRToolsII/demos contains 12 demo scripts, which can be
 executed for illustrating the basic use and functionality of the 
@@ -121,9 +140,9 @@ Tomography Toolbox, which must be installed separately, see
 for instructions.
 
 
-======================================================================
+=====================================================================
 DOCUMENTATION
-======================================================================
+=====================================================================
 
 More information can be found:
 
