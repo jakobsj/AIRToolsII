@@ -30,6 +30,6 @@ addpath(genpath(fileparts(mfilename('fullpath'))));
 if strcmp(choice,'permanent')
     status = savepath;
     if status==1
-        error('Failed to save path permanently, please save manually using savepath or contact your system administrator')
+        warning('AIR Tools II was added to the MATLAB search path for the current session only. Adding it permanently failed, probably due to a write permission issue. It is possible to manually add AIR Tools II permanently to your search path, but may require consulting your system administrator. Alternatively, you can re-run AIRToolsII_setup without an input parameter in each new MATLAB session where you want to use AIR Tools II.')
     end
 end
