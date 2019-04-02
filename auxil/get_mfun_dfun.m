@@ -229,7 +229,7 @@ if ischar(sirt_method)
             elseif isa(A,'function_handle')
                 Apj = abs(A(ones(m,1),'transp'));
             else
-                Apj = abs(A'*ones(n,1));
+                Apj = abs(A'*ones(m,1));
             end
             D = 1./Apj;
             
