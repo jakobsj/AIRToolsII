@@ -62,6 +62,8 @@ switch stack(2).name
                     'The relaxpar value is outside the interval (0,2)');
             end
             relaxpar = relaxparinput;
+        elseif isa(relaxparinput,'function_handle')
+            relaxpar = -1000;  % Place holder; function handle will be used
         else
             error('MATLAB:IllegalRelaxParam',...
                 ['For ART methods the relaxpar must be a scalar or ',...
